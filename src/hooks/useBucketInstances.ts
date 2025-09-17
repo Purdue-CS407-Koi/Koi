@@ -28,7 +28,7 @@ const useBucketInstances = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["bucket", currentBucketId], // Zustand state as part of key
+    queryKey: ["bucketInstance", currentBucketId], // Zustand state as part of key
     queryFn: () => fetchBucketInstance(currentBucketId),
   });
 
