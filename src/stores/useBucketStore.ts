@@ -6,6 +6,6 @@ interface BucketStore {
 }
 
 export const useBucketStore = create<BucketStore>((set) => ({
-  currentBucketId: "1",
+  currentBucketId: "e73b609a-e8dc-424b-bbac-5bd42d54a88b",
   setCurrentBucketId: (currentBucketId) => set({ currentBucketId }),
 }));

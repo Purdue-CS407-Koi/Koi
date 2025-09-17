@@ -17,17 +17,17 @@ export const Dashboard = () => {
   }
 
   const onClick = () => {
-    if (currentBucketId == "1") {
-      setCurrentBucketId("2");
-    } else {
-      setCurrentBucketId("1");
-    }
+    // if (currentBucketId == "1") {
+    //   setCurrentBucketId("2");
+    // } else {
+    //   setCurrentBucketId("1");
+    // }
   };
 
   // We can assume by this point that `isSuccess === true`
   return (
     <div>
-      <p>The current bucket is: {bucketData!.name}</p>
+      <p>The current bucket is: {bucketData!.id}</p>
       <button onClick={onClick}>Change bucket</button>
     </div>
   );
