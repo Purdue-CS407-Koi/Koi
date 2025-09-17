@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useBucketStore } from "../stores/useBucketStore";
+import { useBucketInstanceStore } from "../stores/useBucketInstanceStore";
 import supabase from "../helpers/supabase";
 
-const fetchBucket = async (id: string) => {
+const fetchBucketInstance = async (id: string) => {
   const { data, error } = await supabase
     .from("BucketInstances")
     .select()
@@ -21,16 +21,18 @@ const fetchBucket = async (id: string) => {
   return data[0];
 };
 
-export const useBuckets = () => {
-  const currentBucketId = useBucketStore((state) => state.currentBucketId);
+const useBucketInstances = () => {
+  const currentBucketId = useBucketInstanceStore((state) => state.currentBucketInstanceId);
   const {
     data: bucketData,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["bucket", currentBucketId], // Zustand state as part of key
-    queryFn: () => fetchBucket(currentBucketId),
+    queryFn: () => fetchBucketInstance(currentBucketId),
   });
 
   return { bucketData, isLoading, error };
 };
+
+export default useBucketInstances;

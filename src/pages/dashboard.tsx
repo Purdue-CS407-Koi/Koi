@@ -1,11 +1,11 @@
-import { useBuckets } from "../hooks/useBuckets";
-import { useBucketStore } from "../stores/useBucketStore";
+import useBucketInstances from "../hooks/useBucketInstances";
+import { useBucketInstanceStore } from "../stores/useBucketInstanceStore";
 
 export const Dashboard = () => {
-  const { bucketData, isLoading, error } = useBuckets();
-  const currentBucketId = useBucketStore((state) => state.currentBucketId);
-  const setCurrentBucketId = useBucketStore(
-    (state) => state.setCurrentBucketId
+  const { bucketData, isLoading, error } = useBucketInstances();
+  const currentBucketInstanceId = useBucketInstanceStore((state) => state.currentBucketInstanceId);
+  const setCurrentBucketInstanceId = useBucketInstanceStore(
+    (state) => state.setCurrentBucketInstanceId
   );
 
   if (isLoading) {
