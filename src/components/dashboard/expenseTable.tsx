@@ -1,5 +1,5 @@
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
-import type { ColDef } from "ag-grid-community";
+import type { ColDef, SizeColumnsToFitGridStrategy } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
 
@@ -22,9 +22,18 @@ export const ExpenseTable = () => {
     { field: "electric" },
   ];
 
+  const autoSizeStrategy: SizeColumnsToFitGridStrategy = {
+    type: "fitGridWidth",
+    defaultMinWidth: 100,
+  };
+
   return (
-    <div style={{ height: 500 }}>
-      <AgGridReact rowData={rowData} columnDefs={colDefs} />
+    <div style={{ height: 520 }}>
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={colDefs}
+        autoSizeStrategy={autoSizeStrategy}
+      />
     </div>
   );
 };

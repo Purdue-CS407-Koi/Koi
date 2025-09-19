@@ -10,10 +10,7 @@ function Index() {
   return (
     <Template>
       <Content>
-        <div className="p-2">
-          <h3>Welcome Home!</h3>
-          <Dashboard />
-        </div>
+        <Dashboard />
       </Content>
       <Sidebar>Sidebar content for dashboard</Sidebar>
     </Template>

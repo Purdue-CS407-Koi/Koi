@@ -19,11 +19,27 @@ export const Dashboard = () => {
     return <span>Error: {error.message}</span>;
   }
 
-  // We can assume by this point that `isSuccess === true`
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        padding: 10,
+        justifyItems: "space-between",
+      }}
+    >
       <p>The current bucket is: {bucketData!.id}</p>
-      <ExpenseTable />
+      <div
+        style={{
+          margin: 20,
+          backgroundColor: "white",
+          padding: 20,
+          borderRadius: 10,
+        }}
+      >
+        <p>Expenses</p>
+        <ExpenseTable />
+      </div>
     </div>
   );
 };
