@@ -9,7 +9,7 @@ function Challenges() {
   return (
     <Template>
       <Content>Hello from Challenges!</Content>
-      <Sidebar>Sidebar content</Sidebar>
+      <Sidebar>Sidebar content for challenges</Sidebar>
     </Template>
   );
 }

@@ -4,7 +4,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const RootLayout = () => (
   <>
-    <hr />
     <Outlet />
     <ReactQueryDevtools />
     <TanStackRouterDevtools />

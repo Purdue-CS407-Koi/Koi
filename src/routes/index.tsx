@@ -15,7 +15,7 @@ function Index() {
           <Dashboard />
         </div>
       </Content>
-      <Sidebar>Sidebar content</Sidebar>
+      <Sidebar>Sidebar content for dashboard</Sidebar>
     </Template>
   );
 }

@@ -9,7 +9,7 @@ function Groups() {
   return (
     <Template>
       <Content>Hello from Groups!</Content>
-      <Sidebar>Sidebar content</Sidebar>
+      <Sidebar>Sidebar content for groups</Sidebar>
     </Template>
   );
 }

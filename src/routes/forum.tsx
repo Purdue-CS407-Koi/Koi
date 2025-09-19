@@ -9,7 +9,7 @@ function Forum() {
   return (
     <Template>
       <Content>Hello from Forum!</Content>
-      <Sidebar>Sidebar content</Sidebar>
+      <Sidebar>Sidebar content for forum</Sidebar>
     </Template>
   );
 }
