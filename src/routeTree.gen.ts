@@ -9,11 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignUpRouteImport } from './routes/signUp'
+import { Route as SignInRouteImport } from './routes/signIn'
 import { Route as GroupsRouteImport } from './routes/groups'
 import { Route as ForumRouteImport } from './routes/forum'
 import { Route as ChallengesRouteImport } from './routes/challenges'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/signUp',
+  path: '/signUp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/signIn',
+  path: '/signIn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GroupsRoute = GroupsRouteImport.update({
   id: '/groups',
   path: '/groups',
@@ -40,12 +52,16 @@ export interface FileRoutesByFullPath {
   '/challenges': typeof ChallengesRoute
   '/forum': typeof ForumRoute
   '/groups': typeof GroupsRoute
+  '/signIn': typeof SignInRoute
+  '/signUp': typeof SignUpRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/challenges': typeof ChallengesRoute
   '/forum': typeof ForumRoute
   '/groups': typeof GroupsRoute
+  '/signIn': typeof SignInRoute
+  '/signUp': typeof SignUpRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +69,22 @@ export interface FileRoutesById {
   '/challenges': typeof ChallengesRoute
   '/forum': typeof ForumRoute
   '/groups': typeof GroupsRoute
+  '/signIn': typeof SignInRoute
+  '/signUp': typeof SignUpRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/challenges' | '/forum' | '/groups'
+  fullPaths: '/' | '/challenges' | '/forum' | '/groups' | '/signIn' | '/signUp'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/challenges' | '/forum' | '/groups'
-  id: '__root__' | '/' | '/challenges' | '/forum' | '/groups'
+  to: '/' | '/challenges' | '/forum' | '/groups' | '/signIn' | '/signUp'
+  id:
+    | '__root__'
+    | '/'
+    | '/challenges'
+    | '/forum'
+    | '/groups'
+    | '/signIn'
+    | '/signUp'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +92,26 @@ export interface RootRouteChildren {
   ChallengesRoute: typeof ChallengesRoute
   ForumRoute: typeof ForumRoute
   GroupsRoute: typeof GroupsRoute
+  SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signUp': {
+      id: '/signUp'
+      path: '/signUp'
+      fullPath: '/signUp'
+      preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signIn': {
+      id: '/signIn'
+      path: '/signIn'
+      fullPath: '/signIn'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/groups': {
       id: '/groups'
       path: '/groups'
@@ -107,6 +148,8 @@ const rootRouteChildren: RootRouteChildren = {
   ChallengesRoute: ChallengesRoute,
   ForumRoute: ForumRoute,
   GroupsRoute: GroupsRoute,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
