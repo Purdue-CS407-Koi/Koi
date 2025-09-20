@@ -7,7 +7,6 @@ import {
   SIDE_PANEL_BACKGROUND,
   TEXT_COLOR,
 } from "../config/colors";
-import { useLinkStore  } from "../stores/useLinkStore";
 import "./template.css";
 
 export function Content({ children }: PropsWithChildren) {
@@ -32,10 +31,6 @@ export default function Template({ children }: LayoutProps) {
   const sidebar = childArray.find(
     (child: any) => (child as any).type === Sidebar
   );
-
-  // get current link from store
-  const currentLink = useLinkStore((state) => state.currentLink);
-  const setCurrentLink = useLinkStore((state) => state.setCurrentLink);
 
   // todo add tailwind styles and fix layout
   return (
@@ -66,7 +61,7 @@ export default function Template({ children }: LayoutProps) {
               flex: 4,
             }}
           >
-            <Link to="/" className="[&.active]:font-bold" onClick={() => setCurrentLink(0)}>
+            <Link to="/" className="[&.active]:font-bold">
               <div
                 style={{
                   alignItems: "center",
@@ -96,16 +91,16 @@ export default function Template({ children }: LayoutProps) {
               justifyContent: "center",
             }}
           >
-            <Link to="/" className={"[&.active]:font-bold link " + (currentLink != 0 || "selected")} onClick={() => setCurrentLink(0)}>
+            <Link to="/" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
               Dashboard
             </Link>{" "}
-            <Link to="/groups" className={"[&.active]:font-bold link " + (currentLink != 1 || "selected")} onClick={() => setCurrentLink(1)}>
+            <Link to="/groups" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
               Groups
             </Link>{" "}
-            <Link to="/challenges" className={"[&.active]:font-bold link " + (currentLink != 2 || "selected")} onClick={() => setCurrentLink(2)}>
+            <Link to="/challenges" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
               Challenges
             </Link>{" "}
-            <Link to="/forum" className={"[&.active]:font-bold link " + (currentLink != 3 || "selected")} onClick={() => setCurrentLink(3)}>
+            <Link to="/forum" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
               Forum
             </Link>
           </div>
