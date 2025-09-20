@@ -5,7 +5,10 @@ import logo from "../assets/logo.png";
 import {
   MAIN_CONTENT_BACKGROUND,
   SIDE_PANEL_BACKGROUND,
+  TEXT_COLOR,
 } from "../config/colors";
+import { useLinkStore  } from "../stores/useLinkStore";
+import "./template.css";
 
 export function Content({ children }: PropsWithChildren) {
   return <>{children}</>;
@@ -29,6 +32,10 @@ export default function Template({ children }: LayoutProps) {
   const sidebar = childArray.find(
     (child: any) => (child as any).type === Sidebar
   );
+
+  // get current link from store
+  const currentLink = useLinkStore((state) => state.currentLink);
+  const setCurrentLink = useLinkStore((state) => state.setCurrentLink);
 
   // todo add tailwind styles and fix layout
   return (
@@ -55,22 +62,31 @@ export default function Template({ children }: LayoutProps) {
         >
           <div
             style={{
-              alignItems: "center",
-              display: "flex",
-              gap: "10px",
+
               flex: 4,
             }}
           >
-            <img src={logo} alt="Koi Logo" className="inline h-6 w-6" />
-            <text
-              style={{
-                fontSize: "45px",
-                fontWeight: "bold",
-                verticalAlign: "middle",
-              }}
-            >
-              Koi
-            </text>
+            <Link to="/" className="[&.active]:font-bold" onClick={() => setCurrentLink(0)}>
+              <div
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  gap: "10px",
+                }}
+              >
+                <img src={logo} alt="Koi Logo" className="inline h-6 w-6" />
+                <text
+                  style={{
+                    fontSize: "45px",
+                    fontWeight: "bold",
+                    verticalAlign: "middle",
+                    color: TEXT_COLOR,
+                  }}
+                >
+                  Koi
+                </text>
+              </div>
+            </Link>
           </div>
           <div
             style={{
@@ -80,16 +96,16 @@ export default function Template({ children }: LayoutProps) {
               justifyContent: "center",
             }}
           >
-            <Link to="/" className="[&.active]:font-bold">
+            <Link to="/" className={"[&.active]:font-bold link " + (currentLink != 0 || "selected")} onClick={() => setCurrentLink(0)}>
               Dashboard
             </Link>{" "}
-            <Link to="/groups" className="[&.active]:font-bold">
+            <Link to="/groups" className={"[&.active]:font-bold link " + (currentLink != 1 || "selected")} onClick={() => setCurrentLink(1)}>
               Groups
             </Link>{" "}
-            <Link to="/challenges" className="[&.active]:font-bold">
+            <Link to="/challenges" className={"[&.active]:font-bold link " + (currentLink != 2 || "selected")} onClick={() => setCurrentLink(2)}>
               Challenges
             </Link>{" "}
-            <Link to="/forum" className="[&.active]:font-bold">
+            <Link to="/forum" className={"[&.active]:font-bold link " + (currentLink != 3 || "selected")} onClick={() => setCurrentLink(3)}>
               Forum
             </Link>
           </div>

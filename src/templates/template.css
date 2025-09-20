@@ -1,0 +1,17 @@
+.link {
+    color: grey;
+}
+
+.link:hover {
+    text-decoration: underline;
+    color: grey;
+}
+
+.selected {
+    color: black;
+}
+
+.selected:hover {
+    text-decoration: none;
+    color: black;
+}
