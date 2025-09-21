@@ -24,6 +24,7 @@ export const AuthInput: React.FC<AuthInputProps> = ({
           fontWeight: "500",
           marginBottom: "0.5rem",
           textAlign: "left",
+          color: "#374151", // Gray-700 for label
         }}
       >
         {label}
@@ -42,6 +43,9 @@ export const AuthInput: React.FC<AuthInputProps> = ({
           fontSize: "1rem",
           outline: "none",
           transition: "all 0.2s ease-in-out",
+          color: "#111827",
+          cursor: "text",
+          lineHeight: "1.5",
         }}
         onFocus={(e) => {
           e.target.style.borderColor = "#3b82f6";
