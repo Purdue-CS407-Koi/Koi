@@ -17,6 +17,7 @@ export const GroupsList: React.FC<GroupsListProps> = ({
   onAddGroup,
 }) => {
   const getGroupIcon = (type?: string) => {
+    // TODO: change to fetch icons from DB
     if (type === "trip") {
       return (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="#6b7280">
