@@ -1,4 +1,3 @@
-// components/AuthInput.tsx
 import React from "react";
 
 interface AuthInputProps {
@@ -17,14 +16,41 @@ export const AuthInput: React.FC<AuthInputProps> = ({
   placeholder,
 }) => {
   return (
-    <div className="flex flex-col items-start mb-4 w-full">
-      <label className="block text-sm font-medium mb-1">{label}</label>
+    <div style={{ marginBottom: "1rem", width: "100%" }}>
+      <label
+        style={{
+          display: "block",
+          fontSize: "0.875rem",
+          fontWeight: "500",
+          marginBottom: "0.5rem",
+          textAlign: "left",
+        }}
+      >
+        {label}
+      </label>
       <input
         type={type}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
+        style={{
+          width: "100%",
+          padding: "0.75rem 1rem",
+          backgroundColor: "white",
+          border: "1px solid #d1d5db",
+          borderRadius: "0.375rem",
+          fontSize: "1rem",
+          outline: "none",
+          transition: "all 0.2s ease-in-out",
+        }}
+        onFocus={(e) => {
+          e.target.style.borderColor = "#3b82f6";
+          e.target.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.1)";
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = "#d1d5db";
+          e.target.style.boxShadow = "none";
+        }}
       />
     </div>
   );

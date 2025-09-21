@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { AuthInput } from "../components/sign_in/authInput";
+import logo from "../assets/logo.png";
 
 export const SignUpPage = () => {
   const [email, setEmail] = useState("");
@@ -12,12 +13,59 @@ export const SignUpPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="p-6 border rounded-lg shadow-md max-w-sm w-full bg-white text-center">
-        <h1 className="text-2xl font-bold mb-2">Create an account</h1>
-        <p className="text-sm text-gray-600 mb-4">Sign up to get started.</p>
+    <div
+      className="fixed inset-0"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        className="w-full max-w-sm"
+        style={{
+          textAlign: "center",
+          minWidth: "400px",
+          width: "100%",
+          padding: "0 1rem",
+        }}
+      >
+        <div
+          className="w-full flex justify-center items-center mb-6"
+          style={{ textAlign: "center" }}
+        >
+          <img
+            src={logo}
+            alt="Koi Logo"
+            className="w-20 h-auto"
+            style={{ display: "block", margin: "0 auto" }}
+          />
+        </div>
 
-        <form onSubmit={handleSignUp}>
+        <div className="w-full mb-6" style={{ textAlign: "center" }}>
+          <h1
+            style={{
+              textAlign: "center",
+              margin: "0 auto 0.5rem auto",
+              fontSize: "2.5rem",
+              fontWeight: "600",
+            }}
+          >
+            Create an account
+          </h1>
+          <p
+            className="text-sm text-gray-600"
+            style={{ textAlign: "center", margin: "0 auto" }}
+          >
+            Sign up to get started.
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleSignUp}
+          className="space-y-4 mb-6"
+          style={{ textAlign: "left" }}
+        >
           <AuthInput
             label="Email"
             type="email"
@@ -34,15 +82,23 @@ export const SignUpPage = () => {
             placeholder="Enter your password"
           />
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          <div
+            className="w-full flex justify-center"
+            style={{ textAlign: "center" }}
           >
-            Sign Up
-          </button>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              style={{ margin: "0 auto", width: "100%" }}
+            >
+              Sign Up
+            </button>
+          </div>
         </form>
-
-        <p className="text-sm text-gray-600 mt-4 text-center">
+        <p
+          className="text-sm text-gray-600"
+          style={{ textAlign: "center", margin: "0 auto" }}
+        >
           Already have an account?{" "}
           <Link to="/signin" className="text-blue-600 hover:underline">
             Sign in here.

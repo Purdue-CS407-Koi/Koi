@@ -6,9 +6,5 @@ export const Route = createFileRoute("/signIn")({
 });
 
 function SignInRoute() {
-  return (
-    <div className="p-2">
-      <SignInPage />
-    </div>
-  );
+  return <SignInPage />;
 }
