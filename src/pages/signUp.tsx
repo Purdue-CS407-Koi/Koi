@@ -5,29 +5,36 @@ import logo from "../assets/logo.png";
 import supabase from "../helpers/supabase";
 
 export const SignUpPage = () => {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email || !password) {
-      alert("Please enter email and password");
+
+    if (!fullName || !email || !password) {
+      alert("Please fill in all fields");
       return;
     }
-    
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          full_name: fullName,
+          display_name: fullName,
+        },
+      },
     });
 
     if (error) {
       alert(error);
-    };
+    }
 
     if (data) {
-      alert("Sign up successful! Please sign in.");
+      alert("Sign up successful!");
       navigate({ to: "/signIn" });
     }
   };
@@ -45,7 +52,7 @@ export const SignUpPage = () => {
         className="w-full max-w-sm"
         style={{
           textAlign: "center",
-          minWidth: "400px",
+          minWidth: "500px",
           width: "100%",
           padding: "0 1rem",
         }}
@@ -87,13 +94,19 @@ export const SignUpPage = () => {
           style={{ textAlign: "left" }}
         >
           <AuthInput
+            label="Name"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Enter your name"
+          />
+          <AuthInput
             label="Email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
           />
-
           <AuthInput
             label="Password"
             type="password"
@@ -120,7 +133,7 @@ export const SignUpPage = () => {
           style={{ textAlign: "center", margin: "0 auto" }}
         >
           Already have an account?{" "}
-          <Link to="/signin" className="text-blue-600 hover:underline">
+          <Link to="/signIn" className="text-blue-600 hover:underline">
             Sign in here.
           </Link>
         </p>

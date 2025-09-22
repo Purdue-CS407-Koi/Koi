@@ -44,7 +44,7 @@ export const SignInPage = () => {
     >
       <div className="w-full max-w-sm"  style={{ 
           textAlign: "center",
-          minWidth: "400px", 
+          minWidth: "500px", 
           width: "100%",
           padding: "0 1rem" 
         }}>
