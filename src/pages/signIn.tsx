@@ -3,6 +3,7 @@ import { useAuthStore } from "../stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AuthInput } from "../components/sign_in/authInput";
 import logo from "../assets/logo.png";
+import supabase from "../helpers/supabase";
 
 export const SignInPage = () => {
   const setUser = useAuthStore((state) => state.setUser);
@@ -11,14 +12,25 @@ export const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!email || !password) {
       alert("Please enter email and password");
       return;
     }
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    setUser({ id: "test-user-123", email });
-    navigate({ to: "/" });
+    if (error) {
+      alert(error);
+    };
+
+    if (data && data.user) {
+      setUser(data.user);
+      navigate({ to: "/" });
+    }
   };
 
   return (

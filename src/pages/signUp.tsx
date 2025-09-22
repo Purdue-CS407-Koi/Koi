@@ -1,15 +1,35 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { AuthInput } from "../components/sign_in/authInput";
 import logo from "../assets/logo.png";
+import supabase from "../helpers/supabase";
 
 export const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Signing up with ${email}`);
+    
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
+    }
+    
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert(error);
+    };
+
+    if (data) {
+      alert("Sign up successful! Please sign in.");
+      navigate({ to: "/signIn" });
+    }
   };
 
   return (
