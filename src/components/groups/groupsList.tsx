@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { AddGroupModal } from "./addGroupModal";
 
 interface Group {
   id: string;
@@ -9,100 +10,118 @@ interface Group {
 
 interface GroupsListProps {
   groups: Group[];
-  onAddGroup: () => void;
+  onAddGroup: (groupName: string) => void;
 }
 
 export const GroupsList: React.FC<GroupsListProps> = ({
   groups,
   onAddGroup,
 }) => {
-  const getGroupIcon = (type?: string) => {
-    // TODO: change to fetch icons from DB
-    if (type === "trip") {
-      return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#6b7280">
-          <path d="M12 2L3 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-9-5z" />
-        </svg>
-      );
-    }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const getGroupIcon = () => {
+    // Bookmark icon for all groups
     return (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#6b7280">
-        <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.75 1.75 0 0 0 18.3 7.5c-.93 0-1.68.7-1.75 1.61L14.92 16H12v6h8z" />
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
       </svg>
     );
   };
 
+  const handleAddGroup = (groupName: string) => {
+    onAddGroup(groupName);
+    setIsModalOpen(false);
+  };
+
   return (
-    <div>
-      <h3
-        style={{
-          fontSize: "18px",
-          fontWeight: "600",
-          marginBottom: "16px",
-          color: "#111827",
-        }}
-      >
-        Groups
-      </h3>
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        {groups.map((group) => (
-          <div
-            key={group.id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "8px 0",
-            }}
-          >
+    <>
+      <div>
+        <h3
+          style={{
+            fontSize: "18px",
+            fontWeight: "600",
+            marginBottom: "16px",
+            color: "#111827",
+          }}
+        >
+          Groups
+        </h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {groups.map((group) => (
             <div
+              key={group.id}
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                width: "20px",
+                gap: "12px",
+                padding: "8px 0",
               }}
             >
-              {getGroupIcon(group.type)}
-            </div>
-            <div>
               <div
                 style={{
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#111827",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "20px",
                 }}
               >
-                {group.name}
+                {getGroupIcon()}
               </div>
-              <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                {group.type === "default"
-                  ? "Default"
-                  : `Created ${group.createdDate}`}
+              <div>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#111827",
+                  }}
+                >
+                  {group.name}
+                </div>
+                <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                  {group.type === "default"
+                    ? "Default"
+                    : `Created ${group.createdDate}`}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        <button
-          onClick={onAddGroup}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "8px",
-            background: "none",
-            border: "1px solid #d1d5db",
-            borderRadius: "6px",
-            cursor: "pointer",
-            color: "#6b7280",
-            fontSize: "14px",
-            marginTop: "8px",
-          }}
-        >
-          <span style={{ fontSize: "18px" }}>+</span>
-          Add New
-        </button>
+          ))}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px",
+              background: "none",
+              border: "1px solid #d1d5db",
+              borderRadius: "6px",
+              cursor: "pointer",
+              color: "#6b7280",
+              fontSize: "14px",
+              marginTop: "8px",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f9fafb";
+              e.currentTarget.style.borderColor = "#9ca3af";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            }}
+          >
+            <span style={{ fontSize: "18px" }}>+</span>
+            Add New
+          </button>
+        </div>
       </div>
-    </div>
+
+      {/* Modal */}
+      <AddGroupModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleAddGroup}
+      />
+    </>
   );
 };
