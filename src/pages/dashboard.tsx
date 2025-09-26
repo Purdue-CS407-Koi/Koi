@@ -1,23 +1,24 @@
-import useBucketInstances from "../hooks/useBucketInstances";
-//import { useBucketInstanceStore } from "../stores/useBucketInstanceStore";
 import { ExpenseTable } from "../components/dashboard/expenseTable";
+import useExpenses from "../hooks/useExpenses";
+import type { NewExpense } from "../interfaces/Expense";
+import { useBucketsStore } from "../stores/useBucketsStore";
 
 export const Dashboard = () => {
-  const { bucketData, isLoading, error } = useBucketInstances();
-  //   const currentBucketInstanceId = useBucketInstanceStore(
-  //     (state) => state.currentBucketInstanceId
-  //   );
-  //   const setCurrentBucketInstanceId = useBucketInstanceStore(
-  //     (state) => state.setCurrentBucketInstanceId
-  //   );
+  const currentBucketInstanceId = useBucketsStore(
+    (state) => state.currentBucketInstanceId
+  );
 
-  if (isLoading) {
-    return <span>Loading...</span>;
-  }
+  const { insertNewExpense } = useExpenses();
 
-  if (error) {
-    return <span>Error: {error.message}</span>;
-  }
+  const handleTestAddNewExpense = () => {
+    const newExpense: NewExpense = {
+      amount: 100,
+      description: "Rent for September",
+      name: "Apartment rent",
+      bucket_instance_id: currentBucketInstanceId,
+    };
+    insertNewExpense(newExpense);
+  };
 
   return (
     <div
@@ -28,7 +29,7 @@ export const Dashboard = () => {
         justifyItems: "space-between",
       }}
     >
-      <p>The current bucket is: {bucketData!.id}</p>
+      <button onClick={handleTestAddNewExpense}>Test adding new expense</button>
       <div
         style={{
           margin: 20,
