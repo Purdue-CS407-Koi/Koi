@@ -19,13 +19,12 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   color-scheme: light dark;
-  color: black;
   background-color: #F0F1F6;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  @apply font-normal leading-1.5 antialiased;
+  @apply font-normal leading-1.5 antialiased text-black;
 }
 
 a {
