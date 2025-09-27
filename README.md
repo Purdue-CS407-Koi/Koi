@@ -9,6 +9,14 @@ VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 ```
 
+## Updating Supabase types
+
+Run:
+
+```
+pnpm exec supabase login     # Interactive login to Supabase with browser
+pnpm exec supabase gen types --lang=typescript --project-id fjnpeofxeihbuaswyyuq > src/helpers/supabase.types.ts
+```
 
 
 # React + TypeScript + Vite
