@@ -9,7 +9,6 @@ export async function insertNewExpense({
   settle_split_id,
   challenge_id,
 }: NewExpense) {
-  // TODO: use userStore to get current user
   const {
     data: { user },
   } = await supabase.auth.getUser();
