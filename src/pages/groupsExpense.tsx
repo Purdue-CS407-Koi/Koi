@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { MembersList } from "../components/groups/membersList";
+import { AddGroupExpenseModal } from "../components/groups/addGroupExpenseModal";
 
 export const GroupsExpense = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleAddGroupExpense = (expenseName: string) => {
+    console.log("temp");
+    setIsModalOpen(false);
+  };
+
   // TODO: replace with members fetched from DB
   const [members] = useState<Member[]>([
     { id: "1", name: "Sarr" },
@@ -56,7 +64,7 @@ export const GroupsExpense = () => {
               </h2>
               <div style={{ display: "flex", gap: "12px" }}>
                 <button
-                  onClick={handleAddExpense}
+                  onClick={() => setIsModalOpen(true)}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -97,6 +105,14 @@ export const GroupsExpense = () => {
           <div style={{ flex: 1 }}>
             <MembersList members={members} />
           </div>
+
+          {/* Modal */}
+          <AddGroupExpenseModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSave={handleAddGroupExpense}
+            allGroups={["Roommates", "Trip to Japan", "Family"]}
+          />
         </div>
       </div>
     </div>
