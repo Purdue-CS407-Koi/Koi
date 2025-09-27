@@ -1,15 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
-import Template, { Content, Sidebar} from '../templates/template'
+import { createFileRoute } from "@tanstack/react-router";
+import Challenges from "../pages/challenges";
 
-export const Route = createFileRoute('/challenges')({
+export const Route = createFileRoute("/challenges")({
   component: Challenges,
-})
-
-function Challenges() {
-  return (
-    <Template>
-      <Content>Hello from Challenges!</Content>
-      <Sidebar>Sidebar content for challenges</Sidebar>
-    </Template>
-  );
-}
+});
