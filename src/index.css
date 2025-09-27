@@ -24,10 +24,8 @@
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 
-  @apply font-normal leading-1.5;
+  @apply font-normal leading-1.5 antialiased;
 }
 
 a {
