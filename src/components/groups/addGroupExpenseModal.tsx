@@ -4,24 +4,27 @@ interface AddGroupExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (expenseName: string) => void;
-  groupName: string;
+  groupName?: string;
+  allGroups: string[];
 }
 
-export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({ 
+export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({ 
   isOpen, 
   onClose, 
   onSave,
-  groupName
+  groupName = null,
+  allGroups
 }) => {
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState('00');
   const [expenseCents, setExpensecents] = useState('00');
+  const [group, setGroup] = useState(groupName);
 
   const [error, setError] = useState("");
 
   const handleSave = () => {
     if (!expenseName.trim()) {
-      setError("Group name is required");
+      setError("Expense name is required");
       return;
     }
 
@@ -111,7 +114,7 @@ export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({
                 if (error) setError(""); // Clear error when user types
               }}
               onKeyDown={handleKeyPress}
-              placeholder="Enter group name"
+              placeholder="Enter expense name"
               autoFocus
               style={{
                 width: "100%",
@@ -142,7 +145,7 @@ export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({
               Expense Amount
             </label>
             $<input
-              type="number"
+              type="text"
               value={expenseDollars}
               onChange={(e) => {
                 setExpenseDollars(e.target.value);
@@ -150,7 +153,6 @@ export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({
               }}
               onKeyDown={handleKeyPress}
               placeholder="00"
-              autoFocus
               style={{
                 width: "20%",
                 padding: "12px",
@@ -160,6 +162,7 @@ export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({
                 outline: "none",
                 transition: "border-color 0.2s",
                 boxSizing: "border-box",
+                textAlign: "right",
               }}
               onFocus={(e) => {
                 e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
@@ -169,7 +172,7 @@ export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({
               }}
             />.
             <input
-              type="number"
+              type="text"
               value={expenseCents}
               onChange={(e) => {
                 setExpensecents(e.target.value);
@@ -177,9 +180,9 @@ export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({
               }}
               onKeyDown={handleKeyPress}
               placeholder="00"
-              autoFocus
+              maxLength={2}
               style={{
-                width: "20%",
+                width: "calc(2em + 14px)",
                 padding: "12px",
                 border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
                 borderRadius: "8px",
@@ -239,26 +242,26 @@ export const AddGroupExpense: React.FC<AddGroupExpenseModalProps> = ({
             </button>
             <button
               onClick={handleSave}
-              disabled={!groupName.trim()}
+              // disabled={!groupName.trim()}
               style={{
                 padding: "10px 20px",
                 border: "none",
                 borderRadius: "6px",
-                backgroundColor: groupName.trim() ? "#3b82f6" : "#9ca3af",
+                // backgroundColor: groupName.trim() ? "#3b82f6" : "#9ca3af",
                 color: "white",
                 fontSize: "14px",
-                cursor: groupName.trim() ? "pointer" : "not-allowed",
+                // cursor: groupName.trim() ? "pointer" : "not-allowed",
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
-                if (groupName.trim()) {
-                  e.currentTarget.style.backgroundColor = "#2563eb";
-                }
+                // if (groupName.trim()) {
+                //   e.currentTarget.style.backgroundColor = "#2563eb";
+                // }
               }}
               onMouseLeave={(e) => {
-                if (groupName.trim()) {
-                  e.currentTarget.style.backgroundColor = "#3b82f6";
-                }
+                // if (groupName.trim()) {
+                //   e.currentTarget.style.backgroundColor = "#3b82f6";
+                // }
               }}
             >
               Create Expense
