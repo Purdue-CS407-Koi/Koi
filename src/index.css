@@ -4,14 +4,15 @@
   --color-background: rgba(245, 245, 245, 1);
   --color-card-background: rgba(255, 255, 255, 1);
 
-  --color-success: rgba(19, 177, 56, 1);
-
   /* From material v3 kit on Figma */
   --color-primary: rgba(103, 80, 164, 1);
   --color-primary-container: rgba(234, 221, 255, 1);
   --color-on-primary-container: rgba(79, 55, 138, 1);
   --color-surface-tint: rgba(103, 80, 164, 1);
   --color-error: rgba(179, 38, 30, 1);
+  --color-positive-default: rgba(2, 84, 45, 1);
+  --color-positive-secondary: rgba(0, 153, 81, 1);
+  --color-positive-tertiary: rgba(20, 174, 92, 1);
 }
 
 :root {
