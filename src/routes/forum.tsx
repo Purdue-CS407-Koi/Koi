@@ -1,15 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Template, { Content, Sidebar} from '../templates/template'
+import Forum from '../pages/Forum'
+
 
 export const Route = createFileRoute('/forum')({
   component: Forum,
 })
 
-function Forum() {
-  return (
-    <Template>
-      <Content>Hello from Forum!</Content>
-      <Sidebar>Sidebar content for forum</Sidebar>
-    </Template>
-  );
-}
