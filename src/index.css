@@ -17,7 +17,6 @@
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
 
   color-scheme: light dark;
   color: black;
@@ -28,7 +27,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @apply font-normal;
+  @apply font-normal leading-1.5;
 }
 
 a {
