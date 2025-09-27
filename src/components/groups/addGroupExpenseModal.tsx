@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "../../config/colors";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (expenseName: string) => void;
-  groupName?: string;
+  group?: any;
   allGroups: string[];
 }
 
@@ -12,13 +13,14 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   isOpen, 
   onClose, 
   onSave,
-  groupName = null,
+  group = null,
   allGroups
 }) => {
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState('00');
   const [expenseCents, setExpenseCents] = useState('00');
-  const [group, setGroup] = useState(groupName);
+  const [expenseDescription, setExpenseDescription] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState(group);
 
   const [error, setError] = useState("");
 
@@ -108,7 +110,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 color: "#111827",
               }}
             >
-              Create New Expense For {groupName}
+              Create New Group Expense
             </h3>
           </div>
 
@@ -159,6 +161,46 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 fontWeight: "500",
                 color: "#374151",
                 marginBottom: "8px",
+                marginTop: "12px",
+              }}
+            >
+              Expense Description
+            </label>
+            <input
+              type="text"
+              value={expenseDescription}
+              onChange={(e) => {
+                setExpenseDescription(e.target.value);
+                if (error) setError(""); // Clear error when user types
+              }}
+              onKeyDown={handleKeyPressText}
+              placeholder="Enter expense description"
+              autoFocus
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
+                borderRadius: "8px",
+                fontSize: "14px",
+                outline: "none",
+                transition: "border-color 0.2s",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
+              }}
+            />
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#374151",
+                marginBottom: "8px",
+                marginTop: "12px",
               }}
             >
               Expense Amount
@@ -173,7 +215,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
               onKeyDown={handleKeyPressNumber}
               placeholder="00"
               style={{
-                width: "20%",
+                width: "calc(4em + 14px)",
                 padding: "12px",
                 border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
                 borderRadius: "8px",
@@ -265,29 +307,31 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             </button>
             <button
               onClick={handleSave}
-              // disabled={!groupName.trim()}
+              disabled={!expenseName.trim()}
               style={{
                 padding: "10px 20px",
                 border: "none",
                 borderRadius: "6px",
-                // backgroundColor: groupName.trim() ? "#3b82f6" : "#9ca3af",
-                color: "white",
+                color: TEXT_COLOR,
                 fontSize: "14px",
-                // cursor: groupName.trim() ? "pointer" : "not-allowed",
+                cursor: expenseName.trim() ? "pointer" : "not-allowed",
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
-                // if (groupName.trim()) {
-                //   e.currentTarget.style.backgroundColor = "#2563eb";
-                // }
+                if (expenseName.trim()) {
+                  e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
+                  e.currentTarget.style.color = WHITE;
+                }
               }}
               onMouseLeave={(e) => {
-                // if (groupName.trim()) {
-                //   e.currentTarget.style.backgroundColor = "#3b82f6";
-                // }
+                if (expenseName.trim()) {
+                  e.currentTarget.style.backgroundColor = BUTTON_COLOR;
+                  e.currentTarget.style.color = TEXT_COLOR;
+
+                }
               }}
             >
-              Create Expense
+              Next
             </button>
           </div>
         </div>
