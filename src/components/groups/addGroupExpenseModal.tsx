@@ -17,10 +17,16 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 }) => {
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState('00');
-  const [expenseCents, setExpensecents] = useState('00');
+  const [expenseCents, setExpenseCents] = useState('00');
   const [group, setGroup] = useState(groupName);
 
   const [error, setError] = useState("");
+
+  const allowedKeys = [
+    "Backspace", "Delete", "ArrowLeft", "ArrowRight",
+    "ArrowUp", "ArrowDown", "Home", "End",
+    "PageUp", "PageDown", "Tab"
+  ];
 
   const handleSave = () => {
     if (!expenseName.trim()) {
@@ -38,12 +44,25 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     onClose();
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPressText = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSave();
     } else if (e.key === 'Escape') {
       handleClose();
     }
+  };
+
+  // Don't allow non-numeric input
+  const handleKeyPressNumber = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSave();
+    } else if (e.key === 'Escape') {
+      handleClose();
+    } 
+    if (e.ctrlKey || e.metaKey) return;
+
+    if (!/[0-9]/.test(e.key) && !allowedKeys.includes(e.key)) 
+      e.preventDefault();
   };
 
   if (!isOpen) return null;
@@ -113,7 +132,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 setExpenseName(e.target.value);
                 if (error) setError(""); // Clear error when user types
               }}
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleKeyPressText}
               placeholder="Enter expense name"
               autoFocus
               style={{
@@ -151,7 +170,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 setExpenseDollars(e.target.value);
                 if (error) setError(""); // Clear error when user types
               }}
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleKeyPressNumber}
               placeholder="00"
               style={{
                 width: "20%",
@@ -170,15 +189,17 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
               onBlur={(e) => {
                 e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
               }}
+              inputMode="numeric"
+              pattern="[0-9]*"
             />.
             <input
               type="text"
               value={expenseCents}
               onChange={(e) => {
-                setExpensecents(e.target.value);
+                setExpenseCents(e.target.value);
                 if (error) setError(""); // Clear error when user types
               }}
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleKeyPressNumber}
               placeholder="00"
               maxLength={2}
               style={{
@@ -197,6 +218,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
               onBlur={(e) => {
                 e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
               }}
+              inputMode="numeric"
+              pattern="[0-9]*"
             />
             {error && (
               <p
