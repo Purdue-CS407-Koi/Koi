@@ -54,7 +54,7 @@ const Index = () => {
           <button onClick={handleTestAddNewExpense}>
             Test adding new expense
           </button>
-          <div className="m-5 bg-white p-5 rounded-lg">
+          <div className="m-5 bg-white p-5 rounded-lg flex flex-col gap-4">
             <p>Expenses</p>
             <ExpenseTable />
           </div>
