@@ -37,9 +37,6 @@ a:hover {
 }
 
 body {
-  min-width: 320px;
-  min-height: 100vh;
-
   @apply m-0 flex place-items-center justify-center items-center;
 }
 
