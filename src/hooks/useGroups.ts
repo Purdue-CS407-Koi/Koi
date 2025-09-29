@@ -1,36 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
-import { useGroupStore } from "../stores/useGroupStore";
+import { useUserStore } from "../stores/useUserStore";
 import supabase from "../helpers/supabase";
 
-const fetchGroup = async (id: string) => {
+const fetchGroups = async (user_id: string) => {
   const { data, error } = await supabase
     .from("Groups")
-    .select()
-    .eq("id", id);
+    .select("id, name, created_at, GroupMemberships!inner(user_id)")
+    .eq("GroupMemberships.user_id", user_id);
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
+  
+  const groups = (data ?? []).map(({ id, name, created_at }) => ({
+    id,
+    name,
+    created_at,
+  }));
 
-  if (data.length <= 0 || data.length > 1) {
-    throw Error("ID does not exist or is not unique");
-  }
-
-  return data[0];
+  return groups;
 };
 
 const useGroups = () => {
-  const currentGroupId = useGroupStore((state) => state.currentGroupId);
+  const currentUserId = useUserStore((state) => state.currentUserId);
   const {
-    data: groupData,
+    data: groupsData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["group", currentGroupId], // Zustand state as part of key
-    queryFn: () => fetchGroup(currentGroupId),
+    queryKey: ["groups", currentUserId], // Zustand state as part of key
+    queryFn: () => fetchGroups(currentUserId),
   });
 
-  return { groupData, isLoading, error };
+  return { groupsData, isLoading, error };
 };
 
 export default useGroups;

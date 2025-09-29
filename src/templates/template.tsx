@@ -5,7 +5,7 @@ import logo from "../assets/logo.png";
 import {
   MAIN_CONTENT_BACKGROUND,
   SIDE_PANEL_BACKGROUND,
-  TEXT_COLOR,
+  BLACK
 } from "../config/colors";
 import "./template.css";
 
@@ -57,7 +57,6 @@ export default function Template({ children }: LayoutProps) {
         >
           <div
             style={{
-
               flex: 4,
             }}
           >
@@ -69,13 +68,13 @@ export default function Template({ children }: LayoutProps) {
                   gap: "10px",
                 }}
               >
-                <img src={logo} alt="Koi Logo" className="inline h-6 w-6" />
+                <img src={logo} alt="Koi Logo" className="inline h-11 w-11" />
                 <text
                   style={{
                     fontSize: "45px",
                     fontWeight: "bold",
                     verticalAlign: "middle",
-                    color: TEXT_COLOR,
+                    color: BLACK,
                   }}
                 >
                   Koi
