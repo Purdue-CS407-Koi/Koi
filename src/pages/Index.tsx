@@ -1,9 +1,12 @@
-import { Dashboard } from "../pages/dashboard";
 import Template, { Content, Sidebar } from "../templates/template";
 import { BucketsList } from "../components/dashboard/bucketsList";
 import { useState } from "react";
 import type Bucket from "../interfaces/Bucket";
 import { RecurrencePeriodType } from "../interfaces/Bucket";
+import { ExpenseTable } from "../components/dashboard/expenseTable";
+import useExpenses from "../hooks/useExpenses";
+import type { NewExpense } from "../interfaces/Expense";
+import { useBucketsStore } from "../stores/useBucketsStore";
 
 const Index = () => {
   // TODO: change to fetch from DB
@@ -26,10 +29,48 @@ const Index = () => {
     console.log("Add new bucket");
   };
 
+  const currentBucketInstanceId = useBucketsStore(
+    (state) => state.currentBucketInstanceId
+  );
+
+  const { insertNewExpense } = useExpenses();
+
+  const handleTestAddNewExpense = () => {
+    const newExpense: NewExpense = {
+      amount: 100,
+      description: "Rent for September",
+      name: "Apartment rent",
+      bucket_instance_id: currentBucketInstanceId,
+    };
+    insertNewExpense(newExpense);
+  };
+
   return (
     <Template>
       <Content>
-        <Dashboard />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            padding: 10,
+            justifyItems: "space-between",
+          }}
+        >
+          <button onClick={handleTestAddNewExpense}>
+            Test adding new expense
+          </button>
+          <div
+            style={{
+              margin: 20,
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+            }}
+          >
+            <p>Expenses</p>
+            <ExpenseTable />
+          </div>
+        </div>
       </Content>
       <Sidebar>
         <BucketsList buckets={buckets} onAddBucket={handleAddBucket} />
