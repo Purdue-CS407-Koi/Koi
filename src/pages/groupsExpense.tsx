@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { MembersList } from "../components/groups/membersList";
 import { AddGroupExpenseModal } from "../components/groups/addGroupExpenseModal";
+import { useGroupStore } from "../stores/useGroupStore";
 
 export const GroupsExpense = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const currentGroupId = useGroupStore(
+    (state) => state.currentGroupId
+  );
+
   const handleAddGroupExpense = (expenseName: string) => {
-    console.log("temp");
+    console.log("expense added to group:", expenseName);
     setIsModalOpen(false);
   };
 
@@ -17,9 +22,6 @@ export const GroupsExpense = () => {
     { id: "3", name: "Madison" },
     { id: "4", name: "Mich" },
   ]);
-  const handleAddExpense = () => {
-    console.log("Add new expense");
-  };
 
   return (
     <div
