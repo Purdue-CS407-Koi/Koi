@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "../../config/colors";
+import { TEXT_EDITING } from "../../config/keyboardEvents";
+import { Dropdown } from "../general/dropdown";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
@@ -22,14 +24,18 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   const [expenseDescription, setExpenseDescription] = useState("");
   const [page, setPage] = useState(1);
   const [selectedGroup, setSelectedGroup] = useState(group);
+  const [members, setMembers] = useState<{name: string, id: string}[]>([]);
+  const [individualAmounts, setIndividualAmounts] = useState<{ [key: string]: string }>({});
 
   const [error, setError] = useState("");
 
-  const allowedKeys = [
-    "Backspace", "Delete", "ArrowLeft", "ArrowRight",
-    "ArrowUp", "ArrowDown", "Home", "End",
-    "PageUp", "PageDown", "Tab"
-  ];
+  const resetToDefault = () => {
+    setExpenseName("");
+    setExpenseDollars('00');
+    setExpenseCents('00');
+    setPage(1);
+    setSelectedGroup(group);
+  }
 
   const handleSave = () => {
     if (!expenseName.trim()) {
@@ -44,8 +50,15 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     handleClose();
   };
 
+  const handleEvenSplit = () => {
+    const dollars = Number(expenseDollars);
+    const cents = Number(expenseCents);
+    const totalCents = dollars * 100 + cents;
+    const numPeople = selectedGroup ? 1 : allGroups.length;
+  }
+
   const handleClose = () => {
-    setExpenseName("");
+    resetToDefault();
     setError("");
     onClose();
   };
@@ -67,7 +80,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     } 
     if (e.ctrlKey || e.metaKey) return;
 
-    if (!/[0-9]/.test(e.key) && !allowedKeys.includes(e.key)) 
+    if (!/[0-9]/.test(e.key) && !TEXT_EDITING.includes(e.key)) 
       e.preventDefault();
   };
 
@@ -158,6 +171,23 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 onBlur={(e) => {
                   e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
                 }}
+              />
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#374151",
+                  marginBottom: "8px",
+                  marginTop: "12px",
+                }}
+              >
+                Select Group
+              </label>
+              <Dropdown
+                options={allGroups}
+                selectedOption={selectedGroup}
+                setSelectedOption={setSelectedGroup}
               />
               <label
                 style={{
@@ -317,7 +347,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   padding: "10px 20px",
                   border: "none",
                   borderRadius: "6px",
-                  color: TEXT_COLOR,
+                  color: TEXT_COLOR,  
                   fontSize: "14px",
                   cursor: expenseName.trim() ? "pointer" : "not-allowed",
                   transition: "all 0.2s",
