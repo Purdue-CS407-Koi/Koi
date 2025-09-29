@@ -113,7 +113,6 @@ export const GroupsExpense = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             onSave={handleAddGroupExpense}
-            allGroups={["Roommates", "Trip to Japan", "Family"]}
           />
         </div>
       </div>

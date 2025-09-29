@@ -6,6 +6,6 @@ interface UserStore {
 }
 
 export const useUserStore = create<UserStore>((set) => ({
-  currentUserId: "b20764ba-7271-43dd-908c-f8eba7d674de",
+  currentUserId: "caa1f7f9-5d65-44ec-8be4-4a3c8a656bd6",
   setCurrentUserId: (userId) => set({ currentUserId: userId }),
 }));

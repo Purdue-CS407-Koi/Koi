@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "../../config/colors";
+import { BLACK, BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "../../config/colors";
 import { TEXT_EDITING } from "../../config/keyboardEvents";
 import { Dropdown } from "../general/dropdown";
+import useGroups from "../../hooks/useGroups"
+
+import { useUserStore } from "../../stores/useUserStore";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (expenseName: string) => void;
   group?: any;
-  allGroups: string[];
 }
 
 export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({ 
@@ -16,25 +18,43 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   onClose, 
   onSave,
   group = null,
-  allGroups
 }) => {
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState('00');
   const [expenseCents, setExpenseCents] = useState('00');
   const [expenseDescription, setExpenseDescription] = useState("");
-  const [page, setPage] = useState(1);
   const [selectedGroup, setSelectedGroup] = useState(group);
   const [members, setMembers] = useState<{name: string, id: string}[]>([]);
-  const [individualAmounts, setIndividualAmounts] = useState<{ [key: string]: string }>({});
+  const [payers, setPayers] = useState<{name: string, id: string}[]>([]);
+  const [individualAmounts, setIndividualAmounts] = useState<{ [key: string]: {dollars: string, cents: string} }>({});
+  const [excessCents, setExcessCents] = useState(0);
+  const { groupsData: groups } = useGroups();
+  
+  const [page, setPage] = useState(1);
+  const [splitting, setSplitting] = useState(true);
 
   const [error, setError] = useState("");
+
+  const currentUserId = useUserStore((state) => state.currentUserId);
+
+  console.log(currentUserId);
 
   const resetToDefault = () => {
     setExpenseName("");
     setExpenseDollars('00');
     setExpenseCents('00');
     setPage(1);
+    setSplitting(true)
     setSelectedGroup(group);
+  }
+
+  const handleNext = () => {
+    if (!expenseName.trim() || !selectedGroup) {
+      setError("Expense name is required");
+      return;
+    }
+    setPage(2);
+    return;
   }
 
   const handleSave = () => {
@@ -42,19 +62,29 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       setError("Expense name is required");
       return;
     }
-    if (page === 1) {
-      setPage(2);
-      return;
-    }
     onSave(expenseName.trim());
     handleClose();
   };
+
+  const handleMode = () => {
+    setSplitting(!splitting);
+  }
 
   const handleEvenSplit = () => {
     const dollars = Number(expenseDollars);
     const cents = Number(expenseCents);
     const totalCents = dollars * 100 + cents;
-    const numPeople = selectedGroup ? 1 : allGroups.length;
+    const numPeople = payers.length || 1;
+    const split = Math.floor(totalCents / numPeople);
+    const splitDollars = Math.floor(split / 100);
+    const splitCents = split % 100;
+    setExcessCents(totalCents - split * numPeople);
+    const newAmounts: { [key: string]: {dollars: string, cents: string} } = {};
+    payers.forEach((payer) => {
+      newAmounts[payer.id] = {dollars: splitDollars.toString(), cents: ((excessCents) > 0 ? (splitCents + 1) : splitCents).toString().padEnd(2, '0')};
+      setExcessCents(excessCents - 1);
+    });
+    setIndividualAmounts(newAmounts);
   }
 
   const handleClose = () => {
@@ -62,6 +92,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     setError("");
     onClose();
   };
+
+  const handleBack = () => {
+    setPage(1);
+    setError("");
+  }
 
   const handleKeyPressText = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -184,11 +219,34 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
               >
                 Select Group
               </label>
-              <Dropdown
-                options={allGroups}
-                selectedOption={selectedGroup}
-                setSelectedOption={setSelectedGroup}
-              />
+              <select
+                value={selectedGroup ?? ""}
+                onChange={(e) =>
+                  setSelectedGroup(e.target.value === "" ? null : e.target.value)
+                }
+                style={{
+                  padding: "12px",
+                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  outline: "none",
+                  transition: "border-color 0.2s",
+                  boxSizing: "border-box",
+                  textAlign: "center",
+                  color: selectedGroup ? BLACK : TEXT_COLOR,
+                }}
+              >
+                {/* Placeholder */}
+                <option value="" disabled hidden>
+                  Select a Group
+                </option>
+
+                {groups?.map((group: {id: string, name: string, created_at: string}) => (
+                  <option key={group.id} value={group.id}>
+                    {group.name}
+                  </option>
+                ))}
+              </select>
               <label
                 style={{
                   display: "block",
@@ -227,76 +285,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 onBlur={(e) => {
                   e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
                 }}
-              />
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "8px",
-                  marginTop: "12px",
-                }}
-              >
-                Expense Amount
-              </label>
-              $<input
-                type="text"
-                value={expenseDollars}
-                onChange={(e) => {
-                  setExpenseDollars(e.target.value);
-                  if (error) setError(""); // Clear error when user types
-                }}
-                onKeyDown={handleKeyPressNumber}
-                placeholder="00"
-                style={{
-                  width: "calc(4em + 14px)",
-                  padding: "12px",
-                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  boxSizing: "border-box",
-                  textAlign: "right",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
-                }}
-                inputMode="numeric"
-                pattern="[0-9]*"
-              />.
-              <input
-                type="text"
-                value={expenseCents}
-                onChange={(e) => {
-                  setExpenseCents(e.target.value);
-                  if (error) setError(""); // Clear error when user types
-                }}
-                onKeyDown={handleKeyPressNumber}
-                placeholder="00"
-                maxLength={2}
-                style={{
-                  width: "calc(2em + 14px)",
-                  padding: "12px",
-                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
-                }}
-                inputMode="numeric"
-                pattern="[0-9]*"
               />
               {error && (
                 <p
@@ -341,25 +329,25 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 Cancel
               </button>
               <button
-                onClick={handleSave}
-                disabled={!expenseName.trim()}
+                onClick={handleNext}
+                disabled={!expenseName.trim() || !selectedGroup}
                 style={{
                   padding: "10px 20px",
                   border: "none",
                   borderRadius: "6px",
                   color: TEXT_COLOR,  
                   fontSize: "14px",
-                  cursor: expenseName.trim() ? "pointer" : "not-allowed",
+                  cursor: expenseName.trim() && selectedGroup? "pointer" : "not-allowed",
                   transition: "all 0.2s",
                 }}
                 onMouseEnter={(e) => {
-                  if (expenseName.trim()) {
+                  if (expenseName.trim() && selectedGroup) {
                     e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
                     e.currentTarget.style.color = WHITE;
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (expenseName.trim()) {
+                  if (expenseName.trim() && selectedGroup) {
                     e.currentTarget.style.backgroundColor = BUTTON_COLOR;
                     e.currentTarget.style.color = TEXT_COLOR;
                   }
@@ -376,6 +364,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     return (
       <>
         {/* Backdrop */}
+        
         <div
           style={{
             position: "fixed",
@@ -417,86 +406,49 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 Create New Group Expense
               </h3>
             </div>
-
+            <div>
+              <button
+                onClick={handleMode}
+                style={{
+                  padding: "10px 20px",
+                  border: "1px solid #d1d5db",
+                  borderTopLeftRadius: "6px",
+                  borderBottomLeftRadius: "6px",
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                  backgroundColor: splitting ? BUTTON_COLOR : WHITE,
+                  color: TEXT_COLOR,
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  width: "50%",
+                }}
+              >
+                Split Evenly
+              </button>
+              <button
+                onClick={handleMode}
+                disabled={!expenseName.trim() || !selectedGroup}
+                style={{
+                  padding: "10px 20px",
+                  border: "1px solid #d1d5db",
+                  borderTopLeftRadius: 0,
+                  borderBottomLeftRadius: 0,
+                  borderTopRightRadius: "6px",
+                  borderBottomRightRadius: "6px",
+                  backgroundColor: !splitting ? BUTTON_COLOR: WHITE,
+                  color: TEXT_COLOR,  
+                  fontSize: "14px",
+                  cursor: expenseName.trim() && selectedGroup? "pointer" : "not-allowed",
+                  transition: "all 0.2s",
+                  width: "50%",
+                }}
+              >
+                Custom Amounts
+              </button>
+            </div>
             {/* Input */}
             <div style={{ marginBottom: "20px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "8px",
-                }}
-              >
-                Expense Name
-              </label>
-              <input
-                type="text"
-                value={expenseName}
-                onChange={(e) => {
-                  setExpenseName(e.target.value);
-                  if (error) setError(""); // Clear error when user types
-                }}
-                onKeyDown={handleKeyPressText}
-                placeholder="Enter expense name"
-                autoFocus
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
-                }}
-              />
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "8px",
-                  marginTop: "12px",
-                }}
-              >
-                Expense Description
-              </label>
-              <input
-                type="text"
-                value={expenseDescription}
-                onChange={(e) => {
-                  setExpenseDescription(e.target.value);
-                  if (error) setError(""); // Clear error when user types
-                }}
-                onKeyDown={handleKeyPressText}
-                placeholder="Enter expense description"
-                autoFocus
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
-                }}
-              />
               <label
                 style={{
                   display: "block",
@@ -519,8 +471,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 onKeyDown={handleKeyPressNumber}
                 placeholder="00"
                 style={{
-                  width: "calc(4em + 14px)",
-                  padding: "12px",
+                  width: "calc(4em + 8px)",
+                  padding: "6px",
                   border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
                   borderRadius: "8px",
                   fontSize: "14px",
@@ -549,8 +501,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 placeholder="00"
                 maxLength={2}
                 style={{
-                  width: "calc(2em + 14px)",
-                  padding: "12px",
+                  width: "calc(4em + 8px)",
+                  padding: "6px",
                   border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
                   borderRadius: "8px",
                   fontSize: "14px",
@@ -589,7 +541,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
               }}
             >
               <button
-                onClick={handleClose}
+                onClick={handleBack}
                 style={{
                   padding: "10px 20px",
                   border: "1px solid #d1d5db",
@@ -607,7 +559,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   e.currentTarget.style.backgroundColor = "white";
                 }}
               >
-                Cancel
+                Back
               </button>
               <button
                 onClick={handleSave}
@@ -631,7 +583,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   if (expenseName.trim()) {
                     e.currentTarget.style.backgroundColor = BUTTON_COLOR;
                     e.currentTarget.style.color = TEXT_COLOR;
-
                   }
                 }}
               >
