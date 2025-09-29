@@ -79,7 +79,7 @@ export const ExpenseTable = () => {
   };
 
   return (
-    <div style={{ height: 520 }}>
+    <div className="h-96">
       <AgGridReact
         rowData={rowData}
         columnDefs={colDefs}
