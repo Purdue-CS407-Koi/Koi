@@ -7,8 +7,8 @@ import { useAuthStore } from "../stores/useAuthStore";
 const RootLayout = () => {
   const { user } = useAuthStore();
   const path = useRouterState().location.pathname.toLowerCase();
-  if (!user && path !== "/signin" && path !== "/signup") {
-    return <Navigate to="/signin" replace />;
+  if (!user && path !== "/signIn" && path !== "/signUp") {
+    return <Navigate to="/signIn" replace />;
   }
 
   return (
