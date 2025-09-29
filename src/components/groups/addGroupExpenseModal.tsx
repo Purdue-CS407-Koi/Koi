@@ -8,11 +8,12 @@ import useSplit from "../../hooks/useSplit";
 
 import { MinusIcon } from "../general/minusIcon";
 import { PlusIcon } from "../general/plusIcon";
+import type { NewExpense } from "../../interfaces/Expense";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (expenseName: string) => void;
+  onSave: (expense: NewExpense) => void;
   group?: any;
 }
 
@@ -69,30 +70,41 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   }
 
   const handleSave = () => {
-    const expense_id = crypto.randomUUID();
-    insertNewSplit();
-    const expense = {
-      // amount: number;
-      // description: string;
-      // name: string;
-      // bucket_instance_id: string;
-      // settle_split_id?: string;
-      // challenge_id?: string;
-      // user_id?: string;
-    };
+    const name = expenseName;
+    const user_id = currentUserId;
+    const description = expenseDescription;
     if (splitting) {
-      const amount = Number(expenseDollars) + (Number(expenseCents) / 100).toFixed(2);
-      const name = expenseName;
-      const user_id = currentUserId;
-
+      const amount = Number(expenseDollars) + (Number(expenseCents) / 100);
+      const expense = {
+        amount,
+        description,
+        name,
+        user_id,
+      };
+      onSave(expense);
     } else {
+        let totalCents = 0;
 
+        Object.values(individualAmounts).forEach(({ dollars, cents }) => {
+          const d = parseInt(dollars || "0", 10);
+          const c = parseInt(cents || "0", 10);
+          totalCents += d * 100 + c;
+        });
+
+        const amount = Math.floor(totalCents / 100) + totalCents % 100;
+        const expense = {
+          amount,
+          description,
+          name,
+          user_id
+        };
+        onSave(expense)
     }
+  
     if (!expenseName.trim()) {
       setError("Expense name is required");
       return;
     }
-    onSave(expenseName.trim());
     handleClose();
   };
 
