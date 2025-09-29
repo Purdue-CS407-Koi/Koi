@@ -5,7 +5,6 @@ import logo from "../assets/logo.png";
 import {
   MAIN_CONTENT_BACKGROUND,
   SIDE_PANEL_BACKGROUND,
-  BLACK
 } from "../config/colors";
 import "./template.css";
 
@@ -35,15 +34,12 @@ export default function Template({ children }: LayoutProps) {
   // todo add tailwind styles and fix layout
   return (
     <div
+      className="flex w-full h-full box-border"
       style={{
         backgroundColor: MAIN_CONTENT_BACKGROUND,
-        display: "flex",
-        width: "100vw",
-        height: "100vh",
-        boxSizing: "border-box",
       }}
     >
-      <div style={{ flex: 5 }}>
+      <div className="flex-5">
         <div
           style={{
             display: "flex",
@@ -55,26 +51,17 @@ export default function Template({ children }: LayoutProps) {
             justifyContent: "center",
           }}
         >
-          <div
-            style={{
-              flex: 4,
-            }}
-          >
+          <div className="flex-4">
             <Link to="/" className="[&.active]:font-bold">
-              <div
+              <div className="items-center flex"
                 style={{
-                  alignItems: "center",
-                  display: "flex",
                   gap: "10px",
                 }}
               >
                 <img src={logo} alt="Koi Logo" className="inline h-11 w-11" />
-                <text
+                <text className="font-bold align-middle text-black"
                   style={{
                     fontSize: "45px",
-                    fontWeight: "bold",
-                    verticalAlign: "middle",
-                    color: BLACK,
                   }}
                 >
                   Koi
@@ -83,11 +70,9 @@ export default function Template({ children }: LayoutProps) {
             </Link>
           </div>
           <div
+            className="flex flex-6 justify-center"
             style={{
-              display: "flex",
-              flex: 6,
               gap: "3vw",
-              justifyContent: "center",
             }}
           >
             <Link to="/" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
