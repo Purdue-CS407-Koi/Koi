@@ -5,7 +5,6 @@ import {
   MAIN_CONTENT_BACKGROUND,
   SIDE_PANEL_BACKGROUND,
 } from "../config/colors";
-import "./template.css";
 import Navbar from "../components/template/Navbar";
 
 export function Content({ children }: PropsWithChildren) {
