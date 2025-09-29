@@ -1,12 +1,12 @@
 import type { ReactNode, PropsWithChildren } from "react";
 import React from "react";
-import { Link } from "@tanstack/react-router";
-import logo from "../assets/logo.png";
+
 import {
   MAIN_CONTENT_BACKGROUND,
   SIDE_PANEL_BACKGROUND,
 } from "../config/colors";
 import "./template.css";
+import Navbar from "../components/template/Navbar";
 
 export function Content({ children }: PropsWithChildren) {
   return <>{children}</>;
@@ -40,35 +40,13 @@ export default function Template({ children }: LayoutProps) {
       }}
     >
       <div className="flex-5">
-        <div className="flex items-center font-bold justify-between p-4 mx-8 text-lg">
-          <div>
-            <Link to="/" className="[&.active]:font-bold">
-              <div className="items-center flex gap-4">
-                <img src={logo} alt="Koi Logo" className="inline h-11 w-11" />
-                <text className="font-bold align-middle text-black text-5xl">
-                  Koi
-                </text>
-              </div>
-            </Link>
-          </div>
-          <div className="flex justify-center gap-12">
-            <Link to="/" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
-              Dashboard
-            </Link>
-            <Link to="/groups" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
-              Groups
-            </Link>
-            <Link to="/challenges" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
-              Challenges
-            </Link>
-            <Link to="/forum" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
-              Forum
-            </Link>
-          </div>
-        </div>
+        <Navbar />
         <div>{content}</div>
       </div>
-      <div className="flex-2" style={{ backgroundColor: SIDE_PANEL_BACKGROUND }}>
+      <div
+        className="flex-2"
+        style={{ backgroundColor: SIDE_PANEL_BACKGROUND }}
+      >
         {sidebar}
       </div>
     </div>
