@@ -5,4 +5,5 @@ export interface NewExpense {
   bucket_instance_id: string;
   settle_split_id?: string;
   challenge_id?: string;
+  user_id?: string;
 }
