@@ -50,25 +50,11 @@ const Index = () => {
   return (
     <Template>
       <Content>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            padding: 10,
-            justifyItems: "space-between",
-          }}
-        >
+        <div className="flex flex-col p-5 justify-between">
           <button onClick={handleTestAddNewExpense}>
             Test adding new expense
           </button>
-          <div
-            style={{
-              margin: 20,
-              backgroundColor: "white",
-              padding: 20,
-              borderRadius: 10,
-            }}
-          >
+          <div className="m-5 bg-white p-5 rounded-lg">
             <p>Expenses</p>
             <ExpenseTable />
           </div>
