@@ -1,4 +1,4 @@
-import Template, { Content, Sidebar } from "../templates/template";
+import Template, { Content, Sidebar } from "@/templates/template";
 
 const Forum = () => {
   return (

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { useGroupStore } from "../stores/useGroupStore";
-import supabase from "../helpers/supabase";
+
+import { useGroupStore } from "@/stores/useGroupStore";
+import supabase from "@/helpers/supabase";
 
 const fetchGroup = async (id: string) => {
   const { data, error } = await supabase

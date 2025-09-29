@@ -1,12 +1,14 @@
-import Template, { Content, Sidebar } from "../templates/template";
-import { BucketsList } from "../components/dashboard/bucketsList";
 import { useState } from "react";
-import type Bucket from "../interfaces/Bucket";
-import { RecurrencePeriodType } from "../interfaces/Bucket";
-import { ExpenseTable } from "../components/dashboard/expenseTable";
-import useExpenses from "../hooks/useExpenses";
-import type { NewExpense } from "../interfaces/Expense";
-import { useBucketsStore } from "../stores/useBucketsStore";
+
+import Template, { Content, Sidebar } from "@/templates/template";
+
+import type Bucket from "@/interfaces/Bucket";
+import type { NewExpense } from "@/interfaces/Expense";
+import { RecurrencePeriodType } from "@/interfaces/Bucket";
+import { ExpenseTable } from "@/components/dashboard/expenseTable";
+import { BucketsList } from "@/components/dashboard/bucketsList";
+import useExpenses from "@/hooks/useExpenses";
+import { useBucketsStore } from "@/stores/useBucketsStore";
 
 const Index = () => {
   // TODO: change to fetch from DB

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import type { NewExpense } from "../interfaces/Expense";
-import { insertNewExpense as insertNewExpenseApi } from "../api/expenses";
+
+import type { NewExpense } from "@/interfaces/Expense";
+import { insertNewExpense as insertNewExpenseApi } from "@/api/expenses";
 
 const useExpenses = () => {
   const mutation = useMutation({

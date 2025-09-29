@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { useChallengeStore } from "../stores/useChallengeStore";
-import supabase from "../helpers/supabase";
+
+import { useChallengeStore } from "@/stores/useChallengeStore";
+import supabase from "@/helpers/supabase";
 
 const fetchChallenge = async (id: string) => {
   const { data, error } = await supabase

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSplitStore } from "../stores/useSplitStore";
-import supabase from "../helpers/supabase";
+
+import { useSplitStore } from "@/stores/useSplitStore";
+import supabase from "@/helpers/supabase";
 
 const fetchSplit = async (id: string) => {
   const { data, error } = await supabase

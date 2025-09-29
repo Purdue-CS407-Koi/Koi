@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import type { NewSplit } from "../interfaces/Split";
-import { insertNewSplit as insertNewSplitApi } from "../api/split";
+
+import type { NewSplit } from "@/interfaces/Split";
+import { insertNewSplit as insertNewSplitApi } from "@/api/split";
 
 const useSplit = () => {
   const mutation = useMutation({

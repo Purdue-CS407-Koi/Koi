@@ -1,5 +1,5 @@
-import supabase from "../helpers/supabase";
-import type { NewSplit } from "../interfaces/Split";
+import supabase from "@/helpers/supabase";
+import type { NewSplit } from "@/interfaces/Split";
 
 export async function insertNewSplit({
   original_expense_id,

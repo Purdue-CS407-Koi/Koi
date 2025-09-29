@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-import Template, { Content, Sidebar } from "../templates/template";
-import { GroupsList } from "../components/groups/groupsList";
-import { MembersList } from "../components/groups/membersList";
-import { AddGroupExpenseModal } from "../components/groups/addGroupExpenseModal";
-import type { NewExpense } from "../interfaces/Expense";
-import { insertNewExpense } from "../api/expenses";
+import Template, { Content, Sidebar } from "@/templates/template";
+import { GroupsList } from "@/components/groups/groupsList";
+import { MembersList } from "@/components/groups/membersList";
+import { AddGroupExpenseModal } from "@/components/groups/addGroupExpenseModal";
+import type { NewExpense } from "@/interfaces/Expense";
+import { insertNewExpense } from "@/api/expenses";
 
 // TODO: change to fetch from DB
 interface Group {

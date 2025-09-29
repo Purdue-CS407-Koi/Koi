@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { useUserStore } from "../stores/useUserStore";
-import supabase from "../helpers/supabase";
+
+import { useUserStore } from "@/stores/useUserStore";
+import supabase from "@/helpers/supabase";
 
 const fetchGroups = async (user_id: string) => {
   const { data, error } = await supabase

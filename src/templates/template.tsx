@@ -4,8 +4,8 @@ import React from "react";
 import {
   MAIN_CONTENT_BACKGROUND,
   SIDE_PANEL_BACKGROUND,
-} from "../config/colors";
-import Navbar from "../components/template/Navbar";
+} from "@/config/colors";
+import Navbar from "@/components/template/Navbar";
 
 export function Content({ children }: PropsWithChildren) {
   return <>{children}</>;

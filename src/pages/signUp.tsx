@@ -1,9 +1,10 @@
 // import { useState } from "react";
 // import { Link, useNavigate } from "@tanstack/react-router";
-// import { AuthInput } from "../components/sign_in/authInput";
-// import logo from "../assets/logo.png";
-// import { insertUserProfile } from "../api/users";
-// import supabase from "../helpers/supabase";
+
+// import { AuthInput } from "@/components/sign_in/authInput";
+// import logo from "@/assets/logo.png";
+// import { insertUserProfile } from "@/api/users";
+// import supabase from "@/helpers/supabase";
 
 // export const SignUpPage = () => {
 //   const [fullName, setFullName] = useState("");
@@ -150,10 +151,11 @@
 // };
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { AuthInput } from "../components/sign_in/authInput";
-import logo from "../assets/logo.png";
-import { insertUserProfile } from "../api/users";
-import supabase from "../helpers/supabase";
+
+import { AuthInput } from "@/components/sign_in/authInput";
+import logo from "@/assets/logo.png";
+import { insertUserProfile } from "@/api/users";
+import supabase from "@/helpers/supabase";
 
 export const SignUpPage = () => {
   const [fullName, setFullName] = useState("");

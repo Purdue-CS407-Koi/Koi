@@ -1,4 +1,4 @@
-import { useBucketsStore } from "../stores/useBucketsStore";
+import { useBucketsStore } from "@/stores/useBucketsStore";
 
 export const useBuckets = () => {
   const setCurrentBucketMetadataId = useBucketsStore(

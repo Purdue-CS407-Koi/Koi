@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useAuthStore } from "../stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
-import { AuthInput } from "../components/sign_in/authInput";
-import logo from "../assets/logo.png";
-import supabase from "../helpers/supabase";
+
+import { useAuthStore } from "@/stores/useAuthStore";
+import { AuthInput } from "@/components/sign_in/authInput";
+import logo from "@/assets/logo.png";
+import supabase from "@/helpers/supabase";
 
 export const SignInPage = () => {
   const setUser = useAuthStore((state) => state.setUser);

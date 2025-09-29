@@ -1,5 +1,5 @@
-import supabase from "../helpers/supabase";
-import type { NewExpense } from "../interfaces/Expense";
+import supabase from "@/helpers/supabase";
+import type { NewExpense } from "@/interfaces/Expense";
 
 export async function insertNewExpense({
   amount,

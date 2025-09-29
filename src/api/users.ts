@@ -1,4 +1,4 @@
-import supabase from "../helpers/supabase";
+import supabase from "@/helpers/supabase";
 
 export interface UserProfile {
   id: string;
