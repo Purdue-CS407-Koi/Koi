@@ -30,7 +30,7 @@ export const BucketsList: React.FC<BucketsListProps> = ({
 
   return (
     <>
-      <div className="p-8">
+      <div>
         <h3 className="text-lg font-semibold mb-4 text-sidebar-title">
           Buckets
         </h3>

@@ -43,7 +43,7 @@ export default function Template({ children }: LayoutProps) {
         <div>{content}</div>
       </div>
       <div
-        className="flex-2"
+        className="flex-2 p-8"
         style={{ backgroundColor: SIDE_PANEL_BACKGROUND }}
       >
         {sidebar}
