@@ -26,6 +26,10 @@
   @apply font-normal leading-1.5 antialiased text-black scheme-light-dark;
 }
 
+#root {
+  @apply w-full;
+}
+
 a {
   color: #646cff;
   text-decoration: inherit;
