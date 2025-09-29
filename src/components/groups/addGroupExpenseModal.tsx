@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
+
+// constants 
 import { BLACK, BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "../../config/colors";
 import { TEXT_EDITING } from "../../config/keyboardEvents";
+
+// hooks
 import useGroups from "../../hooks/useGroups"
 import { useUserStore } from "../../stores/useUserStore";
 import useGroupMembers from "../../hooks/useGroupMembers";
 import useSplit from "../../hooks/useSplit";
 
+// components
 import { MinusIcon } from "../general/minusIcon";
 import { PlusIcon } from "../general/plusIcon";
+
+//types
 import type { NewExpense } from "../../interfaces/Expense";
 
 interface AddGroupExpenseModalProps {
