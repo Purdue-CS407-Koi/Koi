@@ -31,48 +31,23 @@ export const BucketsList: React.FC<BucketsListProps> = ({
   return (
     <>
       <div>
-        <h3
-          style={{
-            fontSize: "18px",
-            fontWeight: "600",
-            marginBottom: "16px",
-            color: "#111827",
-          }}
-        >
+        <h3 className="text-lg font-semibold mb-4 text-sidebar-title">
           Buckets
         </h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div className="flex flex-col gap-2">
           {buckets.map((bucket) => (
             <div
               key={bucket.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "8px 0",
-              }}
+              className="flex items-center gap-3 py-2"
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "20px",
-                }}
-              >
+              <div className="flex items-center justify-center w-5">
                 {getBucketIcon()}
               </div>
               <div>
-                <div
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#111827",
-                  }}
-                >
+                <div className="text-sm font-medium text-sidebar-entry">
                   {bucket.name}
                 </div>
-                <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                <div className="text-xs text-sidebar-entry-subtext">
                   {/* TODO: pretty print this like "Recurs every month", use switch! */}
                   {bucket.recurrence_period_type
                     ? `Recurrence: ${bucket.recurrence_period_type}`
@@ -83,30 +58,15 @@ export const BucketsList: React.FC<BucketsListProps> = ({
           ))}
           <button
             onClick={() => setIsModalOpen(true)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "8px",
-              background: "none",
-              border: "1px solid #d1d5db",
-              borderRadius: "6px",
-              cursor: "pointer",
-              color: "#6b7280",
-              fontSize: "14px",
-              marginTop: "8px",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f9fafb";
-              e.currentTarget.style.borderColor = "#9ca3af";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "#d1d5db";
-            }}
+            className={`flex items-center gap-2
+              p-2 mt-2 rounded-md
+              cursor-pointer text-sm
+              border border-sidebar-button-border
+              bg-transparent
+              transition-all duration-200"
+            `}
           >
-            <span style={{ fontSize: "18px" }}>+</span>
+            <span className="text-lg">+</span>
             Add New
           </button>
         </div>
