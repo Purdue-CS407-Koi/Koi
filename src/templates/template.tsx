@@ -40,15 +40,11 @@ export default function Template({ children }: LayoutProps) {
       }}
     >
       <div className="flex-5">
-        <div
+        <div className="flex items-center font-bold justify-center"
           style={{
-            display: "flex",
-            alignItems: "center",
             gap: "10px",
             padding: "10px",
             fontSize: "20px",
-            fontWeight: "bold",
-            justifyContent: "center",
           }}
         >
           <div className="flex-4">
