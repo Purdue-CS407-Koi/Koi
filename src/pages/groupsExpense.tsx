@@ -1,19 +1,23 @@
 import { useState } from "react";
 import { MembersList } from "../components/groups/membersList";
 import { AddGroupExpenseModal } from "../components/groups/addGroupExpenseModal";
-import useExpenses from "../hooks/useExpenses";
 import type { NewExpense } from "../interfaces/Expense";
+import { insertNewExpense } from "../api/expenses";
 
 export const GroupsExpense = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { insertNewExpense } = useExpenses();
 
-  const handleAddGroupExpense = (expense: NewExpense) => {
-    insertNewExpense(expense);
+  const handleAddGroupExpense = async (expense: NewExpense) => {
+    const { id } = (await insertNewExpense(expense))[0];
     setIsModalOpen(false);
+    return id;
   };
-
   // TODO: replace with members fetched from DB
+  interface Member {
+    id: string;
+    name: string;
+    avatar?: string;
+  }
   const [members] = useState<Member[]>([
     { id: "1", name: "Sarr" },
     { id: "2", name: "Annie"},

@@ -20,7 +20,7 @@ import type { NewExpense } from "../../interfaces/Expense";
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (expense: NewExpense) => void;
+  onSave: (expense: NewExpense) => Promise<string>;
   group?: any;
 }
 
@@ -76,7 +76,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     return;
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const name = expenseName;
     const user_id = currentUserId;
     const description = expenseDescription;
@@ -88,25 +88,57 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         name,
         user_id,
       };
-      onSave(expense);
+      const expense_id = await onSave(expense);
+      Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {     
+        if (id != user_id) {
+          const amount = Number(dollars) + (Number(cents) / 100);
+
+          const split = {
+            amount_owed: amount,
+            amount_remaining: amount,
+            original_expense_id: expense_id,
+            group_id: selectedGroup,
+            user_id: id,
+          }
+          console.log(split);
+
+          insertNewSplit(split);
+        }   
+      });
     } else {
-        let totalCents = 0;
+      let totalCents = 0;
 
-        Object.values(individualAmounts).forEach(({ dollars, cents }) => {
-          const d = parseInt(dollars || "0", 10);
-          const c = parseInt(cents || "0", 10);
-          totalCents += d * 100 + c;
-        });
+      Object.values(individualAmounts).forEach(({ dollars, cents }) => {
+        const d = parseInt(dollars || "0", 10);
+        const c = parseInt(cents || "0", 10);
+        totalCents += d * 100 + c;
+      });
 
-        const amount = Math.floor(totalCents / 100) + totalCents % 100;
-        const expense = {
-          amount,
-          description,
-          name,
-          user_id
-        };
-        onSave(expense)
+      const amount = Math.floor(totalCents / 100) + totalCents % 100;
+      const expense = {
+        amount,
+        description,
+        name,
+        user_id
+      };
+      const expense_id = await onSave(expense);
+      Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {     
+        if (id != user_id) {
+          const amount = Number(dollars) + (Number(cents) / 100);
+
+          const split = {
+            amount_owed: amount,
+            amount_remaining: amount,
+            original_expense_id: expense_id,
+            group_id: selectedGroup,
+            user_id: id,
+          }
+
+          insertNewSplit(split);
+        }   
+      });
     }
+
   
     if (!expenseName.trim()) {
       setError("Expense name is required");
