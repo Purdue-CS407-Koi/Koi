@@ -40,8 +40,8 @@ export default function Template({ children }: LayoutProps) {
       }}
     >
       <div className="flex-5">
-        <div className="flex items-center font-bold justify-center gap-4 p-4 text-lg">
-          <div className="flex-4">
+        <div className="flex items-center font-bold justify-between p-4 mx-8 text-lg">
+          <div>
             <Link to="/" className="[&.active]:font-bold">
               <div className="items-center flex gap-4">
                 <img src={logo} alt="Koi Logo" className="inline h-11 w-11" />
@@ -51,7 +51,7 @@ export default function Template({ children }: LayoutProps) {
               </div>
             </Link>
           </div>
-          <div className="flex flex-6 justify-center gap-12">
+          <div className="flex justify-center gap-12">
             <Link to="/" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
               Dashboard
             </Link>
