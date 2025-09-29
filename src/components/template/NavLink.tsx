@@ -4,8 +4,8 @@ const NavLink = ({ target, title }: { target: string; title: string }) => {
   return (
     <Link
       to={target}
-      className="[&.active]:font-bold text-gray-600 hover:underline"
-      activeProps={{ className: "selected" }}
+      activeProps={{ className: "font-bold text-black" }}
+      inactiveProps={{ className: "text-gray-600 hover:underline" }}
     >
       {title}
     </Link>
