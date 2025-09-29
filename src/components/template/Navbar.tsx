@@ -1,39 +1,21 @@
-import { Link } from "@tanstack/react-router";
 import Brand from "./Brand";
+import NavLink from "./NavLink";
 
 const Navbar = () => {
+  const navLinks = [
+    { target: "/", title: "Dashboard" },
+    { target: "/groups", title: "Groups" },
+    { target: "/challenges", title: "Challenges" },
+    { target: "/forum", title: "Forum" },
+  ];
+
   return (
     <div className="flex items-center font-bold justify-between p-4 mx-8 text-lg">
       <Brand />
       <div className="flex justify-center gap-12">
-        <Link
-          to="/"
-          className="[&.active]:font-bold link"
-          activeProps={{ className: "selected" }}
-        >
-          Dashboard
-        </Link>
-        <Link
-          to="/groups"
-          className="[&.active]:font-bold link"
-          activeProps={{ className: "selected" }}
-        >
-          Groups
-        </Link>
-        <Link
-          to="/challenges"
-          className="[&.active]:font-bold link"
-          activeProps={{ className: "selected" }}
-        >
-          Challenges
-        </Link>
-        <Link
-          to="/forum"
-          className="[&.active]:font-bold link"
-          activeProps={{ className: "selected" }}
-        >
-          Forum
-        </Link>
+        {navLinks.map((item) => {
+          return <NavLink target={item.target} title={item.title} />;
+        })}
       </div>
     </div>
   );
