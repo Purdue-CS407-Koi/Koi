@@ -40,54 +40,35 @@ export default function Template({ children }: LayoutProps) {
       }}
     >
       <div className="flex-5">
-        <div className="flex items-center font-bold justify-center"
-          style={{
-            gap: "10px",
-            padding: "10px",
-            fontSize: "20px",
-          }}
-        >
+        <div className="flex items-center font-bold justify-center gap-4 p-4 text-lg">
           <div className="flex-4">
             <Link to="/" className="[&.active]:font-bold">
-              <div className="items-center flex"
-                style={{
-                  gap: "10px",
-                }}
-              >
+              <div className="items-center flex gap-4">
                 <img src={logo} alt="Koi Logo" className="inline h-11 w-11" />
-                <text className="font-bold align-middle text-black"
-                  style={{
-                    fontSize: "45px",
-                  }}
-                >
+                <text className="font-bold align-middle text-black text-5xl">
                   Koi
                 </text>
               </div>
             </Link>
           </div>
-          <div
-            className="flex flex-6 justify-center"
-            style={{
-              gap: "3vw",
-            }}
-          >
-            <Link to="/" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
+          <div className="flex flex-6 justify-center gap-12">
+            <Link to="/" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
               Dashboard
-            </Link>{" "}
-            <Link to="/groups" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
+            </Link>
+            <Link to="/groups" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
               Groups
-            </Link>{" "}
-            <Link to="/challenges" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
+            </Link>
+            <Link to="/challenges" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
               Challenges
-            </Link>{" "}
-            <Link to="/forum" className={"[&.active]:font-bold link"} activeProps={{className: "selected"}}>
+            </Link>
+            <Link to="/forum" className="[&.active]:font-bold link" activeProps={{className: "selected"}}>
               Forum
             </Link>
           </div>
         </div>
         <div>{content}</div>
       </div>
-      <div style={{ backgroundColor: SIDE_PANEL_BACKGROUND, flex: 2 }}>
+      <div className="flex-2" style={{ backgroundColor: SIDE_PANEL_BACKGROUND }}>
         {sidebar}
       </div>
     </div>
