@@ -55,3 +55,17 @@ export async function updateGroupName(groupId: string, newName: string) {
 
   return data;
 }
+
+export const getGroupMembers = async (groupId: string) => {
+  const { data, error } = await supabase
+    .from("GroupMemberships")
+    .select("user_id, Users(id, name)")
+    .eq("group_id", groupId);
+
+  if (error) throw error;
+
+  return (data ?? []).map((item) => ({
+    id: item.user_id,
+    name: item.Users.name,
+  }));
+};
