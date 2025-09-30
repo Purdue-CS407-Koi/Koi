@@ -1,6 +1,24 @@
 import supabase from "@/helpers/supabase";
 import type { NewExpense } from "@/interfaces/Expense";
 
+export async function getExpensesFromBucket(bucket_instance_id: string) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+
+  let { data, error } = await supabase
+    .from("Expenses")
+    .select("*")
+    .eq("user_id", user!.id)
+    .eq("bucket_instance_id", bucket_instance_id);
+
+  if (error) throw error;
+  return data;
+}
+
 export async function insertNewExpense({
   amount,
   description,

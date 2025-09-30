@@ -1,45 +1,14 @@
+import useExpenses from "@/hooks/useExpenses";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import type { ColDef, SizeColumnsToFitGridStrategy } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { useState } from "react";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export const ExpenseTable = () => {
-  // WILL BE REPLACED BY SUPABASE DATA
-  const [rowData, setRowData] = useState([
-    {
-      name: "Apartment Rent",
-      date: "2025-09-19",
-      value: 64950,
-      update: "Update",
-      delete: "Delete",
-    },
-    {
-      name: "Office Supplies",
-      date: "2024-07-12",
-      value: 320,
-      update: "Update",
-      delete: "Delete",
-    },
-    {
-      name: "Client Dinner",
-      date: "2024-08-03",
-      value: 185.5,
-      update: "Update",
-      delete: "Delete",
-    },
-    {
-      name: "Software Subscription",
-      date: "2024-09-01",
-      value: 1299,
-      update: "Update",
-      delete: "Delete",
-    },
-  ]);
+  const { expenseData } = useExpenses();
 
-  // Column Definitions: Defines the columns to be displayed.
   const colDefs: ColDef[] = [
     {
       field: "name",
@@ -47,7 +16,8 @@ export const ExpenseTable = () => {
       filterParams: { filterOptions: ["contains"], maxNumConditions: 1 },
     },
     {
-      field: "date",
+      field: "created_at",
+      headerName: "Date",
       filter: "agDateColumnFilter",
       filterParams: {
         filterOptions: ["equals", "inRange"],
@@ -55,7 +25,7 @@ export const ExpenseTable = () => {
       },
     },
     {
-      field: "value",
+      field: "amount",
       filter: "agNumberColumnFilter",
       filterParams: {
         filterOptions: ["equals", "inRange"],
@@ -64,6 +34,9 @@ export const ExpenseTable = () => {
       valueFormatter: (params) => {
         return `$${params.value}`;
       },
+    },
+    {
+      field: "description",
     },
     { field: "update" },
     { field: "delete" },
@@ -81,7 +54,7 @@ export const ExpenseTable = () => {
   return (
     <div className="h-96">
       <AgGridReact
-        rowData={rowData}
+        rowData={expenseData}
         columnDefs={colDefs}
         autoSizeStrategy={autoSizeStrategy}
       />
