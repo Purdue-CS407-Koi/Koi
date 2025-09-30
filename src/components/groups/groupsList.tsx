@@ -5,7 +5,6 @@ interface Group {
   id: string;
   name: string;
   createdDate: string;
-  type?: "default" | "trip";
 }
 
 interface GroupsListProps {
@@ -36,81 +35,39 @@ export const GroupsList: React.FC<GroupsListProps> = ({
   return (
     <>
       <div>
-        <h3
-          style={{
-            fontSize: "18px",
-            fontWeight: "600",
-            marginBottom: "16px",
-            color: "#111827",
-          }}
-        >
+        <h3 className="text-lg font-semibold mb-4 text-sidebar-title">
           Groups
         </h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div className="flex flex-col gap-2">
           {groups.map((group) => (
             <div
               key={group.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "8px 0",
-              }}
+              className="flex items-center gap-3 py-2"
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "20px",
-                }}
-              >
+              <div className="flex items-center justify-center w-5">
                 {getGroupIcon()}
               </div>
               <div>
-                <div
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#111827",
-                  }}
-                >
+                <div className="text-sm font-medium text-sidebar-entry">
                   {group.name}
                 </div>
-                <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                  {group.type === "default"
-                    ? "Default"
-                    : `Created ${group.createdDate}`}
+                 <div className="text-xs text-sidebar-entry-subtext">
+                  {`Created ${group.createdDate}`}
                 </div>
               </div>
             </div>
           ))}
           <button
             onClick={() => setIsModalOpen(true)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "8px",
-              background: "none",
-              border: "1px solid #d1d5db",
-              borderRadius: "6px",
-              cursor: "pointer",
-              color: "#6b7280",
-              fontSize: "14px",
-              marginTop: "8px",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f9fafb";
-              e.currentTarget.style.borderColor = "#9ca3af";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "#d1d5db";
-            }}
+            className={`flex items-center gap-2
+              p-2 mt-2 rounded-md
+              cursor-pointer text-sm
+              border border-sidebar-button-border
+              bg-transparent
+              transition-all duration-200"
+            `}
           >
-            <span style={{ fontSize: "18px" }}>+</span>
+            <span className="text-lg">+</span>
             Add New
           </button>
         </div>

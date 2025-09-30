@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { insertGroup, insertGroupMembership } from "../../api/groups";
+import supabase from "../../helpers/supabase";
 
 interface AddGroupModalProps {
   isOpen: boolean;
@@ -6,22 +8,40 @@ interface AddGroupModalProps {
   onSave: (groupName: string) => void;
 }
 
-export const AddGroupModal: React.FC<AddGroupModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  onSave 
+export const AddGroupModal: React.FC<AddGroupModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
 }) => {
   const [groupName, setGroupName] = useState("");
   const [error, setError] = useState("");
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!groupName.trim()) {
       setError("Group name is required");
       return;
     }
 
-    onSave(groupName.trim());
-    handleClose();
+    try {
+      // Get the current logged-in user
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setError("You must be signed in to create a group.");
+        return;
+      }
+
+      const group = await insertGroup(groupName.trim());
+      await insertGroupMembership(user.id, group.id);
+      onSave(groupName.trim());
+      handleClose();
+    } catch (err: any) {
+      console.error("Error creating group:", err);
+      setError("Failed to create group. Please try again.");
+    }
   };
 
   const handleClose = () => {
@@ -31,9 +51,9 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = ({
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSave();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       handleClose();
     }
   };

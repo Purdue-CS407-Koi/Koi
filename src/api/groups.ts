@@ -12,7 +12,8 @@ export async function insertGroup(name: string) {
     .insert([
       { name: name },
     ])
-    .select();
+    .select()
+    .single();
   
   if (error) throw error;
   return data;
