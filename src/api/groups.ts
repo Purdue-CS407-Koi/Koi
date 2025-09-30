@@ -29,3 +29,29 @@ export async function insertGroupMembership(userId: string, groupId: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getUserGroups(userId: string) {
+  const { data, error } = await supabase
+    .from("GroupMemberships")
+    .select(`
+      group_id,
+      Groups ( id, name, created_at )
+    `)
+    .eq("user_id", userId);
+
+  if (error) throw error;
+  return data.map((gm) => gm.Groups);
+}
+
+export async function updateGroupName(groupId: string, newName: string) {
+  const { data, error } = await supabase
+    .from("Groups")
+    .update({ name: newName })
+    .eq("id", groupId)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}

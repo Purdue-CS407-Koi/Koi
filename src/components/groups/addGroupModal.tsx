@@ -1,230 +1,81 @@
-import React, { useState } from "react";
-import { insertGroup, insertGroupMembership } from "../../api/groups";
-import supabase from "../../helpers/supabase";
+import { useState, type FormEvent } from "react";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  TextField,
+} from "@mui/material";
+import useGroups from "@/hooks/useGroups";
 
-interface AddGroupModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (groupName: string) => void;
-}
-
-export const AddGroupModal: React.FC<AddGroupModalProps> = ({
-  isOpen,
-  onClose,
-  onSave,
-}) => {
+export function AddGroupModal() {
+  const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [error, setError] = useState("");
-
-  const handleSave = async () => {
-    if (!groupName.trim()) {
-      setError("Group name is required");
-      return;
-    }
-
-    try {
-      // Get the current logged-in user
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        setError("You must be signed in to create a group.");
-        return;
-      }
-
-      const group = await insertGroup(groupName.trim());
-      await insertGroupMembership(user.id, group.id);
-      onSave(groupName.trim());
-      handleClose();
-    } catch (err: any) {
-      console.error("Error creating group:", err);
-      setError("Failed to create group. Please try again.");
-    }
+  const { insertNewGroup } = useGroups();
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
   const handleClose = () => {
     setGroupName("");
     setError("");
-    onClose();
+    setOpen(false);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSave();
-    } else if (e.key === "Escape") {
-      handleClose();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!groupName.trim()) {
+      setError("Group name is required");
+      return;
     }
-  };
 
-  if (!isOpen) return null;
+    insertNewGroup(groupName.trim());
+    handleClose();
+  };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-        }}
-        onClick={handleClose}
-      >
-        {/* Modal */}
-        <div
-          style={{
-            backgroundColor: "white",
-            borderRadius: "12px",
-            padding: "24px",
-            width: "100%",
-            maxWidth: "400px",
-            margin: "16px",
-            boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div style={{ marginBottom: "20px" }}>
-            <h3
-              style={{
-                margin: 0,
-                fontSize: "18px",
-                fontWeight: "600",
-                color: "#111827",
-              }}
-            >
-              Create New Group
-            </h3>
-            <p
-              style={{
-                margin: "8px 0 0 0",
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
-              Enter a name for your new group
-            </p>
-          </div>
-
-          {/* Input */}
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#374151",
-                marginBottom: "8px",
-              }}
-            >
-              Group Name
-            </label>
-            <input
-              type="text"
+    <div>
+      <Button onClick={handleClickOpen} variant="contained">
+        New Group
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Create New Group</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleSubmit} id="group-form">
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="groupName"
+              name="groupName"
+              label="Group Name"
+              fullWidth
               value={groupName}
               onChange={(e) => {
                 setGroupName(e.target.value);
-                if (error) setError(""); // Clear error when user types
+                if (error) setError("");
               }}
-              onKeyPress={handleKeyPress}
-              placeholder="Enter group name"
-              autoFocus
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                borderRadius: "8px",
-                fontSize: "14px",
-                outline: "none",
-                transition: "border-color 0.2s",
-                boxSizing: "border-box",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
-              }}
+              error={!!error}
+              helperText={error}
             />
-            {error && (
-              <p
-                style={{
-                  margin: "8px 0 0 0",
-                  fontSize: "12px",
-                  color: "#ef4444",
-                }}
-              >
-                {error}
-              </p>
-            )}
-          </div>
-
-          {/* Buttons */}
-          <div
-            style={{
-              display: "flex",
-              gap: "12px",
-              justifyContent: "flex-end",
-            }}
+          </form>
+        </DialogContent>
+        <DialogActions className="!p-6 !pt-0">
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            className="!bg-gray-400"
           >
-            <button
-              onClick={handleClose}
-              style={{
-                padding: "10px 20px",
-                border: "1px solid #d1d5db",
-                borderRadius: "6px",
-                backgroundColor: "white",
-                color: "#374151",
-                fontSize: "14px",
-                cursor: "pointer",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f9fafb";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={!groupName.trim()}
-              style={{
-                padding: "10px 20px",
-                border: "none",
-                borderRadius: "6px",
-                backgroundColor: groupName.trim() ? "#3b82f6" : "#9ca3af",
-                color: "white",
-                fontSize: "14px",
-                cursor: groupName.trim() ? "pointer" : "not-allowed",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                if (groupName.trim()) {
-                  e.currentTarget.style.backgroundColor = "#2563eb";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (groupName.trim()) {
-                  e.currentTarget.style.backgroundColor = "#3b82f6";
-                }
-              }}
-            >
-              Create Group
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
+            Cancel
+          </Button>
+          <Button type="submit" form="group-form" variant="contained">
+            Create Group
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
-};
+}
