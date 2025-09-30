@@ -16,6 +16,9 @@ const useExpenses = () => {
     onError: (err) => {
       console.log("error inserting new expense: " + JSON.stringify(err));
     },
+    onSuccess: () => {
+      refetchExpenses();
+    },
   });
 
   const {

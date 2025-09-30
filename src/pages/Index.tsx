@@ -39,9 +39,9 @@ const Index = () => {
 
   const handleTestAddNewExpense = () => {
     const newExpense: NewExpense = {
-      amount: 6000,
-      description: "Rent for October",
-      name: "Apartment rent",
+      amount: 250,
+      description: "Shopping",
+      name: "Shopping",
       bucket_instance_id: currentBucketInstanceId,
     };
     insertNewExpense(newExpense);
