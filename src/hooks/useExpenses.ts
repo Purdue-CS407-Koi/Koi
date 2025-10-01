@@ -28,6 +28,10 @@ const useExpenses = () => {
   } = useQuery({
     queryKey: ["expenses", currentBucketInstanceId],
     queryFn: async () => {
+      if (!currentBucketInstanceId) {
+        return [];
+      }
+
       const rawData = await getExpensesFromBucket(currentBucketInstanceId);
       return rawData?.map((item) => ({
         ...item,

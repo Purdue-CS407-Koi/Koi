@@ -28,6 +28,12 @@ export const NewExpenseModal = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!currentBucketInstanceId) {
+      console.error("Attempted to create a new expense entry with no bucket instance ID!");
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries((formData as any).entries());
     const newExpense: NewExpense = {
