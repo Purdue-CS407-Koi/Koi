@@ -74,18 +74,14 @@ export async function getGroup(groupId: string) {
   return data[0];
 }
 
-export async function updateGroupName(groupId: string, newName: string) {
-  const { data, error } = await supabase
+export const updateGroupName = async (groupId: string, newName: string) => {
+  const { error } = await supabase
     .from("Groups")
     .update({ name: newName })
-    .eq("id", groupId)
-    .select()
-    .single();
+    .eq("id", groupId);
 
   if (error) throw error;
-
-  return data;
-}
+};
 
 export const getGroupMembers = async (groupId: string) => {
   const { data, error } = await supabase
@@ -97,6 +93,6 @@ export const getGroupMembers = async (groupId: string) => {
 
   return (data ?? []).map((item) => ({
     id: item.user_id,
-    name: item.Users.name,
+    name: item.Users.name ?? "Unknown Member",
   }));
 };

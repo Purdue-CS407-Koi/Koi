@@ -1,35 +1,51 @@
 import { useState } from "react";
-
-import Template, { Content, Sidebar } from "@/templates/template";
+import useGroups from "@/hooks/useGroups";
 import { GroupsList } from "@/components/groups/groupsList";
 import { MembersList } from "@/components/groups/membersList";
+import Template, { Content, Sidebar } from "@/templates/template";
 import { AddGroupExpenseModal } from "@/components/groups/addGroupExpenseModal";
 import type { NewExpense } from "@/interfaces/Expense";
 import { insertNewExpense } from "@/api/expenses";
-import useGroups from "@/hooks/useGroups";
+import { getGroupMembers } from "@/api/groups";
+
+interface Member {
+  id: string;
+  name: string;
+  avatar?: string;
+}
 
 const Groups = () => {
-  const { groupsData } = useGroups(); 
-
+  const { groupsData, refetchGroups } = useGroups();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [selectedGroupName, setSelectedGroupName] = useState<string>("");
+
+  const [members, setMembers] = useState<Member[]>([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const handleSelectGroup = async (groupId: string, groupName: string) => {
+    setSelectedGroupId(groupId);
+    setSelectedGroupName(groupName);
+
+    try {
+      const groupMembers = await getGroupMembers(groupId);
+      setMembers(groupMembers);
+    } catch (error) {
+      console.error("Failed to fetch group members:", error);
+      setMembers([]);
+    }
+  };
 
   const handleAddGroupExpense = async (expense: NewExpense) => {
     const { id } = (await insertNewExpense(expense))[0];
     setIsModalOpen(false);
     return id;
   };
-  // TODO: replace with members fetched from DB
-  interface Member {
-    id: string;
-    name: string;
-    avatar?: string;
-  }
-  const [members] = useState<Member[]>([
-    { id: "1", name: "Sarr" },
-    { id: "2", name: "Annie" },
-    { id: "3", name: "Madison" },
-    { id: "4", name: "Mich" },
-  ]);
+
+  const handleEditGroup = () => {
+    setIsEditModalOpen(true);
+  };
 
   return (
     <Template>
@@ -53,7 +69,7 @@ const Groups = () => {
                 gap: "24px",
               }}
             >
-              {/* Left Section - Expenses */}
+              {/* Left Section */}
               <div style={{ flex: 2 }}>
                 {/* Header */}
                 <div
@@ -72,7 +88,7 @@ const Groups = () => {
                       margin: 0,
                     }}
                   >
-                    Roommates
+                    {selectedGroupName || "Select a Group"}
                   </h2>
                   <div style={{ display: "flex", gap: "12px" }}>
                     <button
@@ -115,7 +131,7 @@ const Groups = () => {
               />
 
               <div style={{ flex: 1 }}>
-                <MembersList members={members} />
+                <MembersList members={members} />{" "}
               </div>
 
               {/* Modal */}
@@ -135,9 +151,16 @@ const Groups = () => {
             name: g.name,
             createdDate: new Date(g.created_at).toLocaleDateString(),
           }))}
-          onAddGroup={() => {}}
+          selectedGroupId={selectedGroupId}
+          onSelectGroup={handleSelectGroup}
+          onEditGroup={handleEditGroup}
         />
       </Sidebar>
+      <AddGroupExpenseModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleAddGroupExpense}
+      />
     </Template>
   );
 };
