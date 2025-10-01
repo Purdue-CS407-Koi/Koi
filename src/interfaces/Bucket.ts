@@ -1,4 +1,4 @@
-export default interface Bucket {
+export interface Bucket {
   id: string;
   name: string;
   recurrence_period_type: RecurrencePeriodType;

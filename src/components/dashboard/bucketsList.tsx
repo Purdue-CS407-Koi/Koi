@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AddBucketModal } from "./addBucketModal";
 
-import type Bucket from "@/interfaces/Bucket";
+import type {Bucket} from "@/interfaces/Bucket";
 
 interface BucketsListProps {
   buckets: Bucket[];

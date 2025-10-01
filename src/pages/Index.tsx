@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import Template, { Content, Sidebar } from "@/templates/template";
 
-import type Bucket from "@/interfaces/Bucket";
+import type {Bucket} from "@/interfaces/Bucket";
 import { RecurrencePeriodType } from "@/interfaces/Bucket";
 import { ExpenseTable } from "@/components/dashboard/expenses/expenseTable";
 import { BucketsList } from "@/components/dashboard/bucketsList";
