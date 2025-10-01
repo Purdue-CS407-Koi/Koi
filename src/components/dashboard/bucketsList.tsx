@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 import { AddBucketModal } from "./addBucketModal";
+import { useBuckets } from "@/hooks/useBuckets";
 
-import type {BucketMetadata} from "@/interfaces/Bucket";
 
-interface BucketsListProps {
-  buckets: BucketMetadata[];
-  onAddBucket: (bucketName: string) => void;
-}
-
-export const BucketsList: React.FC<BucketsListProps> = ({
-  buckets,
-  onAddBucket,
-}) => {
+export const BucketsList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { bucketMetadataData } = useBuckets();
 
   const getBucketIcon = () => {
     // Bookmark icon for all groups
@@ -24,7 +18,7 @@ export const BucketsList: React.FC<BucketsListProps> = ({
   };
 
   const handleAddBucket = (bucketName: string) => {
-    onAddBucket(bucketName);
+    //onAddBucket(bucketName);
     setIsModalOpen(false);
   };
 
@@ -35,7 +29,7 @@ export const BucketsList: React.FC<BucketsListProps> = ({
           Buckets
         </h3>
         <div className="flex flex-col gap-2">
-          {buckets.map((bucket) => (
+          {bucketMetadataData?.map((bucket) => (
             <div
               key={bucket.id}
               className="flex items-center gap-3 py-2"

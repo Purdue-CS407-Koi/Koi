@@ -67,7 +67,19 @@ export const useBuckets = () => {
     refetch: refetchBucketMetadata,
   } = useQuery({
     queryKey: ["bucketMetadata", currentBucketMetadataId],
-    queryFn: getAllBucketMetadata
+    queryFn: async () => {
+      const bucketMetadata = await getAllBucketMetadata();
+
+      if (!currentBucketMetadataId) {
+        if (bucketMetadata.length > 0) {
+          setCurrentBucketMetadataId(bucketMetadata[0].id);
+        } else {
+          console.error("This user has no buckets and have somehow managed to remove the main bucket!");
+        }
+      }
+
+      return bucketMetadata;
+    }
   });
 
   const {
@@ -77,9 +89,23 @@ export const useBuckets = () => {
   } = useQuery({
     queryKey: ["bucketInstance", currentBucketMetadataId],
     queryFn: async () => {
-          return await getAllBucketInstances(currentBucketMetadataId);
-        },
-    });
+      if (!currentBucketMetadataId) {
+        return [];
+      }
+
+      const bucketInstances = await getAllBucketInstances(currentBucketMetadataId);
+
+      if (!currentBucketInstanceId) {
+        if (bucketInstances.length > 0) {
+          setCurrentBucketInstanceId(bucketInstances[0].id);
+        } else {
+          console.error(`No bucket instances found for bucket metadata entry ${currentBucketMetadataId}!`);
+        }
+      }
+
+      return bucketInstances;
+    },
+  });
   
   return {
     bucketMetadataData,
