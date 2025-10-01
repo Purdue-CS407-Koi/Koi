@@ -1,7 +1,7 @@
 import Template, { Content, Sidebar } from "@/templates/template";
 
 import { ExpenseTable } from "@/components/dashboard/expenses/expenseTable";
-import { BucketsList } from "@/components/dashboard/bucketsList";
+import { BucketsList } from "@/components/dashboard/buckets/bucketsList";
 import { NewExpenseModal } from "@/components/dashboard/expenses/newExpenseModal";
 
 const Index = () => {
