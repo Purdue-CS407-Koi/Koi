@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AddBucketModal } from "./addBucketModal";
+import NewBucketModal from "./newBucketModal";
 import { useBuckets } from "@/hooks/useBuckets";
 
 
@@ -15,11 +15,6 @@ export const BucketsList = () => {
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
       </svg>
     );
-  };
-
-  const handleAddBucket = (bucketName: string) => {
-    //onAddBucket(bucketName);
-    setIsModalOpen(false);
   };
 
   return (
@@ -66,12 +61,7 @@ export const BucketsList = () => {
         </div>
       </div>
 
-      {/* Modal */}
-      <AddBucketModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleAddBucket}
-      />
+      <NewBucketModal open={isModalOpen} setOpen={setIsModalOpen} />
     </>
   );
 };
