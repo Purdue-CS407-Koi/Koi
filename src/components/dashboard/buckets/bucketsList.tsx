@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import NewBucketModal from "./newBucketModal";
 import { useBuckets } from "@/hooks/useBuckets";
 
