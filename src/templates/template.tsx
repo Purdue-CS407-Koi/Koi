@@ -23,11 +23,13 @@ export default function Template({ children }: LayoutProps) {
   const childArray = React.Children.toArray(children);
 
   const content = childArray.find(
-    (child: any) => (child as any).type === Content
+    (child: React.ReactNode) =>
+      React.isValidElement(child) && child.type === Content
   );
 
   const sidebar = childArray.find(
-    (child: any) => (child as any).type === Sidebar
+    (child: React.ReactNode) =>
+      React.isValidElement(child) && child.type === Sidebar
   );
 
   // todo add tailwind styles and fix layout
