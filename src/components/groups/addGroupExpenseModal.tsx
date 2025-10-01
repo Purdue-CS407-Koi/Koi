@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-// constants 
-import { BLACK, BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "@/config/colors";
+// constants
+import {
+  BLACK,
+  BUTTON_COLOR,
+  BUTTON_HOVER_COLOR,
+  TEXT_COLOR,
+  WHITE,
+} from "@/config/colors";
 import { TEXT_EDITING } from "@/config/keyboardEvents";
 
 // hooks
-import useGroups from "@/hooks/useGroups"
-import useGroupMembers from "@/hooks/useGroupMembers";
+import useGroups from "@/hooks/useGroups";
 import useSplits from "@/hooks/useSplits";
 import useUsers from "@/hooks/useUsers";
 
@@ -24,25 +29,28 @@ interface AddGroupExpenseModalProps {
   group?: any;
 }
 
-export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({ 
-  isOpen, 
-  onClose, 
+export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
+  isOpen,
+  onClose,
   onSave,
   group = null,
 }) => {
   const [expenseName, setExpenseName] = useState("");
-  const [expenseDollars, setExpenseDollars] = useState('00');
-  const [expenseCents, setExpenseCents] = useState('00');
+  const [expenseDollars, setExpenseDollars] = useState("00");
+  const [expenseCents, setExpenseCents] = useState("00");
   const [expenseDescription, setExpenseDescription] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(group);
-  const [payers, setPayers] = useState<{name: string, id: string}[]>([]);
-  const [nonpayers, setNonpayers] = useState<{name: string, id: string}[]>([]);
-  const [individualAmounts, setIndividualAmounts] = useState<Record<string, {dollars: string, cents: string}>>({});
-  const { groupMembersData: members } = useGroupMembers(selectedGroup);
-  const { groupsData: groups } = useGroups();
+  const [payers, setPayers] = useState<{ name: string; id: string }[]>([]);
+  const [nonpayers, setNonpayers] = useState<{ name: string; id: string }[]>(
+    []
+  );
+  const [individualAmounts, setIndividualAmounts] = useState<
+    Record<string, { dollars: string; cents: string }>
+  >({});
+  const { groupsData: groups, useGroupMembers } = useGroups();
   const { insertNewSplit } = useSplits();
   const { userData } = useUsers();
-
+  const { groupMembersData: members } = useGroupMembers(selectedGroup ?? "");
   const [page, setPage] = useState(1);
   const [splitting, setSplitting] = useState(true);
 
@@ -55,7 +63,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
   useEffect(() => {
     setPayers(members ?? []);
-    setNonpayers([])
+    setNonpayers([]);
     console.log(members);
   }, [members]);
 
@@ -65,12 +73,12 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
   const resetToDefault = () => {
     setExpenseName("");
-    setExpenseDollars('00');
-    setExpenseCents('00');
+    setExpenseDollars("00");
+    setExpenseCents("00");
     setPage(1);
-    setSplitting(true)
+    setSplitting(true);
     setSelectedGroup(group);
-  }
+  };
 
   const handleNext = () => {
     if (!expenseName.trim() || !selectedGroup) {
@@ -79,14 +87,14 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     }
     setPage(2);
     return;
-  }
+  };
 
   const handleSave = async () => {
     const name = expenseName;
     const user_id = userData?.id;
     const description = expenseDescription;
     if (splitting) {
-      const amount = Number(expenseDollars) + (Number(expenseCents) / 100);
+      const amount = Number(expenseDollars) + Number(expenseCents) / 100;
       const expense = {
         amount,
         description,
@@ -94,9 +102,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         user_id,
       };
       const expense_id = await onSave(expense);
-      Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {     
+      Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {
         if (id != user_id) {
-          const amount = Number(dollars) + (Number(cents) / 100);
+          const amount = Number(dollars) + Number(cents) / 100;
 
           const split = {
             amount_owed: amount,
@@ -104,11 +112,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             original_expense_id: expense_id,
             group_id: selectedGroup,
             user_id: id,
-          }
+          };
           console.log(split);
 
           insertNewSplit(split);
-        }   
+        }
       });
     } else {
       let totalCents = 0;
@@ -119,17 +127,17 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         totalCents += d * 100 + c;
       });
 
-      const amount = Math.floor(totalCents / 100) + totalCents % 100;
+      const amount = Math.floor(totalCents / 100) + (totalCents % 100);
       const expense = {
         amount,
         description,
         name,
-        user_id
+        user_id,
       };
       const expense_id = await onSave(expense);
-      Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {     
+      Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {
         if (id != user_id) {
-          const amount = Number(dollars) + (Number(cents) / 100);
+          const amount = Number(dollars) + Number(cents) / 100;
 
           const split = {
             amount_owed: amount,
@@ -137,14 +145,13 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             original_expense_id: expense_id,
             group_id: selectedGroup,
             user_id: id,
-          }
+          };
 
           insertNewSplit(split);
-        }   
+        }
       });
     }
 
-  
     if (!expenseName.trim()) {
       setError("Expense name is required");
       return;
@@ -156,7 +163,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     setPayers(members ?? []);
     handleEvenSplit();
     setSplitting(!splitting);
-  }
+  };
 
   const handleEvenSplit = () => {
     const dollars = Number(expenseDollars);
@@ -166,33 +173,39 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     const split = Math.floor(totalCents / numPeople);
     const splitDollars = Math.floor(split / 100);
     const splitCents = split % 100;
-    const excess_cents = (totalCents - split * numPeople);
-    const newAmounts: { [key: string]: {dollars: string, cents: string} } = {};
+    const excess_cents = totalCents - split * numPeople;
+    const newAmounts: { [key: string]: { dollars: string; cents: string } } =
+      {};
     payers.forEach((payer, index) => {
       newAmounts[payer.id] = {
-        dollars: splitDollars.toString().padStart(2, '0'), 
-        cents: ((excess_cents) > index ? (splitCents + 1) : splitCents).toString().padEnd(2, '0')
+        dollars: splitDollars.toString().padStart(2, "0"),
+        cents: (excess_cents > index ? splitCents + 1 : splitCents)
+          .toString()
+          .padEnd(2, "0"),
       };
     });
     setIndividualAmounts(newAmounts);
-  }
+  };
 
-  const setAmount = (id: string, patch: Partial<{dollars: string, cents: string}>) => {
-    setIndividualAmounts(prev => {
+  const setAmount = (
+    id: string,
+    patch: Partial<{ dollars: string; cents: string }>
+  ) => {
+    setIndividualAmounts((prev) => {
       const curr = prev[id] ?? { dollars: "", cents: "" };
       return { ...prev, [id]: { ...curr, ...patch } };
     });
-  }
+  };
 
   const removePayer = (id: string, name: string) => {
-    setNonpayers(prev => [...prev, {id, name}]);
-    setPayers(prev => prev.filter(p => p.id !== id));
-  }
+    setNonpayers((prev) => [...prev, { id, name }]);
+    setPayers((prev) => prev.filter((p) => p.id !== id));
+  };
 
   const addPayer = (id: string, name: string) => {
-    setPayers(prev => [...prev, {id, name}]);
-    setNonpayers(prev => prev.filter(p => p.id !== id));
-  }
+    setPayers((prev) => [...prev, { id, name }]);
+    setNonpayers((prev) => prev.filter((p) => p.id !== id));
+  };
 
   const handleClose = () => {
     resetToDefault();
@@ -203,26 +216,26 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   const handleBack = () => {
     setPage(1);
     setError("");
-  }
+  };
 
   const handleKeyPressText = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSave();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       handleClose();
     }
   };
 
   // Don't allow non-numeric input
   const handleKeyPressNumber = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSave();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       handleClose();
-    } 
+    }
     if (e.ctrlKey || e.metaKey) return;
 
-    if (!/[0-9]/.test(e.key) && !TEXT_EDITING.includes(e.key)) 
+    if (!/[0-9]/.test(e.key) && !TEXT_EDITING.includes(e.key))
       e.preventDefault();
   };
 
@@ -329,7 +342,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
               <select
                 value={selectedGroup ?? ""}
                 onChange={(e) =>
-                  setSelectedGroup(e.target.value === "" ? null : e.target.value)
+                  setSelectedGroup(
+                    e.target.value === "" ? null : e.target.value
+                  )
                 }
                 style={{
                   padding: "12px",
@@ -348,11 +363,13 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   Select a Group
                 </option>
 
-                {groups?.map((group: {id: string, name: string, created_at: string}) => (
-                  <option key={group.id} value={group.id}>
-                    {group.name}
-                  </option>
-                ))}
+                {groups?.map(
+                  (group: { id: string; name: string; created_at: string }) => (
+                    <option key={group.id} value={group.id}>
+                      {group.name}
+                    </option>
+                  )
+                )}
               </select>
               <label
                 style={{
@@ -442,9 +459,12 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   padding: "10px 20px",
                   border: "none",
                   borderRadius: "6px",
-                  color: TEXT_COLOR,  
+                  color: TEXT_COLOR,
                   fontSize: "14px",
-                  cursor: expenseName.trim() && selectedGroup? "pointer" : "not-allowed",
+                  cursor:
+                    expenseName.trim() && selectedGroup
+                      ? "pointer"
+                      : "not-allowed",
                   transition: "all 0.2s",
                 }}
                 onMouseEnter={(e) => {
@@ -471,7 +491,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     return (
       <>
         {/* Backdrop */}
-        
+
         <div
           style={{
             position: "fixed",
@@ -543,10 +563,13 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   borderBottomLeftRadius: 0,
                   borderTopRightRadius: "6px",
                   borderBottomRightRadius: "6px",
-                  backgroundColor: !splitting ? BUTTON_COLOR: WHITE,
-                  color: TEXT_COLOR,  
+                  backgroundColor: !splitting ? BUTTON_COLOR : WHITE,
+                  color: TEXT_COLOR,
                   fontSize: "14px",
-                  cursor: expenseName.trim() && selectedGroup? "pointer" : "not-allowed",
+                  cursor:
+                    expenseName.trim() && selectedGroup
+                      ? "pointer"
+                      : "not-allowed",
                   transition: "all 0.2s",
                   width: "50%",
                 }}
@@ -556,7 +579,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             </div>
             {/* Input */}
             <div style={{ marginBottom: "20px" }}>
-              {splitting ? 
+              {splitting ? (
                 <div>
                   <label
                     style={{
@@ -570,7 +593,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   >
                     Expense Amount
                   </label>
-                  $<input
+                  $
+                  <input
                     type="text"
                     value={expenseDollars}
                     onChange={(e) => {
@@ -591,14 +615,19 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                       textAlign: "right",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
+                      e.target.style.borderColor = error
+                        ? "#ef4444"
+                        : "#3b82f6";
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
+                      e.target.style.borderColor = error
+                        ? "#ef4444"
+                        : "#e5e7eb";
                     }}
                     inputMode="numeric"
                     pattern="[0-9]*"
-                  />.
+                  />
+                  .
                   <input
                     type="text"
                     value={expenseCents}
@@ -620,10 +649,14 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                       boxSizing: "border-box",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
+                      e.target.style.borderColor = error
+                        ? "#ef4444"
+                        : "#3b82f6";
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
+                      e.target.style.borderColor = error
+                        ? "#ef4444"
+                        : "#e5e7eb";
                     }}
                     inputMode="numeric"
                     pattern="[0-9]*"
@@ -637,7 +670,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                       color: TEXT_COLOR,
                       fontSize: "14px",
                       transition: "all 0.2s",
-                      marginLeft: "10px"
+                      marginLeft: "10px",
                     }}
                   >
                     Calculate
@@ -645,41 +678,45 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   <ul>
                     {payers?.map((m) => (
                       <li key={m.id} className="p-3 flex items-center gap-3">
-                        {
-                          m.id == userData?.id ?
+                        {m.id == userData?.id ? (
+                          <div>
+                            {"(Paid by) " + m.name}
+                            {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
+                              onClick={() => removePayer(m.id, m.name)}
+                            >
+                              <MinusIcon className="h-4 w-4" />
+                            </button>
                             <div>
-                              {"(Paid by) "  + m.name}
+                              {m.name ?? "Unnamed user"}
                               {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
                             </div>
-                          :
-                            <div className="flex items-center gap-3">
-                              <button type="button"
-                                className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
-                                onClick={() => removePayer(m.id, m.name)}
-                              >
-                                <MinusIcon className="h-4 w-4" />
-                              </button>
-                              <div>{m.name ?? "Unnamed user"}
-                                {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
-                              </div>
-                            </div>
-                        }
-                        
+                          </div>
+                        )}
                       </li>
                     ))}
                     {nonpayers?.map((m) => (
                       <li key={m.id} className="p-3 flex items-center gap-3">
-                        <button type="button"
+                        <button
+                          type="button"
                           className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
                           onClick={() => addPayer(m.id, m.name)}
                         >
                           <PlusIcon className="h-4 w-4" />
                         </button>
-                        <div className="text-gray-400">{m.name ?? "Unnamed user"}</div>
+                        <div className="text-gray-400">
+                          {m.name ?? "Unnamed user"}
+                        </div>
                       </li>
                     ))}
                   </ul>
-                </div> :
+                </div>
+              ) : (
                 <div>
                   <label
                     style={{
@@ -697,13 +734,18 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     {members?.map((m) => (
                       <li key={m.id} className="flex items-center gap-3">
                         <div className="px-2 py-1 rounded flex items-center">
-                          <div>{(m.id == userData?.id) ? ("(Paid by) " + m.name) : m.name}: $</div>
+                          <div>
+                            {m.id == userData?.id
+                              ? "(Paid by) " + m.name
+                              : m.name}
+                            : $
+                          </div>
                           <div>
                             <input
                               type="text"
                               value={individualAmounts[m.id]?.dollars}
                               onChange={(e) => {
-                                setAmount(m.id, {dollars: e.target.value} );
+                                setAmount(m.id, { dollars: e.target.value });
                                 if (error) setError(""); // Clear error when user types
                               }}
                               onKeyDown={handleKeyPressNumber}
@@ -711,7 +753,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                               style={{
                                 width: "calc(4em + 8px)",
                                 padding: "6px",
-                                border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
+                                border: error
+                                  ? "2px solid #ef4444"
+                                  : "2px solid #e5e7eb",
                                 borderRadius: "8px",
                                 fontSize: "14px",
                                 outline: "none",
@@ -720,19 +764,24 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                                 textAlign: "right",
                               }}
                               onFocus={(e) => {
-                                e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#3b82f6";
                               }}
                               onBlur={(e) => {
-                                e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#e5e7eb";
                               }}
                               inputMode="numeric"
                               pattern="[0-9]*"
-                            />.
+                            />
+                            .
                             <input
                               type="text"
                               value={individualAmounts[m.id]?.cents}
                               onChange={(e) => {
-                                setAmount(m.id, {cents: e.target.value} );
+                                setAmount(m.id, { cents: e.target.value });
                                 if (error) setError(""); // Clear error when user types
                               }}
                               onKeyDown={handleKeyPressNumber}
@@ -741,7 +790,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                               style={{
                                 width: "calc(4em + 8px)",
                                 padding: "6px",
-                                border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
+                                border: error
+                                  ? "2px solid #ef4444"
+                                  : "2px solid #e5e7eb",
                                 borderRadius: "8px",
                                 fontSize: "14px",
                                 outline: "none",
@@ -749,10 +800,14 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                                 boxSizing: "border-box",
                               }}
                               onFocus={(e) => {
-                                e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#3b82f6";
                               }}
                               onBlur={(e) => {
-                                e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#e5e7eb";
                               }}
                               inputMode="numeric"
                               pattern="[0-9]*"
@@ -763,7 +818,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     ))}
                   </ul>
                 </div>
-              }
+              )}
               {error && (
                 <p
                   style={{

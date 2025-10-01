@@ -74,6 +74,18 @@ export async function getGroup(groupId: string) {
   return data[0];
 }
 
+export const fetchGroupMembers = async (group_id: string) => {
+  const { data: users, error } = await supabase
+    .from("GroupMemberships")
+    .select("id, created_at, Users!inner(id, name)")
+    .eq("group_id", group_id);
+
+  if (error) throw error;
+  const data = (users ?? []).map((row: any) => row.Users);
+
+  return data;
+};
+
 export const updateGroupName = async (groupId: string, newName: string) => {
   const { error } = await supabase
     .from("Groups")

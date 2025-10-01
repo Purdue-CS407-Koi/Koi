@@ -6,6 +6,7 @@ import {
   fetchActivity,
   updateGroupName as editGroupApi,
   getGroup,
+  fetchGroupMembers,
 } from "@/api/groups";
 import { useGroupStore } from "@/stores/useGroupStore";
 
@@ -77,7 +78,20 @@ const useGroups = () => {
     queryFn: () => getGroup(currentGroupId),
   });
 
-  return { groupsData, getGroupsError, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup };
+  const useGroupMembers = (group_id: string) => {
+    const {
+      data: groupMembersData,
+      isLoading,
+      error,
+    } = useQuery({
+      queryKey: ["groupMembers", group_id], // Zustand state as part of key
+      queryFn: () => fetchGroupMembers(group_id),
+    });
+  
+    return { groupMembersData, isLoading, error };
+  };
+
+  return { groupsData, getGroupsError, useGroupMembers, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup };
 };
 
 export default useGroups;
