@@ -14,7 +14,7 @@ const Navbar = () => {
       <Brand />
       <div className="flex justify-center gap-12">
         {navLinks.map((item) => {
-          return <NavLink target={item.target} title={item.title} />;
+          return <NavLink key={item.title} target={item.target} title={item.title} />;
         })}
       </div>
     </div>
