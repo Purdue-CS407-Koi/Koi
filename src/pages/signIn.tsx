@@ -54,7 +54,13 @@ export const SignInPage = () => {
           </p>
         </div>
 
-        <div className="space-y-4 mb-6 text-left">
+        <form
+          className="space-y-4 mb-6 text-left"
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleSignIn();
+          }}
+        >
           <AuthInput
             label="Email"
             type="email"
@@ -73,7 +79,6 @@ export const SignInPage = () => {
 
           <div className="w-full flex justify-center text-center">
             <button
-              onClick={handleSignIn}
               className={`w-full p-4 rounded-md
                 bg-blue-600 hover:bg-blue-700 text-white
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
@@ -83,7 +88,7 @@ export const SignInPage = () => {
               Sign In
             </button>
           </div>
-        </div>
+        </form>
 
         <p className="text-sm text-gray-600 text-center mx-auto">
           Don't have an account?{" "}
