@@ -1,4 +1,4 @@
-export interface Bucket {
+export interface BucketMetadata {
   id: string;
   name: string;
   recurrence_period_type: RecurrencePeriodType;

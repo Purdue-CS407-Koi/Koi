@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { AddBucketModal } from "./addBucketModal";
 
-import type {Bucket} from "@/interfaces/Bucket";
+import type {BucketMetadata} from "@/interfaces/Bucket";
 
 interface BucketsListProps {
-  buckets: Bucket[];
+  buckets: BucketMetadata[];
   onAddBucket: (bucketName: string) => void;
 }
 
