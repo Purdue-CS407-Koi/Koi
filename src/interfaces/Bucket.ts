@@ -5,6 +5,13 @@ export interface BucketMetadata {
   spending_limit: number;
 }
 
+export interface BucketInstance {
+  id: string;
+  bucket_metadata_id: string;
+  start: Date | null;
+  end: Date | null;
+}
+
 export const RecurrencePeriodType = {
   Monthly: 0,
   Weekly: 1,
