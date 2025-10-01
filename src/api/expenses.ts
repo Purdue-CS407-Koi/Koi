@@ -9,7 +9,7 @@ export async function getExpensesFromBucket(bucket_instance_id: string) {
     throw new Error("user is undefined");
   }
 
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from("Expenses")
     .select("*")
     .eq("user_id", user!.id)
