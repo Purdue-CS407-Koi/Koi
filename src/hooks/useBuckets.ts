@@ -6,7 +6,7 @@ import {
 } from "@/api/buckets";
 import type { BucketInstance, BucketMetadata } from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useBuckets = () => {
   const currentBucketInstanceId = useBucketsStore(
