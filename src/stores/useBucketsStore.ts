@@ -13,5 +13,5 @@ export const useBucketsStore = create<BucketsStore>((set) => ({
   setCurrentBucketInstanceId: (bucketMetadataId) =>
     set({ currentBucketMetadataId: bucketMetadataId }),
   setCurrentBucketMetadataId: (bucketInstanceId) =>
-    set({ currentBucketMetadataId: bucketInstanceId }),
+    set({ currentBucketInstanceId: bucketInstanceId }),
 }));
