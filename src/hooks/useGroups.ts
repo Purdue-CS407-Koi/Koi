@@ -8,9 +8,6 @@ import {
 import { useGroupStore } from "@/stores/useGroupStore";
 
 const useGroups = () => {
-  // refetch function will be defined later from useQuery
-  let refetchGroups: () => void;
-
   const mutation = useMutation({
     mutationFn: async (groupName: string) => {
       const group = await insertGroupApi(groupName);
@@ -28,7 +25,7 @@ const useGroups = () => {
   const {
     data: groupsData,
     error: getGroupsError,
-    refetch,
+    refetch: refetchGroups,
   } = useQuery({
     queryKey: ["groups"],
     queryFn: async () => {
@@ -39,9 +36,6 @@ const useGroups = () => {
       }));
     },
   });
-
-  // assign refetch so mutation can use it
-  refetchGroups = refetch;
 
   const insertNewGroup = (groupName: string) => {
     mutation.mutate(groupName);
