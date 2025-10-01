@@ -60,11 +60,10 @@ const useGroups = () => {
     editMutation.mutate({ groupId, groupName });
   };
 
-  const useActivity = (userId: string, groupId?: string) => {
+  const useActivity = (groupId?: string) => {
   return useQuery({
-    queryKey: ["activity", userId, groupId],
-    queryFn: () => fetchActivity(userId, groupId),
-    enabled: !!userId, // only run when userId exists
+    queryKey: ["activity", groupId],
+    queryFn: () => fetchActivity(groupId),
   });
 };
 

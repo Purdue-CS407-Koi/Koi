@@ -109,8 +109,14 @@ export const getGroupMembers = async (groupId: string) => {
   }));
 };
 
-export const fetchActivity = async (userId: string, groupId?: string) => {
-  let query = supabase
+export const fetchActivity = async (groupId?: string) => {
+   const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+    let query = supabase
     .from("Expenses")
     .select("*, Splits!inner(group_id)")
     .order("created_at", { ascending: false });
@@ -126,7 +132,7 @@ export const fetchActivity = async (userId: string, groupId?: string) => {
         await supabase
           .from("GroupMemberships")
           .select("group_id")
-          .eq("user_id", userId)
+          .eq("user_id", user?.id)
       ).data?.map((row) => row.group_id) ?? []
     );
   }

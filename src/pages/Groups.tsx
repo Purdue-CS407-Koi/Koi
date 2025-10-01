@@ -7,6 +7,7 @@ import { AddGroupExpenseModal } from "@/components/groups/addGroupExpenseModal";
 import type { NewExpense } from "@/interfaces/Expense";
 import { insertNewExpense } from "@/api/expenses";
 import { getGroupMembers } from "@/api/groups";
+import { ActivityList } from "@/components/groups/activity/activityList";
 
 interface Member {
   id: string;
@@ -15,15 +16,16 @@ interface Member {
 }
 
 const Groups = () => {
-  const { groupsData } = useGroups();
+  const { groupsData, useActivity } = useGroups();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [selectedGroupName, setSelectedGroupName] = useState<string>("");
-
   const [members, setMembers] = useState<Member[]>([]);
   const [, setIsEditModalOpen] = useState(false);
-
+  const { data: activityData, isLoading: activityLoading } = useActivity(
+    selectedGroupId ?? undefined
+  );
   const handleSelectGroup = async (groupId: string, groupName: string) => {
     setSelectedGroupId(groupId);
     setSelectedGroupName(groupName);
@@ -111,14 +113,10 @@ const Groups = () => {
                     </button>
                   </div>
                 </div>
-
-                {/* Expenses List Placeholder */}
-                <div>
-                  {/* Expense items will go here */}
-                  <div style={{ color: "#6b7280", fontStyle: "italic" }}>
-                    Expense list items will be displayed here
-                  </div>
-                </div>
+                <ActivityList
+                  activityData={activityData}
+                  activityLoading={activityLoading}
+                />
               </div>
 
               {/* Vertical Divider Line */}
