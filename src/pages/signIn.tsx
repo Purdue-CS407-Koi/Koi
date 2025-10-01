@@ -35,52 +35,26 @@ export const SignInPage = () => {
   };
 
   return (
-    <div
-      className="fixed inset-0"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div className="w-full max-w-sm"  style={{ 
-          textAlign: "center",
-          minWidth: "500px", 
-          width: "100%",
-          padding: "0 1rem" 
-        }}>
-        <div
-          className="w-full flex justify-center items-center mb-6"
-          style={{ textAlign: "center" }}
-        >
+    <div className="flex fixed inset-0 items-center justify-center">
+      <div className="w-full max-w-sm text-center min-w-xl px-4">
+        <div className="w-full flex justify-center items-center mb-6 text-center">
           <img
             src={logo}
             alt="Koi Logo"
-            className="w-20 h-auto"
-            style={{ display: "block", margin: "0 auto" }}
+            className="w-20 h-auto block mx-auto"
           />
         </div>
 
-        <div className="w-full mb-6" style={{ textAlign: "center" }}>
-          <h1
-            style={{
-              textAlign: "center",
-              margin: "0 auto 0.5rem auto",
-              fontSize: "2.5rem",
-              fontWeight: "600",
-            }}
-          >
+        <div className="w-full mb-6 text-center">
+          <h1 className="text-center mx-auto mb-2 text-4xl font-semibold">
             Log in to your account
           </h1>
-          <p
-            className="text-sm text-gray-600"
-            style={{ textAlign: "center", margin: "0 auto" }}
-          >
+          <p className="text-sm text-gray-600 text-center mx-auto">
             Welcome back! Please enter your details.
           </p>
         </div>
 
-        <div className="space-y-4 mb-6" style={{ textAlign: "left" }}>
+        <div className="space-y-4 mb-6 text-left">
           <AuthInput
             label="Email"
             type="email"
@@ -97,24 +71,21 @@ export const SignInPage = () => {
             placeholder="Enter your password"
           />
 
-          <div
-            className="w-full flex justify-center"
-            style={{ textAlign: "center" }}
-          >
+          <div className="w-full flex justify-center text-center">
             <button
               onClick={handleSignIn}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-              style={{ margin: "0 auto", width: "100%" }}
+              className={`w-full px-4 py-2 rounded-md
+                bg-blue-600 hover:bg-blue-700 text-white
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                transition-colors mx-auto
+              `}
             >
               Sign In
             </button>
           </div>
         </div>
 
-        <p
-          className="text-sm text-gray-600"
-          style={{ textAlign: "center", margin: "0 auto" }}
-        >
+        <p className="text-sm text-gray-600 text-center mx-auto">
           Don't have an account?{" "}
           <Link to="/signUp" className="text-blue-600 hover:underline">
             Sign up here.
