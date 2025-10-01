@@ -42,6 +42,11 @@ export const useBuckets = () => {
     onSuccess: (data) => {
       console.log("Created bucket instance entry, data returned:", data);
     },
+    onError: (err) => {
+      console.log(
+        "Error creating new bucket instance entry: " + JSON.stringify(err)
+      );
+    },
   });
 
   const createBucketMetadata = async (bucketMetadata: BucketMetadata) => {
