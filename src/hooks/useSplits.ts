@@ -1,24 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
+import type { NewSplit } from "@/interfaces/Split";
+import { insertNewSplit as insertNewSplitApi, getSplit } from "@/api/split";
 import { useSplitStore } from "@/stores/useSplitStore";
-import supabase from "@/helpers/supabase";
-
-const fetchSplit = async (id: string) => {
-  const { data, error } = await supabase
-    .from("Splits")
-    .select()
-    .eq("id", id);
-
-  if (error) {
-    throw error;
-  }
-
-  if (data.length <= 0 || data.length > 1) {
-    throw Error("ID does not exist or is not unique");
-  }
-
-  return data[0];
-};
 
 const useSplits = () => {
   const currentSplitId = useSplitStore((state) => state.currentSplitId);
@@ -28,10 +12,21 @@ const useSplits = () => {
     error,
   } = useQuery({
     queryKey: ["split", currentSplitId], // Zustand state as part of key
-    queryFn: () => fetchSplit(currentSplitId),
+    queryFn: () => getSplit(currentSplitId),
   });
 
-  return { splitData, isLoading, error };
+  const mutation = useMutation({
+    mutationFn: insertNewSplitApi,
+    onError: (err) => {
+      console.log("error inserting new split: " + JSON.stringify(err));
+    },
+  });
+
+  const insertNewSplit = (split: NewSplit) => {
+    mutation.mutate(split);
+  };
+
+  return { splitData, isLoading, error, insertNewSplit };
 };
 
 export default useSplits;

@@ -3,20 +3,18 @@ import {
   insertGroup as insertGroupApi,
   insertGroupMembership as insertGroupMembershipApi,
   getUserGroups,
+  getGroup,
 } from "@/api/groups";
-import { useUserStore } from "@/stores/useUserStore";
+import { useGroupStore } from "@/stores/useGroupStore";
 
 const useGroups = () => {
-  const currentUserId = useUserStore((state) => state.currentUserId);
-
   // refetch function will be defined later from useQuery
   let refetchGroups: () => void;
 
   const mutation = useMutation({
     mutationFn: async (groupName: string) => {
-      if (!currentUserId) throw new Error("No user id available");
       const group = await insertGroupApi(groupName);
-      await insertGroupMembershipApi(currentUserId, group.id);
+      await insertGroupMembershipApi(group.id);
       return group;
     },
     onError: (err) => {
@@ -32,16 +30,14 @@ const useGroups = () => {
     error: getGroupsError,
     refetch,
   } = useQuery({
-    queryKey: ["groups", currentUserId],
+    queryKey: ["groups"],
     queryFn: async () => {
-      if (!currentUserId) return [];
-      const rawData = await getUserGroups(currentUserId);
+      const rawData = await getUserGroups();
       return rawData?.map((item) => ({
         ...item,
         created_at: item.created_at.split("T")[0],
       }));
     },
-    enabled: !!currentUserId,
   });
 
   // assign refetch so mutation can use it
@@ -51,7 +47,17 @@ const useGroups = () => {
     mutation.mutate(groupName);
   };
 
-  return { groupsData, getGroupsError, refetchGroups, insertNewGroup };
+  const currentGroupId = useGroupStore((state) => state.currentGroupId);
+  const {
+    data: currentGroupData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["group", currentGroupId], // Zustand state as part of key
+    queryFn: () => getGroup(currentGroupId),
+  });
+
+  return { groupsData, getGroupsError, refetchGroups, insertNewGroup, currentGroupData, isLoading, error };
 };
 
 export default useGroups;

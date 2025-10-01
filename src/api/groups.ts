@@ -19,10 +19,17 @@ export async function insertGroup(name: string) {
   return data;
 }
 
-export async function insertGroupMembership(userId: string, groupId: string) {
+export async function insertGroupMembership(groupId: string) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+
   const { data, error } = await supabase
     .from("GroupMemberships")
-    .insert([{ user_id: userId, group_id: groupId }])
+    .insert([{ user_id: user?.id, group_id: groupId }])
     .select()
     .single();
 
@@ -30,17 +37,41 @@ export async function insertGroupMembership(userId: string, groupId: string) {
   return data;
 }
 
-export async function getUserGroups(userId: string) {
+export async function getUserGroups() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+  
   const { data, error } = await supabase
     .from("GroupMemberships")
     .select(`
       group_id,
       Groups ( id, name, created_at )
     `)
-    .eq("user_id", userId);
+    .eq("user_id", user?.id);
 
   if (error) throw error;
   return data.map((gm) => gm.Groups);
+}
+
+export async function getGroup(groupId: string) {
+  const { data, error } = await supabase
+    .from("Groups")
+    .select()
+    .eq("id", groupId);
+
+  if (error) {
+    throw error;
+  }
+
+  if (data.length <= 0 || data.length > 1) {
+    throw Error("ID does not exist or is not unique");
+  }
+
+  return data[0];
 }
 
 export async function updateGroupName(groupId: string, newName: string) {

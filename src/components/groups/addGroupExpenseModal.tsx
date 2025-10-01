@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 
 // constants 
-import { BLACK, BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "../../config/colors";
-import { TEXT_EDITING } from "../../config/keyboardEvents";
+import { BLACK, BUTTON_COLOR, BUTTON_HOVER_COLOR, TEXT_COLOR, WHITE } from  "@/config/colors";
+import { TEXT_EDITING } from "@/config/keyboardEvents";
 
 // hooks
-import useGroups from "../../hooks/useGroups"
-import { useUserStore } from "../../stores/useUserStore";
-import useGroupMembers from "../../hooks/useGroupMembers";
-import useSplit from "../../hooks/useSplit";
+import useGroups from "@/hooks/useGroups"
+import useGroupMembers from "@/hooks/useGroupMembers";
+import useSplits from "@/hooks/useSplits";
+import useUsers from "@/hooks/useUsers";
 
 // components
-import { MinusIcon } from "../general/minusIcon";
-import { PlusIcon } from "../general/plusIcon";
+import { MinusIcon } from "@/components/general/minusIcon";
+import { PlusIcon } from "@/components/general/plusIcon";
 
 //types
-import type { NewExpense } from "../../interfaces/Expense";
+import type { NewExpense } from "@/interfaces/Expense";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
@@ -40,13 +40,18 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   const [individualAmounts, setIndividualAmounts] = useState<Record<string, {dollars: string, cents: string}>>({});
   const { groupMembersData: members } = useGroupMembers(selectedGroup);
   const { groupsData: groups } = useGroups();
-  const currentUserId = useUserStore((state) => state.currentUserId);
-  const { insertNewSplit } = useSplit();
+  const { insertNewSplit } = useSplits();
+  const { userData } = useUsers();
 
   const [page, setPage] = useState(1);
   const [splitting, setSplitting] = useState(true);
 
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    console.log(groups);
+    console.log(userData?.id);
+  }, [groups, userData]);
 
   useEffect(() => {
     setPayers(members ?? []);
@@ -78,7 +83,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
   const handleSave = async () => {
     const name = expenseName;
-    const user_id = currentUserId;
+    const user_id = userData?.id;
     const description = expenseDescription;
     if (splitting) {
       const amount = Number(expenseDollars) + (Number(expenseCents) / 100);
@@ -641,7 +646,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     {payers?.map((m) => (
                       <li key={m.id} className="p-3 flex items-center gap-3">
                         {
-                          m.id == currentUserId ?
+                          m.id == userData?.id ?
                             <div>
                               {"(Paid by) "  + m.name}
                               {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
@@ -692,7 +697,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     {members?.map((m) => (
                       <li key={m.id} className="flex items-center gap-3">
                         <div className="px-2 py-1 rounded flex items-center">
-                          <div>{(m.id == currentUserId) ? ("(Paid by) " + m.name) : m.name}: $</div>
+                          <div>{(m.id == userData?.id) ? ("(Paid by) " + m.name) : m.name}: $</div>
                           <div>
                             <input
                               type="text"

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import Template, { Content, Sidebar } from "@/templates/template";
 import { GroupsList } from "@/components/groups/groupsList";
