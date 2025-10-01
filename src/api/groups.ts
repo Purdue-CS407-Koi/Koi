@@ -96,3 +96,30 @@ export const getGroupMembers = async (groupId: string) => {
     name: item.Users.name ?? "Unknown Member",
   }));
 };
+
+export const fetchActivity = async (userId: string, groupId?: string) => {
+  let query = supabase
+    .from("Expenses")
+    .select("*, Splits!inner(group_id)")
+    .order("created_at", { ascending: false });
+
+  if (groupId) {
+    // Specific group
+    query = query.eq("Splits.group_id", groupId);
+  } else {
+    // All groups for user
+    query = query.in(
+      "Splits.group_id",
+      (
+        await supabase
+          .from("GroupMemberships")
+          .select("group_id")
+          .eq("user_id", userId)
+      ).data?.map((row) => row.group_id) ?? []
+    );
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+};

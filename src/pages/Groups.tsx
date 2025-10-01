@@ -15,14 +15,14 @@ interface Member {
 }
 
 const Groups = () => {
-  const { groupsData, refetchGroups } = useGroups();
+  const { groupsData } = useGroups();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [selectedGroupName, setSelectedGroupName] = useState<string>("");
 
   const [members, setMembers] = useState<Member[]>([]);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [, setIsEditModalOpen] = useState(false);
 
   const handleSelectGroup = async (groupId: string, groupName: string) => {
     setSelectedGroupId(groupId);

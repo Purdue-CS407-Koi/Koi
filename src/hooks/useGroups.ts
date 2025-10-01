@@ -3,6 +3,7 @@ import {
   insertGroup as insertGroupApi,
   insertGroupMembership as insertGroupMembershipApi,
   getUserGroups,
+  fetchActivity,
   updateGroupName as editGroupApi,
   getGroup,
 } from "@/api/groups";
@@ -58,6 +59,14 @@ const useGroups = () => {
     editMutation.mutate({ groupId, groupName });
   };
 
+  const useActivity = (userId: string, groupId?: string) => {
+  return useQuery({
+    queryKey: ["activity", userId, groupId],
+    queryFn: () => fetchActivity(userId, groupId),
+    enabled: !!userId, // only run when userId exists
+  });
+};
+
   const currentGroupId = useGroupStore((state) => state.currentGroupId);
   const {
     data: currentGroupData,
@@ -68,7 +77,7 @@ const useGroups = () => {
     queryFn: () => getGroup(currentGroupId),
   });
 
-  return { groupsData, getGroupsError, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup };
+  return { groupsData, getGroupsError, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup };
 };
 
 export default useGroups;
