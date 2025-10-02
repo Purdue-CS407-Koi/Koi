@@ -54,7 +54,7 @@ export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
               id="name"
               name="name"
               label="Expense Name"
-              placeholder={props.data.name}
+              defaultValue={props.data.name}
               fullWidth
             />
             <TextField
@@ -64,7 +64,7 @@ export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
               id="amount"
               name="amount"
               label="Amount"
-              placeholder={props.data.amount}
+              defaultValue={props.data.amount}
               fullWidth
             />
             <TextField
@@ -74,7 +74,7 @@ export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
               id="description"
               name="description"
               label="Description"
-              placeholder={props.data.description}
+              defaultValue={props.data.description}
               fullWidth
             />
           </form>
