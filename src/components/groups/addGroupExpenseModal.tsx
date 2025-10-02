@@ -130,6 +130,18 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
           };
 
           insertNewSplit(split);
+        } else {
+          const amount = Number(dollars) + Number(cents) / 100;
+          const total = Number(expenseDollars) + Number(expenseCents) / 100;
+          const split = {
+            amount_owed: total * -1,
+            amount_remaining: (total - amount) * -1,
+            original_expense_id: expense_id,
+            group_id: selectedGroup,
+            user_id: id,
+          };
+
+          insertNewSplit(split);
         }
       });
     } else {
@@ -171,6 +183,16 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
             insertNewSplit(split);
           }
+        } else {
+          const split = {
+            amount_owed: amount * -1,
+            amount_remaining: check * -1,
+            original_expense_id: expense_id,
+            group_id: selectedGroup,
+            user_id: id,
+          };
+
+          insertNewSplit(split);
         }
       });
     }
