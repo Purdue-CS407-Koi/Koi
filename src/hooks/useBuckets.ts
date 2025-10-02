@@ -62,7 +62,7 @@ export const useBuckets = () => {
     error: getBucketMetadataError,
     refetch: refetchBucketMetadata,
   } = useQuery({
-    queryKey: ["bucketMetadata", currentBucketMetadataId],
+    queryKey: ["bucketMetadata"],
     queryFn: async () => {
       const bucketMetadata = await getAllBucketMetadata();
 
