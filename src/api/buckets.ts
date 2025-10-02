@@ -91,7 +91,6 @@ export const createBucketInstance = async (bucketInstance: BucketInstance) => {
         bucket_metadata_id: bucketInstance.bucket_metadata_id,
         start: bucketInstance.start?.toString(),
         end: bucketInstance.end?.toString(),
-        user_id: user?.id,
       },
     ])
     .select();
