@@ -4,7 +4,7 @@ import {
   getAllBucketInstances,
   getAllBucketMetadata,
 } from "@/api/buckets";
-import type { BucketInstance, BucketMetadata } from "@/interfaces/Bucket";
+import type { BucketMetadata, NewBucketInstance } from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -53,7 +53,7 @@ export const useBuckets = () => {
     return createMetadataMutation.mutate(bucketMetadata);
   };
 
-  const createBucketInstance = async (bucketInstance: BucketInstance) => {
+  const createBucketInstance = async (bucketInstance: NewBucketInstance) => {
     return createInstanceMutation.mutate(bucketInstance);
   };
 

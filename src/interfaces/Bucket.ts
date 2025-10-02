@@ -5,6 +5,12 @@ export interface BucketMetadata {
   spending_limit: number;
 }
 
+export interface NewBucketInstance {
+  bucket_metadata_id: string;
+  start: Date | null;
+  end: Date | null;
+}
+
 export interface BucketInstance {
   id: string;
   bucket_metadata_id: string;
