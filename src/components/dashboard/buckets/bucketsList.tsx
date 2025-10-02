@@ -2,20 +2,13 @@ import { useState } from "react";
 import NewBucketModal from "./newBucketModal";
 import { useBuckets } from "@/hooks/useBuckets";
 
+import { BookmarkBorder } from "@mui/icons-material";
+
 
 export const BucketsList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { bucketMetadataData } = useBuckets();
-
-  const getBucketIcon = () => {
-    // Bookmark icon for all groups
-    return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#6b7280">
-        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-      </svg>
-    );
-  };
 
   return (
     <>
@@ -30,7 +23,7 @@ export const BucketsList = () => {
               className="flex items-center gap-3 py-2"
             >
               <div className="flex items-center justify-center w-5">
-                {getBucketIcon()}
+                <BookmarkBorder />
               </div>
               <div>
                 <div className="text-sm font-medium text-sidebar-entry">
