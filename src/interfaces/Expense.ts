@@ -7,3 +7,10 @@ export interface NewExpense {
   challenge_id?: string;
   user_id?: string;
 }
+
+export interface UpdateExpenseProps {
+  amount: number;
+  description: string;
+  name: string;
+  id: string;
+}

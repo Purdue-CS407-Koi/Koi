@@ -2,6 +2,7 @@ import useExpenses from "@/hooks/useExpenses";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import type { ColDef, SizeColumnsToFitGridStrategy } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
+import { EditExpenseCellRenderer } from "./editExpense";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -38,7 +39,7 @@ export const ExpenseTable = () => {
     {
       field: "description",
     },
-    { field: "update" },
+    { field: "update", cellRenderer: EditExpenseCellRenderer },
     { field: "delete" },
   ];
 

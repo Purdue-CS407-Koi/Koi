@@ -1,5 +1,5 @@
 import supabase from "@/helpers/supabase";
-import type { NewExpense } from "@/interfaces/Expense";
+import type { NewExpense, UpdateExpenseProps } from "@/interfaces/Expense";
 
 export async function getExpensesFromBucket(bucket_instance_id: string) {
   const {
@@ -44,6 +44,22 @@ export async function insertNewExpense({
       },
     ])
     .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateExpense({
+  amount,
+  description,
+  name,
+  id,
+}: UpdateExpenseProps) {
+  const { data, error } = await supabase
+    .from("Expenses")
+    .update({ amount, description, name })
+    .eq("id", id)
+    .select();
+
   if (error) throw error;
   return data;
 }

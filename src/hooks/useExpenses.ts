@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { NewExpense } from "@/interfaces/Expense";
+import type { NewExpense, UpdateExpenseProps } from "@/interfaces/Expense";
 import {
   insertNewExpense as insertNewExpenseApi,
   getExpensesFromBucket,
+  updateExpense as updateExpenseApi,
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 
@@ -11,10 +12,20 @@ const useExpenses = () => {
     (state) => state.currentBucketInstanceId
   );
 
-  const mutation = useMutation({
+  const createExpenseMutation = useMutation({
     mutationFn: insertNewExpenseApi,
     onError: (err) => {
       console.log("error inserting new expense: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchExpenses();
+    },
+  });
+
+  const updateExpenseMutation = useMutation({
+    mutationFn: updateExpenseApi,
+    onError: (err) => {
+      console.log("error updating new expense: " + JSON.stringify(err));
     },
     onSuccess: () => {
       refetchExpenses();
@@ -41,10 +52,20 @@ const useExpenses = () => {
   });
 
   const insertNewExpense = (expense: NewExpense) => {
-    mutation.mutate(expense);
+    createExpenseMutation.mutate(expense);
   };
 
-  return { expenseData, getExpensesError, refetchExpenses, insertNewExpense };
+  const updateExpense = (expense: UpdateExpenseProps) => {
+    updateExpenseMutation.mutate(expense);
+  };
+
+  return {
+    expenseData,
+    getExpensesError,
+    refetchExpenses,
+    insertNewExpense,
+    updateExpense,
+  };
 };
 
 export default useExpenses;
