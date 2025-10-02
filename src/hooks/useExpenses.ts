@@ -4,6 +4,7 @@ import {
   insertNewExpense as insertNewExpenseApi,
   getExpensesFromBucket,
   updateExpense as updateExpenseApi,
+  deleteExpense as deleteExpenseApi,
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 
@@ -26,6 +27,16 @@ const useExpenses = () => {
     mutationFn: updateExpenseApi,
     onError: (err) => {
       console.log("error updating new expense: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchExpenses();
+    },
+  });
+
+  const deleteExpenseMutation = useMutation({
+    mutationFn: deleteExpenseApi,
+    onError: (err) => {
+      console.log("error deleting new expense: " + JSON.stringify(err));
     },
     onSuccess: () => {
       refetchExpenses();
@@ -59,12 +70,17 @@ const useExpenses = () => {
     updateExpenseMutation.mutate(expense);
   };
 
+  const deleteExpense = (id: string) => {
+    deleteExpenseMutation.mutate(id);
+  };
+
   return {
     expenseData,
     getExpensesError,
     refetchExpenses,
     insertNewExpense,
     updateExpense,
+    deleteExpense,
   };
 };
 

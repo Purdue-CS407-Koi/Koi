@@ -63,3 +63,8 @@ export async function updateExpense({
   if (error) throw error;
   return data;
 }
+
+export async function deleteExpense(id: string) {
+  const { error } = await supabase.from("Expenses").delete().eq("id", id);
+  if (error) throw error;
+}
