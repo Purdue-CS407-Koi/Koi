@@ -85,6 +85,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       setError("Expense name is required");
       return;
     }
+    handleEvenSplit();
+
     setPage(2);
     return;
   };
@@ -167,12 +169,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     handleClose();
   };
 
-  const handleMode = () => {
-    setPayers(members ?? []);
-    handleEvenSplit();
-    setSplitting(!splitting);
-  };
-
   const handleEvenSplit = () => {
     const dollars = Number(expenseDollars);
     const cents = Number(expenseCents);
@@ -182,8 +178,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     const splitDollars = Math.floor(split / 100);
     const splitCents = split % 100;
     const excess_cents = totalCents - split * numPeople;
-    const newAmounts: { [key: string]: { dollars: string; cents: string } } =
-      {};
+    const newAmounts: { [key: string]: { dollars: string; cents: string } } = {};
     payers.forEach((payer, index) => {
       newAmounts[payer.id] = {
         dollars: splitDollars.toString().padStart(2, "0"),
@@ -614,406 +609,45 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 Create New Group Expense
               </h3>
             </div>
-            <div>
-              <button
-                onClick={handleMode}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid #d1d5db",
-                  borderTopLeftRadius: "6px",
-                  borderBottomLeftRadius: "6px",
-                  borderTopRightRadius: 0,
-                  borderBottomRightRadius: 0,
-                  backgroundColor: splitting ? BUTTON_COLOR : WHITE,
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  width: "50%",
-                }}
-              >
-                Split Evenly
-              </button>
-              <button
-                onClick={handleMode}
-                disabled={!expenseName.trim() || !selectedGroup}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid #d1d5db",
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0,
-                  borderTopRightRadius: "6px",
-                  borderBottomRightRadius: "6px",
-                  backgroundColor: !splitting ? BUTTON_COLOR : WHITE,
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor:
-                    expenseName.trim() && selectedGroup
-                      ? "pointer"
-                      : "not-allowed",
-                  transition: "all 0.2s",
-                  width: "50%",
-                }}
-              >
-                Custom Amounts
-              </button>
-            </div>
             {/* Input */}
             <div style={{ marginBottom: "20px" }}>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                      marginTop: "12px",
-                    }}
-                  >
-                    Expense Amount
-                  </label>
-                  $
-                  <input
-                    type="text"
-                    value={expenseDollars}
-                    onChange={(e) => {
-                      setExpenseDollars(e.target.value);
-                      if (error) setError(""); // Clear error when user types
-                    }}
-                    onKeyDown={handleKeyPressNumber}
-                    placeholder="00"
-                    style={{
-                      width: "calc(4em + 8px)",
-                      padding: "6px",
-                      border: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                      borderRadius: "8px",
-                      fontSize: "14px",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                      boxSizing: "border-box",
-                      textAlign: "right",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = error
-                        ? "#ef4444"
-                        : "#3b82f6";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = error
-                        ? "#ef4444"
-                        : "#757981ff";
-                    }}
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                  />
-                  .
-                  <input
-                    type="text"
-                    value={expenseCents}
-                    onChange={(e) => {
-                      setExpenseCents(e.target.value);
-                      if (error) setError(""); // Clear error when user types
-                    }}
-                    onKeyDown={handleKeyPressNumber}
-                    placeholder="00"
-                    maxLength={2}
-                    style={{
-                      width: "calc(4em + 8px)",
-                      padding: "6px",
-                      border: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                      borderRadius: "8px",
-                      fontSize: "14px",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                      boxSizing: "border-box",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = error
-                        ? "#ef4444"
-                        : "#3b82f6";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = error
-                        ? "#ef4444"
-                        : "#757981ff";
-                    }}
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                  />
-                  <button
-                    onClick={handleEvenSplit}
-                    style={{
-                      padding: "10px 20px",
-                      border: "none",
-                      borderRadius: "6px",
-                      color: TEXT_COLOR,
-                      fontSize: "14px",
-                      transition: "all 0.2s",
-                      marginLeft: "10px",
-                    }}
-                  >
-                    Calculate
-                  </button>
-                  <ul>
-                    {payers?.map((m) => (
-                      <li key={m.id} className="p-3 flex items-center gap-3">
-                        {m.id == userData?.id ? (
+              <div>
+                <ul>
+                  {payers?.map((m) => (
+                    <li key={m.id} className="p-3 flex items-center gap-3">
+                      {m.id == userData?.id ? (
+                        <div>
+                          {"(Paid by) " + m.name}
+                          {`: $${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
+                            onClick={() => removePayer(m.id, m.name)}
+                          >
+                            <MinusIcon className="h-4 w-4" />
+                          </button>
                           <div>
-                            {"(Paid by) " + m.name}
+                            {m.name ?? "Unnamed user"}
                             {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
                           </div>
-                        ) : (
-                          <div className="flex items-center gap-3">
-                            <button
-                              type="button"
-                              className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
-                              onClick={() => removePayer(m.id, m.name)}
-                            >
-                              <MinusIcon className="h-4 w-4" />
-                            </button>
-                            <div>
-                              {m.name ?? "Unnamed user"}
-                              {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
-                            </div>
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                    {nonpayers?.map((m) => (
-                      <li key={m.id} className="p-3 flex items-center gap-3">
-                        <button
-                          type="button"
-                          className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
-                          onClick={() => addPayer(m.id, m.name)}
-                        >
-                          <PlusIcon className="h-4 w-4" />
-                        </button>
-                        <div className="text-gray-400">
-                          {m.name ?? "Unnamed user"}
                         </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              {error && (
-                <p
-                  style={{
-                    margin: "8px 0 0 0",
-                    fontSize: "12px",
-                    color: "#ef4444",
-                  }}
-                >
-                  {error}
-                </p>
-              )}
-            </div>
-
-            {/* Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                justifyContent: "flex-end",
-              }}
-            >
-              <button
-                onClick={handleBack}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                  color: "#374151",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f9fafb";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "white";
-                }}
-              >
-                Back
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={!expenseName.trim()}
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "6px",
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor: expenseName.trim() ? "pointer" : "not-allowed",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (expenseName.trim()) {
-                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
-                    e.currentTarget.style.color = WHITE;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (expenseName.trim()) {
-                    e.currentTarget.style.backgroundColor = BUTTON_COLOR;
-                    e.currentTarget.style.color = TEXT_COLOR;
-                  }
-                }}
-              >
-                Create Expense
-              </button>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  } else {
-<>
-        {/* Backdrop */}
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-          onClick={handleClose}
-        >
-          {/* Modal */}
-          <div
-            style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "400px",
-              margin: "16px",
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div style={{ marginBottom: "20px" }}>
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  color: "#111827",
-                }}
-              >
-                Create New Group Expense
-              </h3>
-            </div>
-            
-            {/* Input */}
-            <div style={{ marginBottom: "20px" }}>
-            
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                    marginBottom: "8px",
-                    marginTop: "12px",
-                  }}
-                >
-                  Expense Amount
-                </label>
-                <ul>
-                  {members?.map((m) => (
-                    <li key={m.id} className="flex items-center gap-3">
-                      <div className="px-2 py-1 rounded flex items-center">
-                        <div>
-                          {m.id == userData?.id
-                            ? "(Paid by) " + m.name
-                            : m.name}
-                          : $
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            value={individualAmounts[m.id]?.dollars}
-                            onChange={(e) => {
-                              setAmount(m.id, { dollars: e.target.value });
-                              if (error) setError(""); // Clear error when user types
-                            }}
-                            onKeyDown={handleKeyPressNumber}
-                            placeholder="00"
-                            style={{
-                              width: "calc(4em + 8px)",
-                              padding: "6px",
-                              border: error
-                                ? "2px solid #ef4444"
-                                : "2px solid #757981ff",
-                              borderRadius: "8px",
-                              fontSize: "14px",
-                              outline: "none",
-                              transition: "border-color 0.2s",
-                              boxSizing: "border-box",
-                              textAlign: "right",
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = error
-                                ? "#ef4444"
-                                : "#3b82f6";
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = error
-                                ? "#ef4444"
-                                : "#757981ff";
-                            }}
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                          />
-                          .
-                          <input
-                            type="text"
-                            value={individualAmounts[m.id]?.cents}
-                            onChange={(e) => {
-                              setAmount(m.id, { cents: e.target.value });
-                              if (error) setError(""); // Clear error when user types
-                            }}
-                            onKeyDown={handleKeyPressNumber}
-                            placeholder="00"
-                            maxLength={2}
-                            style={{
-                              width: "calc(4em + 8px)",
-                              padding: "6px",
-                              border: error
-                                ? "2px solid #ef4444"
-                                : "2px solid #757981ff",
-                              borderRadius: "8px",
-                              fontSize: "14px",
-                              outline: "none",
-                              transition: "border-color 0.2s",
-                              boxSizing: "border-box",
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = error
-                                ? "#ef4444"
-                                : "#3b82f6";
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = error
-                                ? "#ef4444"
-                                : "#757981ff";
-                            }}
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                          />
-                        </div>
+                      )}
+                    </li>
+                  ))}
+                  {nonpayers?.map((m) => (
+                    <li key={m.id} className="p-3 flex items-center gap-3">
+                      <button
+                        type="button"
+                        className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
+                        onClick={() => addPayer(m.id, m.name)}
+                      >
+                        <PlusIcon className="h-4 w-4" />
+                      </button>
+                      <div className="text-gray-400">
+                        {m.name ?? "Unnamed user"}
                       </div>
                     </li>
                   ))}
@@ -1092,5 +726,225 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
           </div>
         </div>
       </>
+    );
+  } else {
+    return (
+      <>
+        {/* Backdrop */}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={handleClose}
+        >
+          {/* Modal */}
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              width: "100%",
+              maxWidth: "400px",
+              margin: "16px",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ marginBottom: "20px" }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#111827",
+                }}
+              >
+                Create New Group Expense
+              </h3>
+            </div>
+            
+            {/* Input */}
+            <div style={{ marginBottom: "20px" }}>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                    marginBottom: "12px",
+                    marginTop: "12px",
+                  }}
+                >
+                  Split Options
+                </label>
+                <ul>
+                  {members?.map((m) => (
+                    <li key={m.id} className="flex items-center gap-3">
+                      <div className="px-2 py-1 rounded flex items-center">
+                        {m.id == userData?.id
+                          ? `(Paid by) ${m.name}` 
+                          :
+                          <div>
+                            {m.name}: $
+                            <input
+                              type="text"
+                              value={individualAmounts[m.id]?.dollars}
+                              onChange={(e) => {
+                                setAmount(m.id, { dollars: e.target.value });
+                                if (error) setError(""); // Clear error when user types
+                              }}
+                              onKeyDown={handleKeyPressNumber}
+                              placeholder="00"
+                              style={{
+                                width: "calc(4em + 8px)",
+                                padding: "2px",
+                                borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
+                                fontSize: "14px",
+                                outline: "none",
+                                transition: "border-color 0.2s",
+                                boxSizing: "border-box",
+                                textAlign: "right",
+                                minWidth: "calc(4em + 8px)",
+                              }}
+                              onFocus={(e) => {
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#3b82f6";
+                              }}
+                              onBlur={(e) => {
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#757981ff";
+                              }}
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                            />
+                            .
+                            <input
+                              className="text-left"
+                              type="text"
+                              value={individualAmounts[m.id]?.cents}
+                              onChange={(e) => {
+                                setAmount(m.id, { cents: e.target.value });
+                                if (error) setError(""); // Clear error when user types
+                              }}
+                              onKeyDown={handleKeyPressNumber}
+                              placeholder="00"
+                              maxLength={2}
+                              style={{
+                                width: "calc(2em + 4px)",
+                                padding: "2px",
+                                borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
+                                fontSize: "14px",
+                                outline: "none",
+                                transition: "border-color 0.2s",
+                                boxSizing: "border-box",
+                                minWidth: "calc(2em + 4px)",
+                              }}
+                              onFocus={(e) => {
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#3b82f6";
+                              }}
+                              onBlur={(e) => {
+                                e.target.style.borderColor = error
+                                  ? "#ef4444"
+                                  : "#757981ff";
+                              }}
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                            />
+                          </div>
+                        }
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {error && (
+                <p
+                  style={{
+                    margin: "8px 0 0 0",
+                    fontSize: "12px",
+                    color: "#ef4444",
+                  }}
+                >
+                  {error}
+                </p>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={handleBack}
+                style={{
+                  padding: "10px 20px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "6px",
+                  backgroundColor: "white",
+                  color: "#374151",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f9fafb";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "white";
+                }}
+              >
+                Back
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={!expenseName.trim()}
+                style={{
+                  padding: "10px 20px",
+                  border: "none",
+                  borderRadius: "6px",
+                  color: TEXT_COLOR,
+                  fontSize: "14px",
+                  cursor: expenseName.trim() ? "pointer" : "not-allowed",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  if (expenseName.trim()) {
+                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
+                    e.currentTarget.style.color = WHITE;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (expenseName.trim()) {
+                    e.currentTarget.style.backgroundColor = BUTTON_COLOR;
+                    e.currentTarget.style.color = TEXT_COLOR;
+                  }
+                }}
+              >
+                Create Expense
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
   }
 };
