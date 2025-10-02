@@ -1,7 +1,7 @@
 export interface BucketMetadata {
   id: string;
   name: string;
-  recurrence_period_type: RecurrencePeriodType;
+  recurrence_period_type: RecurrencePeriodType | null;
   spending_limit: number;
 }
 
