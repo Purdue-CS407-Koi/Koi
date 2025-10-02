@@ -83,12 +83,7 @@ export const GroupsList: React.FC<GroupsListProps> = ({
               </div>
                 <div className="w-full">
                   <div className="text-sm font-medium text-sidebar-entry flex w-full">
-                    <div>{group.name}</div>
-                    <div className="text-right ml-auto">
-                      {(splitMap.get(group.id)?.toFixed(2) ?? 0) == 0
-                        ? "Settled Up"
-                        : `You owe $${splitMap.get(group.id)?.toFixed(2)}`}{" "}
-                    </div>
+                    {group.name}
                   </div>
                   <div className="text-xs text-sidebar-entry-subtext">
                     {`Created ${group.createdDate}`}
