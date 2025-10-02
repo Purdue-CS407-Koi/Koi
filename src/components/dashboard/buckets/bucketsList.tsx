@@ -5,6 +5,7 @@ import { useBuckets } from "@/hooks/useBuckets";
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { getRecurrencePeriodDisplayName } from "@/interfaces/Bucket";
+import { capitalizeFirstLetter } from "@/helpers/utilities";
 
 
 export const BucketsList = () => {
@@ -38,7 +39,7 @@ export const BucketsList = () => {
                 </div>
                 <div className="text-xs text-sidebar-entry-subtext">
                   {bucket.recurrence_period_type
-                    ? `Recurs ${getRecurrencePeriodDisplayName(bucket.recurrence_period_type)}`
+                    ? capitalizeFirstLetter(getRecurrencePeriodDisplayName(bucket.recurrence_period_type))
                     : ""}
                 </div>
               </div>
