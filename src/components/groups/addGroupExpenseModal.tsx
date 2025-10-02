@@ -18,6 +18,7 @@ import useUsers from "@/hooks/useUsers";
 // components
 import { MinusIcon } from "@/components/general/minusIcon";
 import { PlusIcon } from "@/components/general/plusIcon";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 //types
 import type { NewExpense } from "@/interfaces/Expense";
@@ -64,7 +65,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   useEffect(() => {
     setPayers(members ?? []);
     setNonpayers([]);
-    console.log(members);
   }, [members]);
 
   useEffect(() => {
@@ -80,12 +80,21 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     setSelectedGroup(group);
   };
 
-  const handleNext = () => {
+  const handleSplitEvenly = () => {
     if (!expenseName.trim() || !selectedGroup) {
       setError("Expense name is required");
       return;
     }
     setPage(2);
+    return;
+  };
+
+  const handleCustomAmounts = () => {
+    if (!expenseName.trim() || !selectedGroup) {
+      setError("Expense name is required");
+      return;
+    }
+    setPage(3);
     return;
   };
 
@@ -261,10 +270,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         >
           {/* Modal */}
           <div
+            className="relative"
             style={{
               backgroundColor: "white",
               borderRadius: "12px",
-              padding: "24px",
+              padding: "48px 24px 24px 24px",
               width: "100%",
               maxWidth: "400px",
               margin: "16px",
@@ -272,6 +282,28 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             }}
             onClick={(e) => e.stopPropagation()}
           >
+            <button
+              className ="absolute top-1 left-1"
+              onClick={handleClose}
+              style={{
+                padding: "10px 10px",
+                borderRadius: "6px",
+                backgroundColor: "white",
+                color: "#374151",
+                fontSize: "14px",
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f9fafb";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "white";
+              }}
+            >
+              Cancel
+            </button>
+            
             {/* Header */}
             <div style={{ marginBottom: "20px" }}>
               <h3
@@ -287,18 +319,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             </div>
 
             {/* Input */}
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "8px",
-                }}
-              >
-                Expense Name
-              </label>
+            <div style={{ marginBottom: "20px" }} className="flex flex-col items-center">
               <input
                 type="text"
                 value={expenseName}
@@ -310,10 +331,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 placeholder="Enter expense name"
                 autoFocus
                 style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                  borderRadius: "8px",
+                  width: "70%",
+                  padding: "6px",
+                  borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
                   fontSize: "14px",
                   outline: "none",
                   transition: "border-color 0.2s",
@@ -323,21 +343,10 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
+                  e.target.style.borderColor = error ? "#ef4444" : "#757981ff";
                 }}
               />
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "8px",
-                  marginTop: "12px",
-                }}
-              >
-                Select Group
-              </label>
+
               <select
                 value={selectedGroup ?? ""}
                 onChange={(e) =>
@@ -346,9 +355,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   )
                 }
                 style={{
-                  padding: "12px",
-                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                  borderRadius: "8px",
+                  padding: "6px",
+                  borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
                   fontSize: "14px",
                   outline: "none",
                   transition: "border-color 0.2s",
@@ -356,6 +364,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   textAlign: "center",
                   color: selectedGroup ? BLACK : TEXT_COLOR,
                 }}
+                className="mt-4"
               >
                 {/* Placeholder */}
                 <option value="" disabled hidden>
@@ -370,19 +379,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   )
                 )}
               </select>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "8px",
-                  marginTop: "12px",
-                }}
-              >
-                Expense Description
-              </label>
-              <input
+              {/* <input
                 type="text"
                 value={expenseDescription}
                 onChange={(e) => {
@@ -394,9 +391,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 autoFocus
                 style={{
                   width: "100%",
-                  padding: "12px",
-                  border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
-                  borderRadius: "8px",
+                  padding: "2px",
+                  borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
                   fontSize: "14px",
                   outline: "none",
                   transition: "border-color 0.2s",
@@ -406,9 +402,147 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb";
+                  e.target.style.borderColor = error ? "#ef4444" : "#757981ff";
                 }}
-              />
+              /> */}
+              <div className="mt-4 w-fit">
+                $
+                <input
+                  type="text"
+                  value={expenseDollars}
+                  onChange={(e) => {
+                    setExpenseDollars(e.target.value);
+                    if (error) setError(""); // Clear error when user types
+                  }}
+                  onKeyDown={handleKeyPressNumber}
+                  placeholder="00"
+                  style={{
+                    width: "calc(4em + 8px)",
+                    padding: "2px",
+                    borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
+                    fontSize: "14px",
+                    outline: "none",
+                    transition: "border-color 0.2s",
+                    boxSizing: "border-box",
+                    textAlign: "right",
+                    minWidth: "calc(4em + 8px)",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = error
+                      ? "#ef4444"
+                      : "#3b82f6";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = error
+                      ? "#ef4444"
+                      : "#757981ff";
+                  }}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                />
+                .
+                <input
+                  type="text"
+                  value={expenseCents}
+                  onChange={(e) => {
+                    setExpenseCents(e.target.value);
+                    if (error) setError(""); // Clear error when user types
+                  }}
+                  onKeyDown={handleKeyPressNumber}
+                  placeholder="00"
+                  maxLength={2}
+                  style={{
+                    width: "calc(2em)",
+                    padding: "2px",
+                    borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
+                    fontSize: "14px",
+                    outline: "none",
+                    transition: "border-color 0.2s",
+                    boxSizing: "border-box",
+                    minWidth: "calc(2em)"
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = error
+                      ? "#ef4444"
+                      : "#3b82f6";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = error
+                      ? "#ef4444"
+                      : "#757981ff";
+                  }}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                />
+              </div>
+              <div className="mt-6 leading-normal w-30">
+                Split:
+              </div>
+              <button
+                className="flex flex-row justify-center items-center"
+                onClick={handleSplitEvenly}
+                style={{
+                  padding: "2px 5px 2px 10px",
+                  border: "none",
+                  borderRadius: "6px",
+                  color: TEXT_COLOR,
+                  fontSize: "14px",
+                  cursor:
+                    expenseName.trim() && selectedGroup
+                      ? "pointer"
+                      : "not-allowed",
+                  transition: "all 0.2s",
+                  backgroundColor: WHITE,
+                }}
+                onMouseEnter={(e) => {
+                  if (expenseName.trim() && selectedGroup) {
+                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
+                    e.currentTarget.style.color = WHITE;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (expenseName.trim() && selectedGroup) {
+                    e.currentTarget.style.backgroundColor = WHITE;
+                    e.currentTarget.style.color = TEXT_COLOR;
+                  }
+                }}
+              >
+                Evenly
+                <NavigateNextIcon/>
+              </button>
+              <button
+                className="flex flex-row justify-center items-center"
+                onClick={handleCustomAmounts}
+                disabled={!expenseName.trim() || !selectedGroup}
+                style={{
+                  padding: "2px 5px 2px 10px",
+                  border: "none",
+                  borderRadius: "6px",
+                  color: TEXT_COLOR,
+                  fontSize: "14px",
+                  cursor:
+                    expenseName.trim() && selectedGroup
+                      ? "pointer"
+                      : "not-allowed",
+                  transition: "all 0.2s",
+                  backgroundColor: WHITE,
+                }}
+                onMouseEnter={(e) => {
+                  if (expenseName.trim() && selectedGroup) {
+                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
+                    e.currentTarget.style.color = WHITE;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (expenseName.trim() && selectedGroup) {
+                    e.currentTarget.style.backgroundColor = WHITE;
+                    e.currentTarget.style.color = TEXT_COLOR;
+                  }
+                }}
+              >
+                Custom
+                <NavigateNextIcon/>
+              </button>
               {error && (
                 <p
                   style={{
@@ -430,67 +564,15 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 justifyContent: "flex-end",
               }}
             >
-              <button
-                onClick={handleClose}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                  color: "#374151",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f9fafb";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "white";
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleNext}
-                disabled={!expenseName.trim() || !selectedGroup}
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "6px",
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor:
-                    expenseName.trim() && selectedGroup
-                      ? "pointer"
-                      : "not-allowed",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (expenseName.trim() && selectedGroup) {
-                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
-                    e.currentTarget.style.color = WHITE;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (expenseName.trim() && selectedGroup) {
-                    e.currentTarget.style.backgroundColor = BUTTON_COLOR;
-                    e.currentTarget.style.color = TEXT_COLOR;
-                  }
-                }}
-              >
-                Next
-              </button>
             </div>
           </div>
         </div>
       </>
     );
-  } else {
+  } else if (page == 2) {
     return (
       <>
         {/* Backdrop */}
-
         <div
           style={{
             position: "fixed",
@@ -578,7 +660,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             </div>
             {/* Input */}
             <div style={{ marginBottom: "20px" }}>
-              {splitting ? (
                 <div>
                   <label
                     style={{
@@ -605,7 +686,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     style={{
                       width: "calc(4em + 8px)",
                       padding: "6px",
-                      border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
+                      border: error ? "2px solid #ef4444" : "2px solid #757981ff",
                       borderRadius: "8px",
                       fontSize: "14px",
                       outline: "none",
@@ -621,7 +702,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     onBlur={(e) => {
                       e.target.style.borderColor = error
                         ? "#ef4444"
-                        : "#e5e7eb";
+                        : "#757981ff";
                     }}
                     inputMode="numeric"
                     pattern="[0-9]*"
@@ -640,7 +721,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     style={{
                       width: "calc(4em + 8px)",
                       padding: "6px",
-                      border: error ? "2px solid #ef4444" : "2px solid #e5e7eb",
+                      border: error ? "2px solid #ef4444" : "2px solid #757981ff",
                       borderRadius: "8px",
                       fontSize: "14px",
                       outline: "none",
@@ -655,7 +736,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     onBlur={(e) => {
                       e.target.style.borderColor = error
                         ? "#ef4444"
-                        : "#e5e7eb";
+                        : "#757981ff";
                     }}
                     inputMode="numeric"
                     pattern="[0-9]*"
@@ -715,109 +796,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     ))}
                   </ul>
                 </div>
-              ) : (
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                      marginTop: "12px",
-                    }}
-                  >
-                    Expense Amount
-                  </label>
-                  <ul>
-                    {members?.map((m) => (
-                      <li key={m.id} className="flex items-center gap-3">
-                        <div className="px-2 py-1 rounded flex items-center">
-                          <div>
-                            {m.id == userData?.id
-                              ? "(Paid by) " + m.name
-                              : m.name}
-                            : $
-                          </div>
-                          <div>
-                            <input
-                              type="text"
-                              value={individualAmounts[m.id]?.dollars}
-                              onChange={(e) => {
-                                setAmount(m.id, { dollars: e.target.value });
-                                if (error) setError(""); // Clear error when user types
-                              }}
-                              onKeyDown={handleKeyPressNumber}
-                              placeholder="00"
-                              style={{
-                                width: "calc(4em + 8px)",
-                                padding: "6px",
-                                border: error
-                                  ? "2px solid #ef4444"
-                                  : "2px solid #e5e7eb",
-                                borderRadius: "8px",
-                                fontSize: "14px",
-                                outline: "none",
-                                transition: "border-color 0.2s",
-                                boxSizing: "border-box",
-                                textAlign: "right",
-                              }}
-                              onFocus={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#3b82f6";
-                              }}
-                              onBlur={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#e5e7eb";
-                              }}
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                            />
-                            .
-                            <input
-                              type="text"
-                              value={individualAmounts[m.id]?.cents}
-                              onChange={(e) => {
-                                setAmount(m.id, { cents: e.target.value });
-                                if (error) setError(""); // Clear error when user types
-                              }}
-                              onKeyDown={handleKeyPressNumber}
-                              placeholder="00"
-                              maxLength={2}
-                              style={{
-                                width: "calc(4em + 8px)",
-                                padding: "6px",
-                                border: error
-                                  ? "2px solid #ef4444"
-                                  : "2px solid #e5e7eb",
-                                borderRadius: "8px",
-                                fontSize: "14px",
-                                outline: "none",
-                                transition: "border-color 0.2s",
-                                boxSizing: "border-box",
-                              }}
-                              onFocus={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#3b82f6";
-                              }}
-                              onBlur={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#e5e7eb";
-                              }}
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                            />
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
               {error && (
                 <p
                   style={{
@@ -892,5 +870,227 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         </div>
       </>
     );
+  } else {
+<>
+        {/* Backdrop */}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={handleClose}
+        >
+          {/* Modal */}
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              width: "100%",
+              maxWidth: "400px",
+              margin: "16px",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ marginBottom: "20px" }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#111827",
+                }}
+              >
+                Create New Group Expense
+              </h3>
+            </div>
+            
+            {/* Input */}
+            <div style={{ marginBottom: "20px" }}>
+            
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                    marginBottom: "8px",
+                    marginTop: "12px",
+                  }}
+                >
+                  Expense Amount
+                </label>
+                <ul>
+                  {members?.map((m) => (
+                    <li key={m.id} className="flex items-center gap-3">
+                      <div className="px-2 py-1 rounded flex items-center">
+                        <div>
+                          {m.id == userData?.id
+                            ? "(Paid by) " + m.name
+                            : m.name}
+                          : $
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            value={individualAmounts[m.id]?.dollars}
+                            onChange={(e) => {
+                              setAmount(m.id, { dollars: e.target.value });
+                              if (error) setError(""); // Clear error when user types
+                            }}
+                            onKeyDown={handleKeyPressNumber}
+                            placeholder="00"
+                            style={{
+                              width: "calc(4em + 8px)",
+                              padding: "6px",
+                              border: error
+                                ? "2px solid #ef4444"
+                                : "2px solid #757981ff",
+                              borderRadius: "8px",
+                              fontSize: "14px",
+                              outline: "none",
+                              transition: "border-color 0.2s",
+                              boxSizing: "border-box",
+                              textAlign: "right",
+                            }}
+                            onFocus={(e) => {
+                              e.target.style.borderColor = error
+                                ? "#ef4444"
+                                : "#3b82f6";
+                            }}
+                            onBlur={(e) => {
+                              e.target.style.borderColor = error
+                                ? "#ef4444"
+                                : "#757981ff";
+                            }}
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                          />
+                          .
+                          <input
+                            type="text"
+                            value={individualAmounts[m.id]?.cents}
+                            onChange={(e) => {
+                              setAmount(m.id, { cents: e.target.value });
+                              if (error) setError(""); // Clear error when user types
+                            }}
+                            onKeyDown={handleKeyPressNumber}
+                            placeholder="00"
+                            maxLength={2}
+                            style={{
+                              width: "calc(4em + 8px)",
+                              padding: "6px",
+                              border: error
+                                ? "2px solid #ef4444"
+                                : "2px solid #757981ff",
+                              borderRadius: "8px",
+                              fontSize: "14px",
+                              outline: "none",
+                              transition: "border-color 0.2s",
+                              boxSizing: "border-box",
+                            }}
+                            onFocus={(e) => {
+                              e.target.style.borderColor = error
+                                ? "#ef4444"
+                                : "#3b82f6";
+                            }}
+                            onBlur={(e) => {
+                              e.target.style.borderColor = error
+                                ? "#ef4444"
+                                : "#757981ff";
+                            }}
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                          />
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {error && (
+                <p
+                  style={{
+                    margin: "8px 0 0 0",
+                    fontSize: "12px",
+                    color: "#ef4444",
+                  }}
+                >
+                  {error}
+                </p>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={handleBack}
+                style={{
+                  padding: "10px 20px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "6px",
+                  backgroundColor: "white",
+                  color: "#374151",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f9fafb";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "white";
+                }}
+              >
+                Back
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={!expenseName.trim()}
+                style={{
+                  padding: "10px 20px",
+                  border: "none",
+                  borderRadius: "6px",
+                  color: TEXT_COLOR,
+                  fontSize: "14px",
+                  cursor: expenseName.trim() ? "pointer" : "not-allowed",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  if (expenseName.trim()) {
+                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
+                    e.currentTarget.style.color = WHITE;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (expenseName.trim()) {
+                    e.currentTarget.style.backgroundColor = BUTTON_COLOR;
+                    e.currentTarget.style.color = TEXT_COLOR;
+                  }
+                }}
+              >
+                Create Expense
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
   }
 };
