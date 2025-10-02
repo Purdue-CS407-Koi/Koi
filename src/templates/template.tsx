@@ -35,7 +35,7 @@ export default function Template({ children }: LayoutProps) {
   // todo add tailwind styles and fix layout
   return (
     <div
-      className="flex w-full h-full box-border"
+      className="flex w-full h-screen box-border"
       style={{
         backgroundColor: MAIN_CONTENT_BACKGROUND,
       }}
