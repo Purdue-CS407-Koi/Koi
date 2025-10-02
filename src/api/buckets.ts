@@ -1,5 +1,5 @@
 import supabase from "@/helpers/supabase";
-import type { BucketMetadata, NewBucketInstance } from "@/interfaces/Bucket";
+import type { NewBucketMetadata, NewBucketInstance } from "@/interfaces/Bucket";
 
 const METADATA_TABLE_NAME = "BucketMetadata";
 const INSTANCE_TABLE_NAME = "BucketInstances";
@@ -52,7 +52,7 @@ export const getAllBucketInstances = async (bucketMetadataId: string) => {
 };
 
 // Create new BucketMetadata object
-export const createBucketMetadata = async (bucketMetadata: BucketMetadata) => {
+export const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) => {
     const {
     data: { user },
   } = await supabase.auth.getUser();

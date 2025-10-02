@@ -4,7 +4,7 @@ import {
   getAllBucketInstances,
   getAllBucketMetadata,
 } from "@/api/buckets";
-import type { BucketMetadata, NewBucketInstance } from "@/interfaces/Bucket";
+import { RecurrencePeriodType, type NewBucketMetadata, type NewBucketInstance } from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -49,7 +49,7 @@ export const useBuckets = () => {
     },
   });
 
-  const createBucketMetadata = async (bucketMetadata: BucketMetadata) => {
+  const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) => {
     return createMetadataMutation.mutate(bucketMetadata);
   };
 
@@ -70,7 +70,12 @@ export const useBuckets = () => {
         if (bucketMetadata.length > 0) {
           setCurrentBucketMetadataId(bucketMetadata[0].id);
         } else {
-          console.error("This user has no buckets and have somehow managed to remove the main bucket!");
+          console.warn("No bucket metadata found, automatically creating one!");
+          createBucketMetadata({
+            name: "Main",
+            recurrence_period_type: RecurrencePeriodType.Monthly,
+            spending_limit: null,
+          });
         }
       }
 
