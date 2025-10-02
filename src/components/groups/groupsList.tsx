@@ -6,8 +6,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useEffect, useState } from "react";
 import { AddGroupModal } from "./addGroupModal";
 import { EditGroupModal } from "./editGroupModal";
-import useSplits from "@/hooks/useSplits"; 
-import { useSplitStore } from "@/stores/useSplitStore";
+import useSplits from "@/hooks/useSplits";
+
 interface Group {
   id: string;
   name: string;
