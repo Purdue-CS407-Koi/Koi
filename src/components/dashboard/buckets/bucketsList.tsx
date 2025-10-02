@@ -2,13 +2,16 @@ import { useState } from "react";
 import NewBucketModal from "./newBucketModal";
 import { useBuckets } from "@/hooks/useBuckets";
 
-import { BookmarkBorder } from "@mui/icons-material";
+import { Bookmark, BookmarkBorder } from "@mui/icons-material";
+import { useBucketsStore } from "@/stores/useBucketsStore";
 
 
 export const BucketsList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { bucketMetadataData } = useBuckets();
+
+  const { currentBucketMetadataId, setCurrentBucketMetadataId } = useBucketsStore();
 
   return (
     <>
@@ -20,10 +23,13 @@ export const BucketsList = () => {
           {bucketMetadataData?.map((bucket) => (
             <div
               key={bucket.id}
-              className="flex items-center gap-3 py-2"
+              className="flex items-center gap-3 py-2 cursor-pointer"
+              onClick={() => {
+                setCurrentBucketMetadataId(bucket.id);
+              }}
             >
               <div className="flex items-center justify-center w-5">
-                <BookmarkBorder />
+                { currentBucketMetadataId === bucket.id ? (<Bookmark />) : (<BookmarkBorder />)}
               </div>
               <div>
                 <div className="text-sm font-medium text-sidebar-entry">
