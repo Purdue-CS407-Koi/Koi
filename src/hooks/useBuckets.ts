@@ -57,10 +57,6 @@ export const useBuckets = () => {
     return createInstanceMutation.mutate(bucketInstance);
   };
 
-  const selectBucket = (bucketId: string) => {
-    setCurrentBucketMetadataId(bucketId);
-  };
-
   const {
     data: bucketMetadataData,
     error: getBucketMetadataError,
@@ -114,7 +110,6 @@ export const useBuckets = () => {
     getBucketInstanceError,
     refetchBucketMetadata,
     refetchBucketInstance,
-    selectBucket,
     createBucketMetadata,
     createBucketInstance,
   };
