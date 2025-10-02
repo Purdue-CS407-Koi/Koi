@@ -93,7 +93,7 @@ export const GroupsList: React.FC<GroupsListProps> = ({
                       {group.name}
                     </div>
                     <div className="text-right ml-auto">
-                      {(splitMap.get(group.id)?.toFixed(2) ?? 0) == 0 ? "Settled Up" : `You owe $${splitMap.get(group.id)?.toFixed(2)}`}
+                      {`You owe $${(splitMap.get(group.id) ?? 0).toFixed(2)}`}
                     </div>
                   </div>
                   <div className="text-xs text-sidebar-entry-subtext">
