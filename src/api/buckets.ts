@@ -22,6 +22,24 @@ export const getAllBucketMetadata = async () => {
   return data;
 };
 
+// Fetches specific BucketMetadata instance
+export const getBucketMetadata = async (bucketMetadataId: string) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("Failed to fetch current user!");
+  }
+
+  const { data, error } = await supabase
+    .from(METADATA_TABLE_NAME)
+    .select("*")
+    .eq("id", bucketMetadataId);
+
+  if (error) throw error;
+  return data;
+};
+
 // Fetches all the BucketInstance objects of the supplied BucketMetadata ID
 export const getAllBucketInstances = async (bucketMetadataId: string) => {
   const { data, error } = await supabase
