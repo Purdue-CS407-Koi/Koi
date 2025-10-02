@@ -257,46 +257,17 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       <>
         {/* Backdrop */}
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
           onClick={handleClose}
         >
           {/* Modal */}
           <div
-            className="relative"
-            style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "48px 24px 24px 24px",
-              width: "100%",
-              maxWidth: "400px",
-              margin: "16px",
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-            }}
+            className="relative bg-white rounded-xl px-6 pt-12 pb-6 w-full max-w-[400px] m-4 shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className ="absolute top-1 left-1"
+              className ="absolute top-1 left-1 px-2.5 py-1 rounded-md bg-white text-[#374151] text-sm cursor-pointer transition-all duration-200"
               onClick={handleClose}
-              style={{
-                padding: "10px 10px",
-                borderRadius: "6px",
-                backgroundColor: "white",
-                color: "#374151",
-                fontSize: "14px",
-                cursor: "pointer",
-                transition: "all 0.2s",
-              }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = "#f9fafb";
               }}
@@ -308,21 +279,14 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             </button>
             
             {/* Header */}
-            <div style={{ marginBottom: "20px" }}>
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  color: "#111827",
-                }}
-              >
+            <div className="mb-5">
+              <h3 className="m-0 text-lg font-semibold text-black" >
                 Create New Group Expense
               </h3>
             </div>
 
             {/* Input */}
-            <div style={{ marginBottom: "20px" }} className="flex flex-col items-center">
+            <div className="flex flex-col items-center mb-5">
               <input
                 type="text"
                 value={expenseName}
@@ -333,21 +297,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 onKeyDown={handleKeyPressText}
                 placeholder="Enter expense name"
                 autoFocus
-                style={{
-                  width: "70%",
-                  padding: "6px",
-                  borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                  fontSize: "14px",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = error ? "#ef4444" : "#757981ff";
-                }}
+                className={"w-[70%] p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 " + (error ? "border-red-500" : "border-gray-500")}
               />
 
               <select
@@ -357,17 +307,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     e.target.value === "" ? null : e.target.value
                   )
                 }
-                style={{
-                  padding: "6px",
-                  borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                  fontSize: "14px",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  boxSizing: "border-box",
-                  textAlign: "center",
-                  color: selectedGroup ? BLACK : TEXT_COLOR,
-                }}
-                className="mt-4"
+                className={`
+                  mt-2 p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 text-center 
+                  ${error ? "border-red-500" : "border-gray-500"} 
+                  ${selectedGroup ? "text-black" : "text-gray-600"}
+                `}
               >
                 {/* Placeholder */}
                 <option value="" disabled hidden>
@@ -419,27 +363,13 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   }}
                   onKeyDown={handleKeyPressNumber}
                   placeholder="00"
-                  style={{
-                    width: "calc(4em + 8px)",
-                    padding: "2px",
-                    borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                    fontSize: "14px",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                    boxSizing: "border-box",
-                    textAlign: "right",
-                    minWidth: "calc(4em + 8px)",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = error
-                      ? "#ef4444"
-                      : "#3b82f6";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = error
-                      ? "#ef4444"
-                      : "#757981ff";
-                  }}
+                  className={`
+                    w-[calc(4em+8px)] min-w-[calc(4em+8px)]
+                    p-0.5 text-sm text-right 
+                    outline-none box-border 
+                    border-b-2 transition-colors duration-200
+                    ${error ? "border-red-500" : "border-gray-500"}
+                  `}
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
@@ -454,26 +384,13 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   onKeyDown={handleKeyPressNumber}
                   placeholder="00"
                   maxLength={2}
-                  style={{
-                    width: "calc(2em)",
-                    padding: "2px",
-                    borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                    fontSize: "14px",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                    boxSizing: "border-box",
-                    minWidth: "calc(2em)"
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = error
-                      ? "#ef4444"
-                      : "#3b82f6";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = error
-                      ? "#ef4444"
-                      : "#757981ff";
-                  }}
+                  className={`
+                    w-[2em] min-w-[2em]
+                    p-0.5 text-sm  
+                    outline-none box-border 
+                    border-b-2 transition-colors duration-200
+                    ${error ? "border-red-500" : "border-gray-500"}
+                  `}
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
@@ -482,21 +399,17 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 Split:
               </div>
               <button
-                className="flex flex-row justify-center items-center"
+                className={`
+                  flex flex-row justify-center items-center
+                  py-0.5 pr-1.5 pl-2.5
+                  border-none rounded-md
+                  text-sm transition-all duration-200
+                  ${expenseName.trim() && selectedGroup 
+                    ? "cursor-pointer" 
+                    : "cursor-not-allowed"} 
+                  text-[${TEXT_COLOR}] bg-white
+                `}
                 onClick={handleSplitEvenly}
-                style={{
-                  padding: "2px 5px 2px 10px",
-                  border: "none",
-                  borderRadius: "6px",
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor:
-                    expenseName.trim() && selectedGroup
-                      ? "pointer"
-                      : "not-allowed",
-                  transition: "all 0.2s",
-                  backgroundColor: WHITE,
-                }}
                 onMouseEnter={(e) => {
                   if (expenseName.trim() && selectedGroup) {
                     e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
@@ -514,22 +427,18 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 <NavigateNextIcon/>
               </button>
               <button
-                className="flex flex-row justify-center items-center"
                 onClick={handleCustomAmounts}
                 disabled={!expenseName.trim() || !selectedGroup}
-                style={{
-                  padding: "2px 5px 2px 10px",
-                  border: "none",
-                  borderRadius: "6px",
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor:
-                    expenseName.trim() && selectedGroup
-                      ? "pointer"
-                      : "not-allowed",
-                  transition: "all 0.2s",
-                  backgroundColor: WHITE,
-                }}
+                className={`
+                  flex flex-row justify-center items-center
+                  py-0.5 pr-1.5 pl-2.5
+                  border-none rounded-md
+                  text-sm transition-all duration-200
+                  ${expenseName.trim() && selectedGroup 
+                    ? "cursor-pointer" 
+                    : "cursor-not-allowed"} 
+                  text-[${TEXT_COLOR}] bg-white
+                `}
                 onMouseEnter={(e) => {
                   if (expenseName.trim() && selectedGroup) {
                     e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
