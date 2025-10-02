@@ -29,6 +29,7 @@ export const useBuckets = () => {
     mutationFn: createBucketMetadataApi,
     onSuccess: (data) => {
       console.log("Created bucket metadata entry, data returned: ", data);
+      refetchBucketMetadata();
     },
     onError: (err) => {
       console.log(
@@ -41,6 +42,7 @@ export const useBuckets = () => {
     mutationFn: createBucketInstanceApi,
     onSuccess: (data) => {
       console.log("Created bucket instance entry, data returned:", data);
+      refetchBucketInstance();
     },
     onError: (err) => {
       console.log(
