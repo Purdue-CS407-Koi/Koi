@@ -37,10 +37,20 @@ export function AddGroupModal() {
   };
 
   return (
-    <div>
-      <Button onClick={handleClickOpen} variant="contained">
-        New Group
-      </Button>
+    <div className="flex flex-col gap-2">
+      <button
+        onClick={handleClickOpen}
+        className={`flex items-center gap-2
+              p-2 mt-2 rounded-md
+              cursor-pointer text-sm
+              border border-sidebar-button-border
+              bg-transparent
+              transition-all duration-200"
+            `}
+      >
+        <span className="text-lg">+</span>
+        Add New
+      </button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create New Group</DialogTitle>
         <DialogContent>
