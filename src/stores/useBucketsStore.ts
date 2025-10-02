@@ -10,8 +10,8 @@ interface BucketsStore {
 export const useBucketsStore = create<BucketsStore>((set) => ({
   currentBucketMetadataId: null,
   currentBucketInstanceId: null,
-  setCurrentBucketInstanceId: (bucketMetadataId) =>
+  setCurrentBucketMetadataId: (bucketMetadataId) =>
     set({ currentBucketMetadataId: bucketMetadataId }),
-  setCurrentBucketMetadataId: (bucketInstanceId) =>
+  setCurrentBucketInstanceId: (bucketInstanceId) =>
     set({ currentBucketInstanceId: bucketInstanceId }),
 }));
