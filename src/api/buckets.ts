@@ -89,8 +89,8 @@ export const createBucketInstance = async (bucketInstance: NewBucketInstance) =>
     .insert([
       {
         bucket_metadata_id: bucketInstance.bucket_metadata_id,
-        start: bucketInstance.start?.toString(),
-        end: bucketInstance.end?.toString(),
+        start: bucketInstance.start?.toDateString(),
+        end: bucketInstance.end?.toDateString(),
       },
     ])
     .select();
