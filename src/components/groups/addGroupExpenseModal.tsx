@@ -113,7 +113,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             group_id: selectedGroup,
             user_id: id,
           };
-          console.log(split);
 
           insertNewSplit(split);
         }

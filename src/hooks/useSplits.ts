@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 import type { NewSplit } from "@/interfaces/Split";
-import { insertNewSplit as insertNewSplitApi, getSplit } from "@/api/split";
+import { insertNewSplit as insertNewSplitApi, getSplit, getSplitByCurrentUser } from "@/api/split";
 import { useSplitStore } from "@/stores/useSplitStore";
 
 const useSplits = () => {
@@ -15,6 +15,15 @@ const useSplits = () => {
     queryFn: () => getSplit(currentSplitId),
   });
 
+  const {
+    data: userSplitsData,
+    isLoading: isLoadingUserSplits,
+    error: errorUserSplits,
+  } = useQuery({
+    queryKey: ["split"], // Zustand state as part of key
+    queryFn: () => getSplitByCurrentUser(),
+  });
+
   const mutation = useMutation({
     mutationFn: insertNewSplitApi,
     onError: (err) => {
@@ -26,7 +35,7 @@ const useSplits = () => {
     mutation.mutate(split);
   };
 
-  return { splitData, isLoading, error, insertNewSplit };
+  return { splitData, isLoading, error, insertNewSplit, userSplitsData, isLoadingUserSplits, errorUserSplits };
 };
 
 export default useSplits;

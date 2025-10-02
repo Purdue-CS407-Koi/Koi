@@ -40,3 +40,27 @@ export async function getSplit(split_id: string) {
 
   return data[0];
 }
+
+export async function getSplitByCurrentUser() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+
+  const { data, error } = await supabase
+    .from("Splits")
+    .select()
+    .eq("user_id", user.id);
+
+  if (error) {
+    throw error;
+  }
+
+  if (data.length <= 0 || data.length > 1) {
+    throw Error("ID does not exist or is not unique");
+  }
+
+  return data;
+}

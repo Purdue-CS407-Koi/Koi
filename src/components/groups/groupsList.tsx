@@ -3,10 +3,11 @@ import {
   Tooltip,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddGroupModal } from "./addGroupModal";
 import { EditGroupModal } from "./editGroupModal";
-
+import useSplits from "@/hooks/useSplits"; 
+import { useSplitStore } from "@/stores/useSplitStore";
 interface Group {
   id: string;
   name: string;
@@ -28,6 +29,8 @@ export const GroupsList: React.FC<GroupsListProps> = ({
   const [editOpen, setEditOpen] = useState(false);
   const [editGroupId, setEditGroupId] = useState<string | null>(null);
   const [editGroupName, setEditGroupName] = useState("");
+  const [splitMap, setSplitMap] = useState<Map<string, number>>(new Map());
+  const { userSplitsData, isLoadingUserSplits, errorUserSplits } = useSplits();
 
   const handleEditOpen = (groupId: string, groupName: string) => {
     setEditGroupId(groupId);
@@ -40,6 +43,19 @@ export const GroupsList: React.FC<GroupsListProps> = ({
     setEditGroupId(null);
     setEditGroupName("");
   };
+
+  useEffect(() => {
+    if (userSplitsData) {
+      userSplitsData.forEach((data) => {
+        setSplitMap(prev => {
+          const newMap = new Map(prev);
+          const current = newMap.get(data.group_id || "") ?? 0;
+          newMap.set(data.group_id || "", (data.amount_remaining || 0) + current);
+          return newMap
+        });
+      });
+    }
+  }, [userSplitsData]);
 
   // TODO: replace with mui icon
   const getGroupIcon = () => (
@@ -67,13 +83,18 @@ export const GroupsList: React.FC<GroupsListProps> = ({
             `}
             >
               {/* Left: Icon + text */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 w-full">
                 <div className="flex items-center justify-center w-5">
                   {getGroupIcon()}
                 </div>
-                <div>
-                  <div className="text-sm font-medium text-sidebar-entry">
-                    {group.name}
+                <div className="w-full">
+                  <div className="text-sm font-medium text-sidebar-entry flex w-full">
+                    <div>
+                      {group.name}
+                    </div>
+                    <div className="text-right ml-auto">
+                      {(splitMap.get(group.id)?.toFixed(2) ?? 0) == 0 ? "Settled Up" : `You owe $${splitMap.get(group.id)?.toFixed(2)}`}
+                    </div>
                   </div>
                   <div className="text-xs text-sidebar-entry-subtext">
                     {`Created ${group.createdDate}`}
