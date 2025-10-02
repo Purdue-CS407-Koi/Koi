@@ -82,9 +82,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
   const handleSplitEvenly = () => {
     if (!expenseName.trim() || !selectedGroup) {
-      setError("Expense name is required");
+      setError("Expense name/group is required");
       return;
     }
+    setError("");
+
     handleEvenSplit();
 
     setPage(2);
@@ -93,9 +95,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
   const handleCustomAmounts = () => {
     if (!expenseName.trim() || !selectedGroup) {
-      setError("Expense name is required");
+      setError("Expense name/group is required");
       return;
     }
+    setError("");
+
     setPage(3);
     return;
   };
@@ -137,7 +141,14 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         totalCents += d * 100 + c;
       });
 
-      const amount = Math.floor(totalCents / 100) + (totalCents % 100);
+      const check = Math.floor(totalCents / 100) + (totalCents % 100);
+      const amount = Number(expenseDollars) + Number(expenseCents) / 100;
+
+      if (check > amount) {
+        setError("Total amount cannot be over the intial payment!");
+        return;
+      }
+
       const expense = {
         amount,
         description,
@@ -149,22 +160,19 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         if (id != user_id) {
           const amount = Number(dollars) + Number(cents) / 100;
 
-          const split = {
-            amount_owed: amount,
-            amount_remaining: amount,
-            original_expense_id: expense_id,
-            group_id: selectedGroup,
-            user_id: id,
-          };
+          if (amount != 0) {
+            const split = {
+              amount_owed: amount,
+              amount_remaining: amount,
+              original_expense_id: expense_id,
+              group_id: selectedGroup,
+              user_id: id,
+            };
 
-          insertNewSplit(split);
+            insertNewSplit(split);
+          }
         }
       });
-    }
-
-    if (!expenseName.trim()) {
-      setError("Expense name is required");
-      return;
     }
     handleClose();
   };
@@ -606,7 +614,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   color: "#111827",
                 }}
               >
-                Create New Group Expense
+                Splitting Evenly
               </h3>
             </div>
             {/* Input */}
@@ -769,7 +777,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   color: "#111827",
                 }}
               >
-                Create New Group Expense
+                Custom Amounts
               </h3>
             </div>
             
