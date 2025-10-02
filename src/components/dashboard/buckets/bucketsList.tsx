@@ -4,6 +4,7 @@ import { useBuckets } from "@/hooks/useBuckets";
 
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 import { useBucketsStore } from "@/stores/useBucketsStore";
+import { getRecurrencePeriodDisplayName } from "@/interfaces/Bucket";
 
 
 export const BucketsList = () => {
@@ -36,9 +37,8 @@ export const BucketsList = () => {
                   {bucket.name}
                 </div>
                 <div className="text-xs text-sidebar-entry-subtext">
-                  {/* TODO: pretty print this like "Recurs every month", use switch! */}
                   {bucket.recurrence_period_type
-                    ? `Recurrence: ${bucket.recurrence_period_type}`
+                    ? `Recurs ${getRecurrencePeriodDisplayName(bucket.recurrence_period_type)}`
                     : ""}
                 </div>
               </div>
