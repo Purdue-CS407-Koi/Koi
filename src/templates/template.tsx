@@ -1,10 +1,6 @@
 import type { ReactNode, PropsWithChildren } from "react";
 import React from "react";
 
-import {
-  MAIN_CONTENT_BACKGROUND,
-  SIDE_PANEL_BACKGROUND,
-} from "@/config/colors";
 import Navbar from "@/components/template/Navbar";
 
 export function Content({ children }: PropsWithChildren) {
@@ -32,22 +28,15 @@ export default function Template({ children }: LayoutProps) {
       React.isValidElement(child) && child.type === Sidebar
   );
 
-  // todo add tailwind styles and fix layout
   return (
     <div
-      className="flex w-full h-screen box-border"
-      style={{
-        backgroundColor: MAIN_CONTENT_BACKGROUND,
-      }}
+      className="flex w-full h-screen box-border bg-content-background"
     >
       <div className="flex-5">
         <Navbar />
         <div>{content}</div>
       </div>
-      <div
-        className="flex-2 p-8"
-        style={{ backgroundColor: SIDE_PANEL_BACKGROUND }}
-      >
+      <div className="flex-2 p-8 bg-side-panel-background">
         {sidebar}
       </div>
     </div>
