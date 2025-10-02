@@ -95,7 +95,12 @@ export const useBuckets = () => {
         if (bucketInstances.length > 0) {
           setCurrentBucketInstanceId(bucketInstances[0].id);
         } else {
-          console.error(`No bucket instances found for bucket metadata entry ${currentBucketMetadataId}!`);
+          console.warn("No bucket instance found, automatically creating one!");
+          createBucketInstance({
+            bucket_metadata_id: currentBucketMetadataId,
+            start: new Date(),
+            end: null,
+          });
         }
       }
 
