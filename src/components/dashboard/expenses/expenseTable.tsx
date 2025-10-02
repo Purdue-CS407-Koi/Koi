@@ -3,6 +3,7 @@ import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import type { ColDef, SizeColumnsToFitGridStrategy } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { EditExpenseCellRenderer } from "./editExpense";
+import { DeleteExpenseCellRenderer } from "./deleteExpense";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -40,7 +41,7 @@ export const ExpenseTable = () => {
       field: "description",
     },
     { field: "update", cellRenderer: EditExpenseCellRenderer },
-    { field: "delete" },
+    { field: "delete", cellRenderer: DeleteExpenseCellRenderer },
   ];
 
   const autoSizeStrategy: SizeColumnsToFitGridStrategy = {
