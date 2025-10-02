@@ -91,7 +91,7 @@ export const useBuckets = () => {
 
       const bucketInstances = await getAllBucketInstances(currentBucketMetadataId);
 
-      if (!currentBucketInstanceId) {
+      if (!currentBucketInstanceId || !bucketInstances.some(instance => instance.id === currentBucketInstanceId)) {
         if (bucketInstances.length > 0) {
           setCurrentBucketInstanceId(bucketInstances[0].id);
         } else {
