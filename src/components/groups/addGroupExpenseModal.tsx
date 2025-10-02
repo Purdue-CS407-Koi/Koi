@@ -134,8 +134,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
           const amount = Number(dollars) + Number(cents) / 100;
           const total = Number(expenseDollars) + Number(expenseCents) / 100;
           const split = {
-            amount_owed: total * -1,
-            amount_remaining: (total - amount) * -1,
+            amount_owed: 0,
+            amount_remaining: 0,
             original_expense_id: expense_id,
             group_id: selectedGroup,
             user_id: id,
@@ -185,8 +185,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
           }
         } else {
           const split = {
-            amount_owed: amount * -1,
-            amount_remaining: check * -1,
+            amount_owed: 0,
+            amount_remaining: 0,
             original_expense_id: expense_id,
             group_id: selectedGroup,
             user_id: id,
