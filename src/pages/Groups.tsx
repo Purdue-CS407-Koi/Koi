@@ -52,16 +52,13 @@ const Groups = () => {
   return (
     <Template>
       <Content>
-        <div
+        <div className="flex min-h-screen p-6"
           style={{
-            display: "flex",
-            minHeight: "100vh",
             backgroundColor: "#F0F1F6",
-            padding: "24px",
           }}
         >
           {/* Single Large Panel */}
-          <div style={{ flex: 1 }}>
+          <div className="flex-1">
             <div
               style={{
                 backgroundColor: "white",
@@ -72,7 +69,7 @@ const Groups = () => {
               }}
             >
               {/* Left Section */}
-              <div style={{ flex: 2 }}>
+              <div className="flex-2">
                 {/* Header */}
                 <div
                   style={{
