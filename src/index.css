@@ -27,8 +27,8 @@
 }
 
 :root {
+  /* Font options not available in Tailwind */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
