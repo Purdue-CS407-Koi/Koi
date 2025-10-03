@@ -46,7 +46,7 @@ export const BucketsList = () => {
                   {bucket.name}
                 </div>
                 <div className="text-xs text-sidebar-entry-subtext">
-                  {bucket.recurrence_period_type
+                  {bucket.recurrence_period_type !== null
                     ? capitalizeFirstLetter(
                         getRecurrencePeriodDisplayName(
                           bucket.recurrence_period_type
