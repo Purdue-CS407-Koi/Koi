@@ -64,7 +64,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           >
             {new Date(activity.created_at).toLocaleDateString()}
           </div>
-          {(activity.amount_owed ?? 0) < -1 ? (
+          {(activity.amount_owed ?? 0) <= 0 ? (
             <div className="flex flex-2">
               <div className="flex-1 leading-normal text-sm items-baseline">
                 You paid{" "}
