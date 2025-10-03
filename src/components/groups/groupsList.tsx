@@ -1,10 +1,9 @@
 import { IconButton, Tooltip } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AddGroupModal } from "./addGroupModal";
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 import { EditGroupModal } from "./editGroupModal";
-import useSplits from "@/hooks/useSplits";
 
 interface Group {
   id: string;
@@ -27,8 +26,6 @@ export const GroupsList: React.FC<GroupsListProps> = ({
   const [editOpen, setEditOpen] = useState(false);
   const [editGroupId, setEditGroupId] = useState<string | null>(null);
   const [editGroupName, setEditGroupName] = useState("");
-  const [splitMap, setSplitMap] = useState<Map<string, number>>(new Map());
-  const { userSplitsData, isLoadingUserSplits, errorUserSplits } = useSplits();
 
   const handleEditOpen = (groupId: string, groupName: string) => {
     setEditGroupId(groupId);
@@ -41,22 +38,6 @@ export const GroupsList: React.FC<GroupsListProps> = ({
     setEditGroupId(null);
     setEditGroupName("");
   };
-
-  useEffect(() => {
-    if (userSplitsData) {
-      userSplitsData.forEach((data) => {
-        setSplitMap((prev) => {
-          const newMap = new Map(prev);
-          const current = newMap.get(data.group_id || "") ?? 0;
-          newMap.set(
-            data.group_id || "",
-            (data.amount_remaining || 0) + current
-          );
-          return newMap;
-        });
-      });
-    }
-  }, [userSplitsData]);
 
   return (
     <div>
