@@ -50,8 +50,12 @@ const NewBucketModal = ({
     return null;
   })();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const spendingLimitError = spendingLimitErrorText !== null;
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (spendingLimitError) return;
 
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
@@ -126,7 +130,7 @@ const NewBucketModal = ({
             </Select>
 
             <TextField
-              error={spendingLimitErrorText !== null}
+              error={spendingLimitError}
               margin="dense"
               id="spending-limit"
               name="spending-limit"
