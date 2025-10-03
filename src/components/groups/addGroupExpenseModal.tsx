@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 // constants
-import {
-  BLACK,
-  BUTTON_COLOR,
-  BUTTON_HOVER_COLOR,
-  TEXT_COLOR,
-  WHITE,
-} from "@/config/colors";
 import { TEXT_EDITING } from "@/config/keyboardEvents";
 
 // hooks
@@ -16,9 +9,9 @@ import useSplits from "@/hooks/useSplits";
 import useUsers from "@/hooks/useUsers";
 
 // components
-import { MinusIcon } from "@/components/general/minusIcon";
-import { PlusIcon } from "@/components/general/plusIcon";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 //types
 import type { NewExpense } from "@/interfaces/Expense";
@@ -494,10 +487,10 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                         <div className="flex items-center gap-3">
                           <button
                             type="button"
-                            className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
+                            className="px-2 py-1 flex justify-center items-center"
                             onClick={() => removePayer(m.id, m.name)}
                           >
-                            <MinusIcon className="h-4 w-4" />
+                            <RemoveIcon fontSize="small"/>
                           </button>
                           <div>
                             {m.name ?? "Unnamed user"}
@@ -511,10 +504,10 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                     <li key={m.id} className="p-3 flex items-center gap-3">
                       <button
                         type="button"
-                        className="... px-2 py-1 p-0 !p-1 !px-1 !py-1"
+                        className="px-2 py-1 flex justify-center items-center"
                         onClick={() => addPayer(m.id, m.name)}
                       >
-                        <PlusIcon className="h-4 w-4" />
+                        <AddIcon fontSize="small" />
                       </button>
                       <div className="text-gray-400">
                         {m.name ?? "Unnamed user"}
