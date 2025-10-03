@@ -2,11 +2,10 @@ import { useState } from "react";
 import NewBucketModal from "./newBucketModal";
 import { useBuckets } from "@/hooks/useBuckets";
 
-import { Bookmark, BookmarkBorder, MoreVert } from "@mui/icons-material";
+import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { getRecurrencePeriodDisplayName } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
-import { IconButton } from "@mui/material";
 import BucketMoreActions from "./bucketMoreActions";
 
 
