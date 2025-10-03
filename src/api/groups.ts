@@ -109,30 +109,63 @@ export const getGroupMembers = async (groupId: string) => {
   }));
 };
 
+// export const fetchActivity = async (groupId?: string) => {
+//    const {
+//     data: { user },
+//   } = await supabase.auth.getUser();
+//   if (!user) {
+//     throw new Error("user is undefined");
+//   }
+//     let query = supabase
+//     .from("Expenses")
+//     .select("*, Splits!inner(group_id)")
+//     .order("created_at", { ascending: false });
+
+//   if (groupId) {
+//     // Specific group
+//     query = query.eq("Splits.group_id", groupId);
+//   } else {
+//     // All groups for user
+//     query = query.in(
+//       "Splits.group_id",
+//       (
+//         await supabase
+//           .from("GroupMemberships")
+//           .select("group_id")
+//           .eq("user_id", user?.id)
+//       ).data?.map((row) => row.group_id) ?? []
+//     );
+//   }
+
+//   const { data, error } = await query;
+//   if (error) throw error;
+//   return data;
+// };
 export const fetchActivity = async (groupId?: string) => {
-   const {
+  const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
     throw new Error("user is undefined");
   }
-    let query = supabase
-    .from("Expenses")
-    .select("*, Splits!inner(group_id)")
+
+  let query = supabase
+    .from("Splits")
+    .select("id, group_id, created_at")
     .order("created_at", { ascending: false });
 
   if (groupId) {
     // Specific group
-    query = query.eq("Splits.group_id", groupId);
+    query = query.eq("group_id", groupId);
   } else {
-    // All groups for user
+    // All groups for the user (via memberships)
     query = query.in(
-      "Splits.group_id",
+      "group_id",
       (
         await supabase
           .from("GroupMemberships")
           .select("group_id")
-          .eq("user_id", user?.id)
+          .eq("user_id", user.id)
       ).data?.map((row) => row.group_id) ?? []
     );
   }

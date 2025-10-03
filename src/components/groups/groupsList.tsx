@@ -62,17 +62,22 @@ export const GroupsList: React.FC<GroupsListProps> = ({
     <div>
       <h3 className="text-lg font-semibold mb-4 text-sidebar-title">Groups</h3>
       <div className="flex flex-col gap-2">
-        {groups.map((group) => {
-          const isSelected = selectedGroupId === group.id;
-          return (
-            <div
-              key={group.id}
-              onClick={() =>
-                isSelected
-                  ? onSelectGroup("", "") // unselect when clicked again
-                  : onSelectGroup(group.id, group.name)
-              }
-              className={`group flex items-center justify-between py-2 px-2 rounded-md cursor-pointer transition-colors
+        {groups.length === 0 ? (
+          <div className="text-sm text-gray-500 italic px-2">
+            No groups, create one
+          </div>
+        ) : (
+          groups.map((group) => {
+            const isSelected = selectedGroupId === group.id;
+            return (
+              <div
+                key={group.id}
+                onClick={() =>
+                  isSelected
+                    ? onSelectGroup("", "") // unselect when clicked again
+                    : onSelectGroup(group.id, group.name)
+                }
+                className={`group flex items-center justify-between py-2 px-2 rounded-md cursor-pointer transition-colors
               ${isSelected ? "bg-gray-200" : "hover:bg-gray-100"}
             `}
             >
@@ -91,24 +96,26 @@ export const GroupsList: React.FC<GroupsListProps> = ({
                 </div>
               </div>
 
-              {/* Right: Edit button (appears on hover) */}
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <Tooltip title="Edit Group">
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditOpen(group.id, group.name);
-                    }}
-                  >
-                    <MoreVertIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                {/* Right: Edit button (appears on hover) */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Tooltip title="Edit Group">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditOpen(group.id, group.name);
+                      }}
+                    >
+                      <MoreVertIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
+
       <AddGroupModal />
       <EditGroupModal
         open={editOpen}

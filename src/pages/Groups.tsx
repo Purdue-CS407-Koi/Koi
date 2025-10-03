@@ -20,15 +20,15 @@ const Groups = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
-  const [selectedGroupName, setSelectedGroupName] = useState<string>("");
   const [members, setMembers] = useState<Member[]>([]);
   const [, setIsEditModalOpen] = useState(false);
   const { data: activityData, isLoading: activityLoading } = useActivity(
     selectedGroupId ?? undefined
   );
+  const selectedGroupName =
+  groupsData?.find((g) => g.id === selectedGroupId)?.name || "";
   const handleSelectGroup = async (groupId: string, groupName: string) => {
     setSelectedGroupId(groupId);
-    setSelectedGroupName(groupName);
 
     try {
       const groupMembers = await getGroupMembers(groupId);
