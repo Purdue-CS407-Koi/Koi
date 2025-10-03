@@ -5,7 +5,11 @@ import {
   getAllBucketMetadata,
   hideBucketMetadata as hideBucketMetadataApi,
 } from "@/api/buckets";
-import { RecurrencePeriodType, type NewBucketMetadata, type NewBucketInstance } from "@/interfaces/Bucket";
+import {
+  RecurrencePeriodType,
+  type NewBucketMetadata,
+  type NewBucketInstance,
+} from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -73,7 +77,7 @@ export const useBuckets = () => {
 
   const hideBucketMetadata = async (bucketMetadataId: string) => {
     return hideMetadataMutation.mutate(bucketMetadataId);
-  }
+  };
 
   const {
     data: bucketMetadataData,
@@ -85,7 +89,14 @@ export const useBuckets = () => {
       const bucketMetadata = await getAllBucketMetadata();
 
       // If there is no current ID set, or if the ID points to a bucket that was hidden
-      if (!currentBucketMetadataId || !bucketMetadata.some(instance => (instance.id === currentBucketMetadataId && instance.hidden_at === null))) {
+      if (
+        !currentBucketMetadataId ||
+        !bucketMetadata.some(
+          (instance) =>
+            instance.id === currentBucketMetadataId &&
+            instance.hidden_at === null
+        )
+      ) {
         if (bucketMetadata.length > 0) {
           setCurrentBucketMetadataId(bucketMetadata[0].id);
         } else {
@@ -99,7 +110,7 @@ export const useBuckets = () => {
       }
 
       return bucketMetadata;
-    }
+    },
   });
 
   const {
@@ -113,9 +124,16 @@ export const useBuckets = () => {
         return [];
       }
 
-      const bucketInstances = await getAllBucketInstances(currentBucketMetadataId);
+      const bucketInstances = await getAllBucketInstances(
+        currentBucketMetadataId
+      );
 
-      if (!currentBucketInstanceId || !bucketInstances.some(instance => instance.id === currentBucketInstanceId)) {
+      if (
+        !currentBucketInstanceId ||
+        !bucketInstances.some(
+          (instance) => instance.id === currentBucketInstanceId
+        )
+      ) {
         if (bucketInstances.length > 0) {
           setCurrentBucketInstanceId(bucketInstances[0].id);
         } else {
@@ -131,7 +149,7 @@ export const useBuckets = () => {
       return bucketInstances;
     },
   });
-  
+
   return {
     bucketMetadataData,
     bucketInstanceData,

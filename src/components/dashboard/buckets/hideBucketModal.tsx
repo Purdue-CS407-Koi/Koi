@@ -36,7 +36,9 @@ export const HideBucketModal = ({
     <Dialog open={open}>
       <DialogTitle>Confirm bucket hide</DialogTitle>
       <DialogContent>
-        <DialogContentText>Really hide this bucket? You won't be able to unhide this bucket!</DialogContentText>
+        <DialogContentText>
+          Really hide this bucket? You won't be able to unhide this bucket!
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button

@@ -52,8 +52,10 @@ export const getAllBucketInstances = async (bucketMetadataId: string) => {
 };
 
 // Create new BucketMetadata object
-export const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) => {
-    const {
+export const createBucketMetadata = async (
+  bucketMetadata: NewBucketMetadata
+) => {
+  const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
@@ -73,24 +75,24 @@ export const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) =>
     .select();
   if (error) throw error;
   return data;
-}
+};
 
 export const hideBucketMetadata = async (id: string) => {
   const { data, error } = await supabase
     .from(METADATA_TABLE_NAME)
-    .update(
-      {hidden_at: new Date().toDateString()}
-    )
+    .update({ hidden_at: new Date().toDateString() })
     .eq("id", id)
     .select();
 
   if (error) throw error;
   return data;
-}
+};
 
 // Create new BucketInstance object
-export const createBucketInstance = async (bucketInstance: NewBucketInstance) => {
-    const {
+export const createBucketInstance = async (
+  bucketInstance: NewBucketInstance
+) => {
+  const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
@@ -109,4 +111,4 @@ export const createBucketInstance = async (bucketInstance: NewBucketInstance) =>
     .select();
   if (error) throw error;
   return data;
-}
+};
