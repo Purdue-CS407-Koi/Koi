@@ -45,7 +45,9 @@ const NewBucketModal = ({
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onClose={() => {
+      setOpen(false);
+    }}>
       <DialogTitle>Add New Bucket</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit} id="new-bucket-form">
