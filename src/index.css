@@ -49,22 +49,17 @@
   }
 
   h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
+    @apply text-5xl leading-4;
   }
 
   button {
-    border-radius: 8px;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-family: inherit;
-    background-color: #eaddff;
-    transition: border-color 0.25s;
-
-    @apply text-black cursor-pointer font-medium border border-transparent hover:border-link;
-  }
-  button:focus,
-  button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+    @apply bg-primary-container text-black
+      border rounded-lg border-transparent hover:border-link
+      font-medium text-base
+      cursor-pointer
+      transition-colors duration-200
+      py-2 px-5
+      focus:outline-4
+      focus-visible:outline-4;
   }
 }
