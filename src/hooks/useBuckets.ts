@@ -35,6 +35,7 @@ export const useBuckets = () => {
     onSuccess: (data) => {
       console.log("Created bucket metadata entry, data returned: ", data);
       refetchBucketMetadata();
+      return data;
     },
     onError: (err) => {
       console.log(
@@ -69,6 +70,10 @@ export const useBuckets = () => {
 
   const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) => {
     return createMetadataMutation.mutate(bucketMetadata);
+  };
+
+  const createBucketMetadataAsync = async (bucketMetadata: NewBucketMetadata) => {
+    return createMetadataMutation.mutateAsync(bucketMetadata);
   };
 
   const createBucketInstance = async (bucketInstance: NewBucketInstance) => {
@@ -158,6 +163,7 @@ export const useBuckets = () => {
     refetchBucketMetadata,
     refetchBucketInstance,
     createBucketMetadata,
+    createBucketMetadataAsync,
     createBucketInstance,
     hideBucketMetadata,
   };

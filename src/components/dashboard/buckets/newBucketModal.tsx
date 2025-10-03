@@ -18,6 +18,7 @@ import {
 } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
 import { useBuckets } from "@/hooks/useBuckets";
+import { useBucketsStore } from "@/stores/useBucketsStore";
 
 const NewBucketModal = ({
   open,
@@ -26,7 +27,8 @@ const NewBucketModal = ({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
-  const { createBucketMetadata } = useBuckets();
+  const { createBucketMetadataAsync } = useBuckets();
+  const { setCurrentBucketMetadataId } = useBucketsStore();
 
   const [bucketName, setBucketName] = useState<string>("");
   const [recurrencePeriod, setRecurrencePeriod] = useState<number>(0);
@@ -68,7 +70,16 @@ const NewBucketModal = ({
     };
 
     try {
-      createBucketMetadata(newBucket);
+      const result = await createBucketMetadataAsync(newBucket);
+
+      // Reset all fields
+      setBucketName("");
+      setRawSpendingLimit("");
+
+      // Set current to newly created BucketMetadata
+      setCurrentBucketMetadataId(result[0].id);
+
+      // Close modal
       setOpen(false);
     } catch (e) {
       alert(e);
