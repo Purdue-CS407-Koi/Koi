@@ -77,7 +77,11 @@ const NewBucketModal = ({
     >
       <DialogTitle>Add New Bucket</DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit} id="new-bucket-form">
+        <form
+          onSubmit={handleSubmit}
+          id="new-bucket-form"
+          className="flex flex-col gap-4"
+        >
           <FormControl fullWidth>
             <TextField
               autoFocus
@@ -92,7 +96,9 @@ const NewBucketModal = ({
               }}
               fullWidth
             />
+          </FormControl>
 
+          <FormControl fullWidth>
             <InputLabel id="recurrence-period-label">
               Recurrence Period
             </InputLabel>
@@ -121,7 +127,9 @@ const NewBucketModal = ({
                 );
               })}
             </Select>
+          </FormControl>
 
+          <FormControl fullWidth>
             <TextField
               error={spendingLimitError}
               margin="dense"

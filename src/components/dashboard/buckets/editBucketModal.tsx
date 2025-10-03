@@ -81,7 +81,7 @@ export const EditBucketModal = ({
     >
       <DialogTitle>Edit Bucket</DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit} id="edit-bucket-form">
+        <form onSubmit={handleSubmit} id="edit-bucket-form" className="flex flex-col gap-4">
           <FormControl fullWidth>
             <TextField
               autoFocus
@@ -96,7 +96,9 @@ export const EditBucketModal = ({
               }}
               fullWidth
             />
+          </FormControl>
 
+          <FormControl fullWidth>
             <InputLabel id="recurrence-period-label">
               Recurrence Period
             </InputLabel>
@@ -125,7 +127,9 @@ export const EditBucketModal = ({
                 );
               })}
             </Select>
+          </FormControl>
 
+          <FormControl fullWidth>
             <TextField
               error={spendingLimitError}
               margin="dense"
