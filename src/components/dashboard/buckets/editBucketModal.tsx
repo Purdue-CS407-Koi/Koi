@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   Button,
   Dialog,
@@ -18,55 +18,59 @@ import {
 } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
 import { useBuckets } from "@/hooks/useBuckets";
-import { useBucketsStore } from "@/stores/useBucketsStore";
 import { getSpendingLimit, getSpendingLimitErrorText } from "./helpers";
+import { getBucketMetadata } from "@/api/buckets";
 
-const NewBucketModal = ({
+export const EditBucketModal = ({
   open,
   setOpen,
+  bucketMetadataId,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
+  bucketMetadataId: string;
 }) => {
-  const { createBucketMetadataAsync } = useBuckets();
-  const { setCurrentBucketMetadataId } = useBucketsStore();
+  const { editBucketMetadata } = useBuckets();
 
-  const [bucketName, setBucketName] = useState<string>("");
-  const [recurrencePeriod, setRecurrencePeriod] = useState<number>(0);
+  const [bucketName, setBucketName] = useState<string | null>("");
+  const [recurrencePeriod, setRecurrencePeriod] = useState<number | null>(0);
   const [rawSpendingLimit, setRawSpendingLimit] = useState<string>("");
 
   const spendingLimit = getSpendingLimit(rawSpendingLimit);
   const spendingLimitErrorText = getSpendingLimitErrorText(rawSpendingLimit);
   const spendingLimitError = spendingLimitErrorText !== null;
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (spendingLimitError) return;
-
-    const newBucket: NewBucketMetadata = {
+    const editedBucketData: NewBucketMetadata = {
       name: bucketName,
       recurrence_period_type: recurrencePeriod as RecurrencePeriodType,
       // Spending limit gets stored as int in DB
       spending_limit: spendingLimit! * 100,
     };
 
-    try {
-      const result = await createBucketMetadataAsync(newBucket);
-
-      // Reset all fields
-      setBucketName("");
-      setRawSpendingLimit("");
-
-      // Set current to newly created BucketMetadata
-      setCurrentBucketMetadataId(result[0].id);
-
-      // Close modal
-      setOpen(false);
-    } catch (e) {
-      alert(e);
-    }
+    editBucketMetadata(bucketMetadataId, editedBucketData);
+    handleClose();
   };
+
+  // Fetch bucket information again if dialog is opened
+  useEffect(() => {
+    (async () => {
+      const metadata = await getBucketMetadata(bucketMetadataId);
+      setBucketName(metadata.name);
+      setRecurrencePeriod(metadata.recurrence_period_type);
+      if (metadata.spending_limit) {
+        setRawSpendingLimit((metadata.spending_limit / 100).toString());
+      } else {
+        setRawSpendingLimit("");
+      }
+    })();
+  }, [bucketMetadataId, open]);
 
   return (
     <Dialog
@@ -75,9 +79,9 @@ const NewBucketModal = ({
         setOpen(false);
       }}
     >
-      <DialogTitle>Add New Bucket</DialogTitle>
+      <DialogTitle>Edit Bucket</DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit} id="new-bucket-form">
+        <form onSubmit={handleSubmit} id="edit-bucket-form">
           <FormControl fullWidth>
             <TextField
               autoFocus
@@ -104,7 +108,7 @@ const NewBucketModal = ({
               label="Recurrence Period"
               value={recurrencePeriod}
               onChange={(e) => {
-                setRecurrencePeriod(e.target.value);
+                setRecurrencePeriod(Number(e.target.value));
               }}
               fullWidth
             >
@@ -148,12 +152,10 @@ const NewBucketModal = ({
         >
           Cancel
         </Button>
-        <Button type="submit" form="new-bucket-form" variant="contained">
-          Add
+        <Button type="submit" form="edit-bucket-form" variant="contained">
+          Edit
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
-
-export default NewBucketModal;

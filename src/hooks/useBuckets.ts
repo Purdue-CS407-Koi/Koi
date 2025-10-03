@@ -4,6 +4,7 @@ import {
   getAllBucketInstances,
   getAllBucketMetadata,
   hideBucketMetadata as hideBucketMetadataApi,
+  editBucketMetadata as editBucketMetadataApi,
 } from "@/api/buckets";
 import {
   RecurrencePeriodType,
@@ -68,11 +69,24 @@ export const useBuckets = () => {
     },
   });
 
+  const editMetadataMutation = useMutation({
+    mutationFn: editBucketMetadataApi,
+    onSuccess: (data) => {
+      console.log("Edited bucket successfully, data returned: ", data);
+      refetchBucketMetadata();
+    },
+    onError: (err) => {
+      console.error("Failed to hide bucket: " + JSON.stringify(err));
+    },
+  });
+
   const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) => {
     return createMetadataMutation.mutate(bucketMetadata);
   };
 
-  const createBucketMetadataAsync = async (bucketMetadata: NewBucketMetadata) => {
+  const createBucketMetadataAsync = async (
+    bucketMetadata: NewBucketMetadata
+  ) => {
     return createMetadataMutation.mutateAsync(bucketMetadata);
   };
 
@@ -82,6 +96,13 @@ export const useBuckets = () => {
 
   const hideBucketMetadata = async (bucketMetadataId: string) => {
     return hideMetadataMutation.mutate(bucketMetadataId);
+  };
+
+  const editBucketMetadata = async (
+    bucketMetadataId: string,
+    updatedData: NewBucketMetadata
+  ) => {
+    return editMetadataMutation.mutate({ id: bucketMetadataId, updatedData });
   };
 
   const {
@@ -166,5 +187,6 @@ export const useBuckets = () => {
     createBucketMetadataAsync,
     createBucketInstance,
     hideBucketMetadata,
+    editBucketMetadata,
   };
 };

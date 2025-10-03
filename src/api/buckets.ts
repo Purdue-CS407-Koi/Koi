@@ -37,7 +37,10 @@ export const getBucketMetadata = async (bucketMetadataId: string) => {
     .eq("id", bucketMetadataId);
 
   if (error) throw error;
-  return data;
+  if (data.length !== 1)
+    throw new Error("Bucket with specified ID doesn't exist!");
+
+  return data[0];
 };
 
 // Fetches all the BucketInstance objects of the supplied BucketMetadata ID
@@ -81,6 +84,27 @@ export const hideBucketMetadata = async (id: string) => {
   const { data, error } = await supabase
     .from(METADATA_TABLE_NAME)
     .update({ hidden_at: new Date().toDateString() })
+    .eq("id", id)
+    .select();
+
+  if (error) throw error;
+  return data;
+};
+
+export const editBucketMetadata = async ({
+  id,
+  updatedData,
+}: {
+  id: string;
+  updatedData: NewBucketMetadata;
+}) => {
+  const { data, error } = await supabase
+    .from(METADATA_TABLE_NAME)
+    .update({
+      name: updatedData.name,
+      recurrence_period_type: updatedData.recurrence_period_type,
+      spending_limit: updatedData.spending_limit,
+    })
     .eq("id", id)
     .select();
 
