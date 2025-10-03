@@ -75,6 +75,19 @@ export const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) =>
   return data;
 }
 
+export const hideBucketMetadata = async (id: string) => {
+  const { data, error } = await supabase
+    .from(METADATA_TABLE_NAME)
+    .update(
+      {hidden_at: new Date().toDateString()}
+    )
+    .eq("id", id)
+    .select();
+
+  if (error) throw error;
+  return data;
+}
+
 // Create new BucketInstance object
 export const createBucketInstance = async (bucketInstance: NewBucketInstance) => {
     const {

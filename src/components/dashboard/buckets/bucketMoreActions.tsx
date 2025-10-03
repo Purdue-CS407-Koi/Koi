@@ -1,10 +1,13 @@
 import { MoreVert } from "@mui/icons-material";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import React from "react";
+import { HideBucketModal } from "./hideBucketModal";
 
 
-const BucketMoreActions = () => {
+const BucketMoreActions = ({ bucketMetadataId}: {bucketMetadataId: string;}) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [hideModalOpen, setHideModalOpen] = React.useState(false);
+
     const open = Boolean(anchorEl);
 
     const handleClose = () => {
@@ -17,8 +20,8 @@ const BucketMoreActions = () => {
     };
 
     const handleHide = () => {
-        alert("To be implemented!")
         handleClose();
+        setHideModalOpen(true);
     };
     
     return (
@@ -50,6 +53,8 @@ const BucketMoreActions = () => {
             <MenuItem onClick={handleEdit}>Edit</MenuItem>
             <MenuItem onClick={handleHide}>Hide</MenuItem>
         </Menu>
+
+        <HideBucketModal open={hideModalOpen} setOpen={setHideModalOpen} bucketMetadataId={bucketMetadataId} />
         
         </div>
     )

@@ -23,7 +23,7 @@ export const BucketsList = () => {
           Buckets
         </h3>
         <div className="flex flex-col gap-2">
-          {bucketMetadataData?.map((bucket) => (
+          {bucketMetadataData?.filter((bucket) => { return bucket.hidden_at === null }).map((bucket) => (
             <div
               key={bucket.id}
               className="flex flex-row items-center gap-3 py-2 cursor-pointer"
@@ -56,7 +56,7 @@ export const BucketsList = () => {
               </div>
               {/* More actions */}
               <div className="ml-auto">
-                <BucketMoreActions />
+                <BucketMoreActions bucketMetadataId={bucket.id} />
               </div>
             </div>
           ))}

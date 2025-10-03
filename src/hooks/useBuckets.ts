@@ -3,6 +3,7 @@ import {
   createBucketMetadata as createBucketMetadataApi,
   getAllBucketInstances,
   getAllBucketMetadata,
+  hideBucketMetadata as hideBucketMetadataApi,
 } from "@/api/buckets";
 import { RecurrencePeriodType, type NewBucketMetadata, type NewBucketInstance } from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
@@ -51,6 +52,17 @@ export const useBuckets = () => {
     },
   });
 
+  const hideMetadataMutation = useMutation({
+    mutationFn: hideBucketMetadataApi,
+    onSuccess: (data) => {
+      console.log("Hidden bucket successfully, data returned: ", data);
+      refetchBucketMetadata();
+    },
+    onError: (err) => {
+      console.error("Failed to hide bucket: " + JSON.stringify(err));
+    },
+  });
+
   const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) => {
     return createMetadataMutation.mutate(bucketMetadata);
   };
@@ -58,6 +70,10 @@ export const useBuckets = () => {
   const createBucketInstance = async (bucketInstance: NewBucketInstance) => {
     return createInstanceMutation.mutate(bucketInstance);
   };
+
+  const hideBucketMetadata = async (bucketMetadataId: string) => {
+    return hideMetadataMutation.mutate(bucketMetadataId);
+  }
 
   const {
     data: bucketMetadataData,
@@ -68,7 +84,8 @@ export const useBuckets = () => {
     queryFn: async () => {
       const bucketMetadata = await getAllBucketMetadata();
 
-      if (!currentBucketMetadataId) {
+      // If there is no current ID set, or if the ID points to a bucket that was hidden
+      if (!currentBucketMetadataId || !bucketMetadata.some(instance => (instance.id === currentBucketMetadataId && instance.hidden_at === null))) {
         if (bucketMetadata.length > 0) {
           setCurrentBucketMetadataId(bucketMetadata[0].id);
         } else {
@@ -124,5 +141,6 @@ export const useBuckets = () => {
     refetchBucketInstance,
     createBucketMetadata,
     createBucketInstance,
+    hideBucketMetadata,
   };
 };
