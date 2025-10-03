@@ -49,6 +49,7 @@ export type Database = {
       BucketMetadata: {
         Row: {
           created_at: string
+          hidden_at: string | null
           id: string
           name: string | null
           recurrence_period_type: number | null
@@ -57,6 +58,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          hidden_at?: string | null
           id?: string
           name?: string | null
           recurrence_period_type?: number | null
@@ -65,6 +67,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          hidden_at?: string | null
           id?: string
           name?: string | null
           recurrence_period_type?: number | null
@@ -148,15 +151,7 @@ export type Database = {
           owner?: string | null
           start?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "Challenges_owner_fkey"
-            columns: ["owner"]
-            isOneToOne: false
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       Expenses: {
         Row: {
@@ -214,13 +209,6 @@ export type Database = {
             referencedRelation: "Splits"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "Expenses_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          },
         ]
       }
       GroupMemberships: {
@@ -251,7 +239,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "GroupMembership_user_id_fkey"
+            foreignKeyName: "GroupMemberships_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "Users"
@@ -307,13 +295,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "ExpenseSplits_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "Splits_group_id_fkey"
             columns: ["group_id"]
             isOneToOne: false
@@ -325,6 +306,13 @@ export type Database = {
             columns: ["original_expense_id"]
             isOneToOne: false
             referencedRelation: "Expenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Splits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "Users"
             referencedColumns: ["id"]
           },
         ]
