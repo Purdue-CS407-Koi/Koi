@@ -35,6 +35,7 @@ const NewBucketModal = ({
     const newBucket = {
       name: formJson.name,
       recurrencePeriod: formJson["recurrence-period"],
+      spendingLimit: formJson["spending-limit"],
     };
 
     console.log("Would've created bucket ", newBucket);
@@ -90,6 +91,14 @@ const NewBucketModal = ({
                 );
               })}
             </Select>
+
+            <TextField
+              margin="dense"
+              id="spending-limit"
+              name="spending-limit"
+              label="Spending Limit"
+              fullWidth
+            />
           </FormControl>
         </form>
       </DialogContent>
