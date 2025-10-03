@@ -109,38 +109,6 @@ export const getGroupMembers = async (groupId: string) => {
   }));
 };
 
-// export const fetchActivity = async (groupId?: string) => {
-//    const {
-//     data: { user },
-//   } = await supabase.auth.getUser();
-//   if (!user) {
-//     throw new Error("user is undefined");
-//   }
-//     let query = supabase
-//     .from("Expenses")
-//     .select("*, Splits!inner(group_id)")
-//     .order("created_at", { ascending: false });
-
-//   if (groupId) {
-//     // Specific group
-//     query = query.eq("Splits.group_id", groupId);
-//   } else {
-//     // All groups for user
-//     query = query.in(
-//       "Splits.group_id",
-//       (
-//         await supabase
-//           .from("GroupMemberships")
-//           .select("group_id")
-//           .eq("user_id", user?.id)
-//       ).data?.map((row) => row.group_id) ?? []
-//     );
-//   }
-
-//   const { data, error } = await query;
-//   if (error) throw error;
-//   return data;
-// };
 export const fetchActivity = async (groupId?: string) => {
   const {
     data: { user },
@@ -149,83 +117,82 @@ export const fetchActivity = async (groupId?: string) => {
     throw new Error("user is undefined");
   }
 
-  let query = supabase
+  // figure out which group_ids we care about
+  let groupIds: string[] = [];
+  if (groupId) {
+    groupIds = [groupId];
+  } else {
+    const { data: memberships, error: membershipError } = await supabase
+      .from("GroupMemberships")
+      .select("group_id")
+      .eq("user_id", user.id);
+
+    if (membershipError) throw membershipError;
+    groupIds = memberships?.map((m) => m.group_id) ?? [];
+  }
+
+  // fetch splits across those groupIds
+  const { data: splits, error } = await supabase
     .from("Splits")
     .select()
+    .in("group_id", groupIds)
     .order("created_at", { ascending: false });
 
-  if (groupId) {
-    // Specific group
-    query = query.eq("group_id", groupId);
-    query = query.eq("user_id", user?.id);
+  if (error) throw error;
+  if (!splits) return [];
 
-    const { data, error } = await query;
-    if (error) throw error;
-    
-    const mapping = await Promise.all (
-      data.map(async (split) => {
-        if ((split.amount_owed ?? 0) + (split.amount_remaining ?? 0) == 0) {
-          const { data, error } = await supabase
-            .from("Splits")
-            .select()
-            .eq("original_expense_id", split.original_expense_id ?? "");
-          if (error) throw error;
+  // run the same enrichment logic for each split
+  const mapping = await Promise.all(
+    splits.map(async (split) => {
+      // if fully settled, recompute total from all splits
+      if ((split.amount_owed ?? 0) + (split.amount_remaining ?? 0) === 0) {
+        const { data: allSplits, error: allSplitsError } = await supabase
+          .from("Splits")
+          .select()
+          .eq("original_expense_id", split.original_expense_id ?? "");
+        if (allSplitsError) throw allSplitsError;
 
-          let amount_owed = 0;
-          let amount_remaining = 0;
-          data.forEach((split_owe) => {
-            amount_owed -= split_owe.amount_owed ?? 0;
-            amount_remaining -= split_owe.amount_remaining ?? 0;
-          });
-          
-          const { data: expenseData, error: expenseError } = await supabase
-            .from("Expenses")
-            .select()
-            .eq("id", split.original_expense_id ?? "")
-            .single(); 
-          if (expenseError) throw expenseError;
+        let amount_owed = 0;
+        let amount_remaining = 0;
+        allSplits.forEach((s) => {
+          amount_owed -= s.amount_owed ?? 0;
+          amount_remaining -= s.amount_remaining ?? 0;
+        });
 
-          return {
-            ...split,
-            amount_owed: amount_owed,
-            amount_remaining: amount_remaining,
-            original_payment: expenseData.amount,
-            original_payer: expenseData.user_id,
-            name: expenseData.name,
-          }
-        } else {
-          const { data: expenseData, error: expenseError } = await supabase
-            .from("Expenses")
-            .select()
-            .eq("id", split.original_expense_id ?? "")
-            .single(); 
-          if (expenseError) throw expenseError;
+        const { data: expenseData, error: expenseError } = await supabase
+          .from("Expenses")
+          .select()
+          .eq("id", split.original_expense_id ?? "")
+          .single();
+        if (expenseError) throw expenseError;
 
-          return {
-            ...split,
-            original_payment: expenseData.amount,
-            original_payer: expenseData.user_id,
-            name: expenseData.name,
-          };
-        }
-      })
-    );
+        return {
+          ...split,
+          amount_owed,
+          amount_remaining,
+          original_payment: expenseData.amount,
+          original_payer: expenseData.user_id,
+          name: expenseData.name,
+        };
+      } else {
+        // normal case: just attach expense info
+        const { data: expenseData, error: expenseError } = await supabase
+          .from("Expenses")
+          .select()
+          .eq("id", split.original_expense_id ?? "")
+          .single();
+        if (expenseError) throw expenseError;
 
-    return mapping;
+        return {
+          ...split,
+          original_payment: expenseData.amount,
+          original_payer: expenseData.user_id,
+          name: expenseData.name,
+        };
+      }
+    })
+  );
 
-  } else {
-    // All groups for the user (via memberships)
-    query = query.in(
-      "group_id",
-      (
-        await supabase
-          .from("GroupMemberships")
-          .select("group_id")
-          .eq("user_id", user.id)
-      ).data?.map((row) => row.group_id) ?? []
-    );
-    const { data, error } = await query;
-    if (error) throw error;
-    return data;
-  }
+  return mapping;
 };
+

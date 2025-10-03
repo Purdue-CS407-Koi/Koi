@@ -55,7 +55,8 @@ const Groups = () => {
   return (
     <Template>
       <Content>
-        <div className="flex min-h-screen p-6"
+        <div
+          className="flex min-h-screen p-6"
           style={{
             backgroundColor: "#F0F1F6",
           }}
