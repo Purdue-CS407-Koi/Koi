@@ -61,11 +61,11 @@ const useGroups = () => {
   };
 
   const useActivity = (groupId?: string) => {
-  return useQuery({
-    queryKey: ["activity", groupId],
-    queryFn: () => fetchActivity(groupId),
-  });
-};
+    return useQuery({
+      queryKey: ["activity", groupId],
+      queryFn: () => fetchActivity(groupId),
+    });
+  };
 
   const currentGroupId = useGroupStore((state) => state.currentGroupId);
   const {

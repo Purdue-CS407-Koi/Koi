@@ -26,7 +26,8 @@ const Groups = () => {
     selectedGroupId ?? undefined
   );
   const selectedGroupName =
-  groupsData?.find((g) => g.id === selectedGroupId)?.name || "";
+    groupsData?.find((g) => g.id === selectedGroupId)?.name || "";
+
   const handleSelectGroup = async (groupId: string, groupName: string) => {
     setSelectedGroupId(groupId);
 
@@ -44,6 +45,8 @@ const Groups = () => {
     setIsModalOpen(false);
     return id;
   };
+
+  console.log(activityData);
 
   const handleEditGroup = () => {
     setIsEditModalOpen(true);
@@ -113,6 +116,7 @@ const Groups = () => {
                 <ActivityList
                   activityData={activityData}
                   activityLoading={activityLoading}
+                  members={members}
                 />
               </div>
 

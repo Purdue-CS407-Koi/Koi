@@ -151,12 +151,68 @@ export const fetchActivity = async (groupId?: string) => {
 
   let query = supabase
     .from("Splits")
-    .select("id, group_id, created_at")
+    .select()
     .order("created_at", { ascending: false });
 
   if (groupId) {
     // Specific group
     query = query.eq("group_id", groupId);
+    query = query.eq("user_id", user?.id);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    
+    const mapping = await Promise.all (
+      data.map(async (split) => {
+        if ((split.amount_owed ?? 0) + (split.amount_remaining ?? 0) == 0) {
+          const { data, error } = await supabase
+            .from("Splits")
+            .select()
+            .eq("original_expense_id", split.original_expense_id ?? "");
+          if (error) throw error;
+
+          let amount_owed = 0;
+          let amount_remaining = 0;
+          data.forEach((split_owe) => {
+            amount_owed -= split_owe.amount_owed ?? 0;
+            amount_remaining -= split_owe.amount_remaining ?? 0;
+          });
+          
+          const { data: expenseData, error: expenseError } = await supabase
+            .from("Expenses")
+            .select()
+            .eq("id", split.original_expense_id ?? "")
+            .single(); 
+          if (expenseError) throw expenseError;
+
+          return {
+            ...split,
+            amount_owed: amount_owed,
+            amount_remaining: amount_remaining,
+            original_payment: expenseData.amount,
+            original_payer: expenseData.user_id,
+            name: expenseData.name,
+          }
+        } else {
+          const { data: expenseData, error: expenseError } = await supabase
+            .from("Expenses")
+            .select()
+            .eq("id", split.original_expense_id ?? "")
+            .single(); 
+          if (expenseError) throw expenseError;
+
+          return {
+            ...split,
+            original_payment: expenseData.amount,
+            original_payer: expenseData.user_id,
+            name: expenseData.name,
+          };
+        }
+      })
+    );
+
+    return mapping;
+
   } else {
     // All groups for the user (via memberships)
     query = query.in(
@@ -168,9 +224,8 @@ export const fetchActivity = async (groupId?: string) => {
           .eq("user_id", user.id)
       ).data?.map((row) => row.group_id) ?? []
     );
+    const { data, error } = await query;
+    if (error) throw error;
+    return data;
   }
-
-  const { data, error } = await query;
-  if (error) throw error;
-  return data;
 };

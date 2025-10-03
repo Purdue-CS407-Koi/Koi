@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { NewSplit } from "@/interfaces/Split";
 import { insertNewSplit as insertNewSplitApi, getSplit, getSplitByCurrentUser } from "@/api/split";
@@ -6,6 +6,8 @@ import { useSplitStore } from "@/stores/useSplitStore";
 
 const useSplits = () => {
   const currentSplitId = useSplitStore((state) => state.currentSplitId);
+  const queryClient = useQueryClient();
+
   const {
     data: splitData,
     isLoading,
@@ -28,6 +30,11 @@ const useSplits = () => {
     mutationFn: insertNewSplitApi,
     onError: (err) => {
       console.log("error inserting new split: " + JSON.stringify(err));
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["activity", variables.group_id], 
+      });
     },
   });
 
