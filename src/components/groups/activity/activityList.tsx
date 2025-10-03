@@ -67,26 +67,24 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             </div>
             {(activity.amount_owed ?? 0) < -1 ? 
               <div className="flex flex-2">
-                <div className="flex-1 leading-normal text-sm gap-1 flex items-baseline">
-                  <span>
-                    You paid 
-                  </span>
+                <div className="flex-1 leading-normal text-sm items-baseline">
+                  You paid {" "}
                   <span className="font-bold">${activity.original_payment?.toFixed(2)}</span>
                 </div>
-                <div className="flex-1 leading-normal text-sm gap-1 flex items-baseline">
-                  <span>
-                    You'll get back 
-                  </span>
+                <div className="flex-1 leading-normal text-sm items-baseline">
+                  You'll get back {" "}
                   <span className="text-green-500 font-bold">${((activity.amount_owed ?? 0)  * -1).toFixed(2)}</span>
                 </div>
               </div>
             :
               <div className="flex flex-2">
-                <div className="flex-1">
-                  {members.find((g) => g.id === activity.id)?.name || ""} paid ${activity.original_payment?.toFixed(2)}
+                <div className="flex-1 leading-normal text-sm items-baseline">
+                  {members.find((g) => g.id === activity.original_payer)?.name || ""} paid {" "}
+                  <span className="font-bold">${activity.original_payment?.toFixed(2)}</span>
                 </div>
-                <div className="flex-1">
-                  {}
+                <div className="flex-1 leading-normal text-sm items-baseline">
+                  You owe {" "}
+                  <span className="text-red-500 font-bold">${((activity.amount_owed ?? 0)).toFixed(2)}</span>
                 </div>
               </div>
             }
