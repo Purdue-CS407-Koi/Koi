@@ -14,6 +14,8 @@
   --color-sidebar-entry-subtext: var(--color-sidebar-button-color);
   --color-link: #646cff;
   --color-link-hover: #535bf2;
+  --color-button-hover: #8B5CF6;
+  --color-text-primary: #625B71;
 
   /* From material v3 kit on Figma */
   --color-primary: rgba(103, 80, 164, 1);

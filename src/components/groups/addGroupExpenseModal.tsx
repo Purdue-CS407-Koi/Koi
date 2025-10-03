@@ -290,12 +290,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             <button
               className ="absolute top-1 left-1 px-2.5 py-1 rounded-md bg-white text-[#374151] text-sm cursor-pointer transition-all duration-200"
               onClick={handleClose}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f9fafb";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-              }}
             >
               Cancel
             </button>
@@ -429,28 +423,17 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   ${expenseName.trim() && selectedGroup 
                     ? "cursor-pointer" 
                     : "cursor-not-allowed"} 
-                  text-[${TEXT_COLOR}] bg-white
+                  text-[var(--color-text-primary)] bg-white
+                  ${!(expenseName.trim() && selectedGroup) || 
+                  "hover:bg-[var(--color-button-hover)] hover:text-white"}
                 `}
                 onClick={handleSplitEvenly}
-                onMouseEnter={(e) => {
-                  if (expenseName.trim() && selectedGroup) {
-                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
-                    e.currentTarget.style.color = WHITE;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (expenseName.trim() && selectedGroup) {
-                    e.currentTarget.style.backgroundColor = WHITE;
-                    e.currentTarget.style.color = TEXT_COLOR;
-                  }
-                }}
               >
                 Evenly
                 <NavigateNextIcon/>
               </button>
               <button
                 onClick={handleCustomAmounts}
-                disabled={!expenseName.trim() || !selectedGroup}
                 className={`
                   flex flex-row justify-center items-center
                   py-0.5 pr-1.5 pl-2.5
@@ -459,45 +442,19 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   ${expenseName.trim() && selectedGroup 
                     ? "cursor-pointer" 
                     : "cursor-not-allowed"} 
-                  text-[${TEXT_COLOR}] bg-white
+                  text-[var(--color-text-primary)] bg-white
+                  ${!(expenseName.trim() && selectedGroup) || 
+                  "hover:bg-[var(--color-button-hover)] hover:text-white"}
                 `}
-                onMouseEnter={(e) => {
-                  if (expenseName.trim() && selectedGroup) {
-                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
-                    e.currentTarget.style.color = WHITE;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (expenseName.trim() && selectedGroup) {
-                    e.currentTarget.style.backgroundColor = WHITE;
-                    e.currentTarget.style.color = TEXT_COLOR;
-                  }
-                }}
               >
                 Custom
                 <NavigateNextIcon/>
               </button>
               {error && (
-                <p
-                  style={{
-                    margin: "8px 0 0 0",
-                    fontSize: "12px",
-                    color: "#ef4444",
-                  }}
-                >
+                <p className="mt-2 text-xs text-[var(--color-error)]">
                   {error}
                 </p>
               )}
-            </div>
-
-            {/* Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                justifyContent: "flex-end",
-              }}
-            >
             </div>
           </div>
         </div>
@@ -508,48 +465,22 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       <>
         {/* Backdrop */}
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
           onClick={handleClose}
         >
           {/* Modal */}
           <div
-            style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "400px",
-              margin: "16px",
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-            }}
+            className="relative bg-white rounded-xl p-6 w-full max-w-[400px] m-4 shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div style={{ marginBottom: "20px" }}>
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  color: "#111827",
-                }}
-              >
+            <div className="mb-5">
+              <h3 className="m-0 text-lg font-semibold text-black" >
                 Splitting Evenly
               </h3>
             </div>
             {/* Input */}
-            <div style={{ marginBottom: "20px" }}>
+            <div className="mb-5">
               <div>
                 <ul>
                   {payers?.map((m) => (
@@ -593,71 +524,32 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 </ul>
               </div>
               {error && (
-                <p
-                  style={{
-                    margin: "8px 0 0 0",
-                    fontSize: "12px",
-                    color: "#ef4444",
-                  }}
-                >
+                <p className="mt-2 text-xs text-[var(--color-error)]">
                   {error}
                 </p>
               )}
             </div>
 
             {/* Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                justifyContent: "flex-end",
-              }}
-            >
+            <div className={"flex gap-3 justify-end"}>
               <button
                 onClick={handleBack}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                  color: "#374151",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f9fafb";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "white";
-                }}
+                className={`
+                  px-5 py-2.5 border border-gray-300 rounded-md bg-white 
+                  text-gray-700 text-sm cursor-pointer transition-all duration-200
+                  hover:bg-gray-300
+                `}
               >
                 Back
               </button>
               <button
                 onClick={handleSave}
                 disabled={!expenseName.trim()}
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "6px",
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor: expenseName.trim() ? "pointer" : "not-allowed",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (expenseName.trim()) {
-                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
-                    e.currentTarget.style.color = WHITE;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (expenseName.trim()) {
-                    e.currentTarget.style.backgroundColor = BUTTON_COLOR;
-                    e.currentTarget.style.color = TEXT_COLOR;
-                  }
-                }}
+                className={`
+                  px-5 py-2.5 rounded-[6px] text-[14px] transition-all duration-200
+                  ${expenseName.trim() ? "cursor-pointer" : "cursor-not-allowed"}
+                  hover:bg-[var(--color-button-hover)] hover:text-white
+                `}
               >
                 Create Expense
               </button>
@@ -671,66 +563,31 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       <>
         {/* Backdrop */}
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
           onClick={handleClose}
         >
           {/* Modal */}
           <div
-            style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "400px",
-              margin: "16px",
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-            }}
+            className="relative bg-white rounded-xl p-6 w-full max-w-[400px] m-4 shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div style={{ marginBottom: "20px" }}>
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  color: "#111827",
-                }}
-              >
+            <div className="mb-5">
+              <h3 className="m-0 text-lg font-semibold text-black" >
                 Custom Amounts
               </h3>
             </div>
             
             {/* Input */}
-            <div style={{ marginBottom: "20px" }}>
+            <div className="mb-5">
               <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                    marginBottom: "12px",
-                    marginTop: "12px",
-                  }}
-                >
-                  Split Options
+                <label className="block text-sm font-medium text-gray-700 my-3">
+                  Split Options for ${expenseDollars.toString()}.{expenseCents.toString().padEnd(2, "0")}
                 </label>
                 <ul>
                   {members?.map((m) => (
                     <li key={m.id} className="flex items-center gap-3">
-                      <div className="px-2 py-1 rounded flex items-center">
+                      <div className="px-2 py-1 rounded flex items-center mt-4">
                         {m.id == userData?.id
                           ? `(Paid by) ${m.name}` 
                           :
@@ -745,33 +602,18 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                               }}
                               onKeyDown={handleKeyPressNumber}
                               placeholder="00"
-                              style={{
-                                width: "calc(4em + 8px)",
-                                padding: "2px",
-                                borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                                fontSize: "14px",
-                                outline: "none",
-                                transition: "border-color 0.2s",
-                                boxSizing: "border-box",
-                                textAlign: "right",
-                                minWidth: "calc(4em + 8px)",
-                              }}
-                              onFocus={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#3b82f6";
-                              }}
-                              onBlur={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#757981ff";
-                              }}
+                              className={`
+                                w-[calc(4em+8px)] min-w-[calc(4em+8px)]
+                                p-0.5 text-sm text-right 
+                                outline-none box-border 
+                                border-b-2 transition-colors duration-200
+                                ${error ? "border-red-500" : "border-gray-500"}
+                              `}
                               inputMode="numeric"
                               pattern="[0-9]*"
                             />
                             .
                             <input
-                              className="text-left"
                               type="text"
                               value={individualAmounts[m.id]?.cents}
                               onChange={(e) => {
@@ -781,26 +623,13 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                               onKeyDown={handleKeyPressNumber}
                               placeholder="00"
                               maxLength={2}
-                              style={{
-                                width: "calc(2em + 4px)",
-                                padding: "2px",
-                                borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                                fontSize: "14px",
-                                outline: "none",
-                                transition: "border-color 0.2s",
-                                boxSizing: "border-box",
-                                minWidth: "calc(2em + 4px)",
-                              }}
-                              onFocus={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#3b82f6";
-                              }}
-                              onBlur={(e) => {
-                                e.target.style.borderColor = error
-                                  ? "#ef4444"
-                                  : "#757981ff";
-                              }}
+                              className={`
+                                w-[2em] min-w-[2em]
+                                p-0.5 text-sm  
+                                outline-none box-border 
+                                border-b-2 transition-colors duration-200
+                                ${error ? "border-red-500" : "border-gray-500"}
+                              `}
                               inputMode="numeric"
                               pattern="[0-9]*"
                             />
@@ -812,71 +641,32 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 </ul>
               </div>
               {error && (
-                <p
-                  style={{
-                    margin: "8px 0 0 0",
-                    fontSize: "12px",
-                    color: "#ef4444",
-                  }}
-                >
+                <p className="mt-2 text-xs text-[var(--color-error)]">
                   {error}
                 </p>
               )}
             </div>
 
             {/* Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                justifyContent: "flex-end",
-              }}
-            >
+            <div className={"flex gap-3 justify-end"}>
               <button
                 onClick={handleBack}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                  color: "#374151",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f9fafb";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "white";
-                }}
+                className={`
+                  px-5 py-2.5 border border-gray-300 rounded-md bg-white 
+                  text-gray-700 text-sm cursor-pointer transition-all duration-200
+                  hover:bg-gray-300
+                `}
               >
                 Back
               </button>
               <button
                 onClick={handleSave}
                 disabled={!expenseName.trim()}
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "6px",
-                  color: TEXT_COLOR,
-                  fontSize: "14px",
-                  cursor: expenseName.trim() ? "pointer" : "not-allowed",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (expenseName.trim()) {
-                    e.currentTarget.style.backgroundColor = BUTTON_HOVER_COLOR;
-                    e.currentTarget.style.color = WHITE;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (expenseName.trim()) {
-                    e.currentTarget.style.backgroundColor = BUTTON_COLOR;
-                    e.currentTarget.style.color = TEXT_COLOR;
-                  }
-                }}
+                className={`
+                  px-5 py-2.5 rounded-[6px] text-[14px] transition-all duration-200
+                  ${expenseName.trim() ? "cursor-pointer" : "cursor-not-allowed"}
+                  hover:bg-[var(--color-button-hover)] hover:text-white
+                `}
               >
                 Create Expense
               </button>
