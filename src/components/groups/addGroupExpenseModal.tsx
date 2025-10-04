@@ -263,7 +263,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
   useEffect(() => {
     handleEvenSplit();
-  }, [payers]);
+  }, [handleEvenSplit, payers]);
 
   if (!isOpen) return null;
 
