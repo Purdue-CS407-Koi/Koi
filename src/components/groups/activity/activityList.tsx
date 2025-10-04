@@ -9,6 +9,7 @@ interface Activity {
   amount_remaining?: number | null;
   original_payer?: string | null;
   original_payment?: number | null;
+  original_payer_name?: string | null;
 }
 
 interface Member {
@@ -26,7 +27,6 @@ interface ActivityListProps {
 export const ActivityList: React.FC<ActivityListProps> = ({
   activityData,
   activityLoading,
-  members,
 }) => {
   const [split, setSplit] = useState<Activity | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -101,7 +101,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             ) : (
               <div className="flex flex-4">
                 <div className="flex-1 leading-normal text-sm items-baseline">
-                  {members.find((g) => g.id === activity.original_payer)?.name ||
+                  {activity.original_payer_name ||
                     ""}{" "}
                   paid{" "}
                   <span className="font-bold">

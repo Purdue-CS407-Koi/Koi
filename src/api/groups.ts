@@ -136,6 +136,7 @@ export const fetchActivity = async (groupId?: string) => {
     .from("Splits")
     .select()
     .in("group_id", groupIds)
+    .eq("user_id", user?.id)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -145,7 +146,7 @@ export const fetchActivity = async (groupId?: string) => {
   const mapping = await Promise.all(
     splits.map(async (split) => {
       // if fully settled, recompute total from all splits
-      if ((split.amount_owed ?? 0) + (split.amount_remaining ?? 0) === 0) {
+      if (((split.amount_owed ?? 0) + (split.amount_remaining ?? 0) === 0)) {
         const { data: allSplits, error: allSplitsError } = await supabase
           .from("Splits")
           .select()
@@ -166,12 +167,20 @@ export const fetchActivity = async (groupId?: string) => {
           .single();
         if (expenseError) throw expenseError;
 
+        const { data: userData, error: userError } = await supabase
+          .from("Users")
+          .select()
+          .eq("id", expenseData.user_id ?? "")
+          .single();
+        if (userError) throw expenseError;
+
         return {
           ...split,
           amount_owed,
           amount_remaining,
           original_payment: expenseData.amount,
           original_payer: expenseData.user_id,
+          original_payer_name: userData.name,
           name: expenseData.name,
         };
       } else {
@@ -183,10 +192,18 @@ export const fetchActivity = async (groupId?: string) => {
           .single();
         if (expenseError) throw expenseError;
 
+        const { data: userData, error: userError } = await supabase
+          .from("Users")
+          .select()
+          .eq("id", expenseData.user_id ?? "")
+          .single();
+        if (userError) throw expenseError;
+
         return {
           ...split,
           original_payment: expenseData.amount,
           original_payer: expenseData.user_id,
+          original_payer_name: userData.name,
           name: expenseData.name,
         };
       }
