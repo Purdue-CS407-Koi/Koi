@@ -50,20 +50,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    console.log(groups);
-    console.log(userData?.id);
-  }, [groups, userData]);
-
-  useEffect(() => {
-    setPayers(members ?? []);
-    setNonpayers([]);
-  }, [members]);
-
-  useEffect(() => {
-    handleEvenSplit();
-  }, [payers]);
-
   const resetToDefault = () => {
     setExpenseName("");
     setExpenseDollars("00");
@@ -264,6 +250,20 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     if (!/[0-9]/.test(e.key) && !TEXT_EDITING.includes(e.key))
       e.preventDefault();
   };
+
+  useEffect(() => {
+    console.log(groups);
+    console.log(userData?.id);
+  }, [groups, userData]);
+
+  useEffect(() => {
+    setPayers(members ?? []);
+    setNonpayers([]);
+  }, [members]);
+
+  useEffect(() => {
+    handleEvenSplit();
+  }, [payers]);
 
   if (!isOpen) return null;
 
