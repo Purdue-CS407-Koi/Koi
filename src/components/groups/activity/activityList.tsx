@@ -12,23 +12,18 @@ interface Activity {
   original_payer_name?: string | null;
 }
 
-interface Member {
-  id: string;
-  name: string;
-  avatar?: string;
-}
-
 interface ActivityListProps {
   activityData?: Activity[];
   activityLoading: boolean;
-  members: Member[];
+  settleSplit: (settle_split_id: string) => void;
 }
 
 export const ActivityList: React.FC<ActivityListProps> = ({
   activityData,
   activityLoading,
+  settleSplit
 }) => {
-  const [split, setSplit] = useState<Activity | null>(null);
+  const [split, setSplit] = useState<Activity>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
 
@@ -39,9 +34,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleClose = () => {
+  const handleSettleSplit = async () => {
+    await settleSplit(split?.id ?? "")
     setIsModalOpen(false);
-  };
+  }
 
   if (activityLoading) {
     return <div style={{ color: "#6b7280" }}>Loading activity...</div>;
@@ -111,7 +107,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                 <div className="flex-1 leading-normal text-sm items-baseline">
                   You owe{" "}
                   <span className="text-red-500 font-bold">
-                    ${(activity.amount_owed ?? 0).toFixed(2)}
+                    ${(activity.amount_remaining ?? 0).toFixed(2)}
                   </span>
                   
                 </div>
@@ -126,7 +122,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-            onClick={handleClose}
+            onClick={() => setIsModalOpen(false)}
           >
             {/* Modal */}
             <div
@@ -185,7 +181,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                   </div>
                   <div className="justify-center flex">
                     <button
-                      onClick={() => {}}
+                      onClick={handleSettleSplit}
                       className={`
                         px-5 py-2.5 rounded-[6px] text-[14px] transition-all duration-200
                         w-auto hover:bg-[var(--color-button-hover)] hover:text-white rounded-full

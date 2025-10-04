@@ -204,7 +204,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     const newAmounts: { [key: string]: { dollars: string; cents: string } } = {};
     payers.forEach((payer, index) => {
       newAmounts[payer.id] = {
-        dollars: splitDollars.toString().padStart(2, "0"),
+        dollars: splitDollars.toString(),
         cents: (excess_cents > index ? splitCents + 1 : splitCents)
           .toString()
           .padEnd(2, "0"),

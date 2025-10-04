@@ -16,7 +16,7 @@ interface Member {
 }
 
 const Groups = () => {
-  const { groupsData, useActivity } = useGroups();
+  const { groupsData, useActivity, settleSplit } = useGroups();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
@@ -117,7 +117,7 @@ const Groups = () => {
                 <ActivityList
                   activityData={activityData}
                   activityLoading={activityLoading}
-                  members={members}
+                  settleSplit={settleSplit}
                 />
               </div>
 

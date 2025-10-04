@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   insertGroup as insertGroupApi,
   insertGroupMembership as insertGroupMembershipApi,
@@ -7,10 +7,12 @@ import {
   updateGroupName as editGroupApi,
   getGroup,
   fetchGroupMembers,
+  settleSplit as settleSplitApi,
 } from "@/api/groups";
 import { useGroupStore } from "@/stores/useGroupStore";
 
 const useGroups = () => {
+  const queryClient = useQueryClient();
   const insertMutation = useMutation({
     mutationFn: async (groupName: string) => {
       const group = await insertGroupApi(groupName);
@@ -61,10 +63,29 @@ const useGroups = () => {
   };
 
   const useActivity = (groupId?: string) => {
+    console.log(["activity", groupId]);
     return useQuery({
       queryKey: ["activity", groupId],
       queryFn: () => fetchActivity(groupId),
     });
+  };
+
+  const settlingMutation = useMutation({
+    mutationFn: (settle_split_id: string) =>
+      settleSplitApi(settle_split_id),
+
+    onSuccess: (_data) => {
+      queryClient.invalidateQueries({ queryKey: ["activity", _data.group_id] });
+      queryClient.invalidateQueries({ queryKey: ["activity", undefined] });
+    },
+
+    onError: (err) => {
+      console.error("Error settling split:", err);
+    },
+  });
+
+  const settleSplit = (settle_split_id: string,) => {
+    settlingMutation.mutate(settle_split_id);
   };
 
   const currentGroupId = useGroupStore((state) => state.currentGroupId);
@@ -90,7 +111,7 @@ const useGroups = () => {
     return { groupMembersData, isLoading, error };
   };
 
-  return { groupsData, getGroupsError, useGroupMembers, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup };
+  return { groupsData, getGroupsError, useGroupMembers, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup, settleSplit };
 };
 
 export default useGroups;

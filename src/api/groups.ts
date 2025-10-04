@@ -213,3 +213,56 @@ export const fetchActivity = async (groupId?: string) => {
   return mapping;
 };
 
+export const settleSplit = async (settle_split_id: string) => {
+  const { data: split, error: splitError } = await supabase
+    .from("Splits")
+    .select()
+    .eq("id", settle_split_id)
+    .single();
+  if (splitError) throw splitError;
+
+  const { data: expense, error: expenseError } = await supabase    
+    .from("Expenses")
+    .select()
+    .eq("id", split.original_expense_id ?? "")
+    .single();
+  if (expenseError) throw expenseError;
+
+  const { error: payExpenseError } = await supabase
+    .from("Expenses")
+    .insert([
+      { 
+        amount: split.amount_remaining ?? 0, 
+        name: expense?.name ?? "", 
+        description: expense.description,
+        settle_split_id: settle_split_id,
+        user_id: split.user_id,
+        bucket_instance_id: null,
+      },
+    ]);
+  if (payExpenseError) throw payExpenseError;
+
+  const { error: paidExpenseError } = await supabase
+    .from("Expenses")
+    .insert([
+      { 
+        amount: (split.amount_remaining ?? 0) * -1, 
+        name: expense?.name ?? "",
+        description: expense.description,
+        settle_split_id: settle_split_id,
+        user_id: expense.user_id,
+        bucket_instance_id: expense.bucket_instance_id,
+      },
+    ]);
+  if (paidExpenseError) throw paidExpenseError;
+  
+  const { data, error } = await supabase
+    .from("Splits")
+    .update({ amount_remaining: 0 })
+    .eq("id", settle_split_id)
+    .select()
+    .single();
+  if (error) throw error;
+
+  return data;
+}
