@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 // constants
 import { TEXT_EDITING } from "@/config/keyboardEvents";
@@ -178,7 +178,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     handleClose();
   };
 
-  const handleEvenSplit = () => {
+  const handleEvenSplit = useCallback(() => {
     const dollars = Number(expenseDollars);
     const cents = Number(expenseCents);
     const totalCents = dollars * 100 + cents;
@@ -197,7 +197,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       };
     });
     setIndividualAmounts(newAmounts);
-  };
+  }, [payers, expenseCents, expenseDollars]);
 
   const setAmount = (
     id: string,
