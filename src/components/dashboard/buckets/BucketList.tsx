@@ -42,12 +42,12 @@ export const BucketList = () => {
     );
   };
 
-  const SortButton = () => {
+  const SortButton = ({className}: {className?: string}) => {
     return (
       <select
         value={sortBy}
         onChange={(e) => setSortBy(e.target.value as SortTypes)}
-        className="px-2 py-1 text-sm font-semibold rounded-3xl appearance-none bg-secondary-container text-on-secondary-container"
+        className={`px-2 py-1 text-sm font-semibold rounded-3xl appearance-none bg-secondary-container text-on-secondary-container ${className}`}
       >
         {sortTypeLabels.map((option) => (
           <option key={option.value} value={option.value}>
@@ -62,7 +62,7 @@ export const BucketList = () => {
     return (
       <div
         key={bucket.id}
-        className="flex flex-row items-center gap-3 py-2 cursor-pointer"
+        className="flex flex-row items-center gap-3 px-2 py-2 cursor-pointer hover:bg-card-background rounded-2xl"
         onClick={() => {
           setCurrentBucketMetadataId(bucket.id);
         }}
@@ -142,7 +142,7 @@ export const BucketList = () => {
     <>
       <div>
         <SidebarTitle />
-        <SortButton />
+        <SortButton className="mb-2" />
         <div className="flex flex-col gap-2">
           {processedData
             ?.filter((bucket) => {
