@@ -4,7 +4,7 @@ import { type MouseEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-interface DeleteExpenseCellRendererProps {
+interface DeleteExpenseModalProps {
   cellProps: CustomCellRendererProps;
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -14,7 +14,7 @@ export const DeleteExpenseModal = ({
   cellProps,
   open,
   setOpen,
-}: DeleteExpenseCellRendererProps) => {
+}: DeleteExpenseModalProps) => {
   const { deleteExpense } = useExpenses();
 
   const handleClose = () => {

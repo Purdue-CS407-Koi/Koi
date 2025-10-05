@@ -12,7 +12,7 @@ import { type FormEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
-interface EditExpenseCellRendererProps {
+interface EditExpenseModalProps {
   cellProps: CustomCellRendererProps;
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -22,7 +22,7 @@ export const EditExpenseModal = ({
   cellProps,
   open,
   setOpen,
-}: EditExpenseCellRendererProps) => {
+}: EditExpenseModalProps) => {
   const { updateExpense } = useExpenses();
 
   const handleClickOpen = () => {
