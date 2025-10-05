@@ -46,7 +46,7 @@ export const SignInPage = () => {
         </div>
 
         <div className="w-full mb-6 text-center">
-          <h1 className="text-center mx-auto mb-2 text-4xl font-semibold">
+          <h1 className="text-center mx-auto mb-6 text-4xl font-semibold">
             Log in to your account
           </h1>
           <p className="text-sm text-gray-600 text-center mx-auto">
