@@ -21,6 +21,8 @@
   --color-primary: rgba(103, 80, 164, 1);
   --color-primary-container: rgba(234, 221, 255, 1);
   --color-on-primary-container: rgba(79, 55, 138, 1);
+  --color-secondary-container: rgba(232, 222, 248, 1);
+  --color-on-secondary-container: rgba(74, 68, 89, 1);
   --color-surface-tint: rgba(103, 80, 164, 1);
   --color-error: rgba(179, 38, 30, 1);
   --color-positive-default: rgba(2, 84, 45, 1);

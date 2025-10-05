@@ -21,7 +21,7 @@ const SortTypes = {
 type SortTypes = (typeof SortTypes)[keyof typeof SortTypes];
 
 const sortTypeLabels = [
-  { value: SortTypes.NONE, label: "No Sort" },
+  { value: SortTypes.NONE, label: "Sort" },
   { value: SortTypes.CREATION_DATE, label: "Creation Date" },
   { value: SortTypes.NAME, label: "Name" },
   { value: SortTypes.SPENDING_LIMIT, label: "Spending Limit" },
@@ -47,7 +47,7 @@ export const BucketList = () => {
       <select
         value={sortBy}
         onChange={(e) => setSortBy(e.target.value as SortTypes)}
-        className="px-2 py-1 text-sm border border-sidebar-button-border rounded bg-transparent"
+        className="px-2 py-1 text-sm font-semibold rounded-3xl appearance-none bg-secondary-container text-on-secondary-container"
       >
         {sortTypeLabels.map((option) => (
           <option key={option.value} value={option.value}>
