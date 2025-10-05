@@ -40,14 +40,20 @@ export const ExpenseTable = () => {
     },
     {
       field: "description",
+      sortable: false,
     },
-    { field: "actions", cellRenderer: ActionsCellRenderer },
+    { field: "actions", cellRenderer: ActionsCellRenderer, sortable: false },
   ];
 
   const autoSizeStrategy: SizeColumnsToFitGridStrategy = {
     type: "fitGridWidth",
     defaultMinWidth: 100,
-    columnLimits: [{ colId: "actions", maxWidth: 80 }],
+    columnLimits: [
+      { colId: "actions", maxWidth: 120 },
+      { colId: "created_at", maxWidth: 120 },
+      { colId: "amount", maxWidth: 120 },
+      { colId: "name", maxWidth: 200 },
+    ],
   };
 
   return (
