@@ -14,12 +14,12 @@ import {
 import {
   getRecurrencePeriodDisplayName,
   RecurrencePeriodType,
-  type NewBucketMetadata,
 } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
 import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { getSpendingLimit, getSpendingLimitErrorText } from "./helpers";
+import type { Tables, TablesInsert } from "@/helpers/supabase.types";
 
 const NewBucketModal = ({
   open,
@@ -44,7 +44,7 @@ const NewBucketModal = ({
 
     if (spendingLimitError) return;
 
-    const newBucket: NewBucketMetadata = {
+    const newBucket: TablesInsert<"BucketMetadata"> = {
       name: bucketName,
       recurrence_period_type: recurrencePeriod as RecurrencePeriodType,
       // Spending limit gets stored as int in DB
@@ -52,14 +52,16 @@ const NewBucketModal = ({
     };
 
     try {
-      const result = await createBucketMetadataAsync(newBucket);
+      const result: Tables<"BucketMetadata"> = await createBucketMetadataAsync(
+        newBucket
+      );
 
       // Reset all fields
       setBucketName("");
       setRawSpendingLimit("");
 
       // Set current to newly created BucketMetadata
-      setCurrentBucketMetadataId(result[0].id);
+      setCurrentBucketMetadataId(result.id);
 
       // Close modal
       setOpen(false);

@@ -1,29 +1,3 @@
-export interface BucketMetadata {
-  id: string;
-  name: string | null;
-  recurrence_period_type: RecurrencePeriodType | null;
-  spending_limit: number | null;
-}
-
-export interface NewBucketMetadata {
-  name: string | null;
-  recurrence_period_type: RecurrencePeriodType | null;
-  spending_limit: number | null;
-}
-
-export interface NewBucketInstance {
-  bucket_metadata_id: string;
-  start: Date | null;
-  end: Date | null;
-}
-
-export interface BucketInstance {
-  id: string;
-  bucket_metadata_id: string;
-  start: Date | null;
-  end: Date | null;
-}
-
 export const RecurrencePeriodType = {
   Monthly: 0,
   Weekly: 1,

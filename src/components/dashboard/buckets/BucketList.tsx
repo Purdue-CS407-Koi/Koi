@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 
+import type { Tables } from "@/helpers/supabase.types";
 import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { getRecurrencePeriodDisplayName } from "@/interfaces/Bucket";
@@ -18,67 +19,81 @@ export const BucketList = () => {
   const { currentBucketMetadataId, setCurrentBucketMetadataId } =
     useBucketsStore();
 
-  return (
-    <>
-      <div>
-        <h3 className="text-lg font-semibold mb-4 text-sidebar-title">
-          Buckets
-        </h3>
-        <div className="flex flex-col gap-2">
-          {bucketMetadataData
-            ?.filter((bucket) => {
-              return bucket.hidden_at === null;
-            })
-            .map((bucket) => (
-              <div
-                key={bucket.id}
-                className="flex flex-row items-center gap-3 py-2 cursor-pointer"
-                onClick={() => {
-                  setCurrentBucketMetadataId(bucket.id);
-                }}
-              >
-                {/* Icon */}
-                <div className="flex items-center justify-center w-5">
-                  {currentBucketMetadataId === bucket.id ? (
-                    <Bookmark />
-                  ) : (
-                    <BookmarkBorder />
-                  )}
-                </div>
-                {/* Name and Recurrence Period */}
-                <div>
-                  <div className="text-sm font-medium text-sidebar-entry">
-                    {bucket.name}
-                  </div>
-                  <div className="text-xs text-sidebar-entry-subtext">
-                    {bucket.recurrence_period_type !== null
-                      ? capitalizeFirstLetter(
-                          getRecurrencePeriodDisplayName(
-                            bucket.recurrence_period_type
-                          )
-                        )
-                      : ""}
-                  </div>
-                </div>
-                {/* More actions */}
-                <div className="ml-auto">
-                  <BucketMoreActions bucketMetadataId={bucket.id} />
-                </div>
-              </div>
-            ))}
-          <button
-            onClick={() => setNewModalOpen(true)}
-            className={`flex items-center gap-2
+  const SidebarTitle = () => {
+    return (
+      <h3 className="text-lg font-semibold mb-4 text-sidebar-title">Buckets</h3>
+    );
+  };
+
+  const BucketListItem = ({ bucket }: { bucket: Tables<"BucketMetadata"> }) => {
+    return (
+      <div
+        key={bucket.id}
+        className="flex flex-row items-center gap-3 py-2 cursor-pointer"
+        onClick={() => {
+          setCurrentBucketMetadataId(bucket.id);
+        }}
+      >
+        {/* Icon */}
+        <div className="flex items-center justify-center w-5">
+          {currentBucketMetadataId === bucket.id ? (
+            <Bookmark />
+          ) : (
+            <BookmarkBorder />
+          )}
+        </div>
+        {/* Name and Recurrence Period */}
+        <div>
+          <div className="text-sm font-medium text-sidebar-entry">
+            {bucket.name}
+          </div>
+          <div className="text-xs text-sidebar-entry-subtext">
+            {bucket.recurrence_period_type !== null
+              ? capitalizeFirstLetter(
+                  getRecurrencePeriodDisplayName(bucket.recurrence_period_type)
+                )
+              : ""}
+          </div>
+        </div>
+        {/* More actions */}
+        <div className="ml-auto">
+          <BucketMoreActions bucketMetadataId={bucket.id} />
+        </div>
+      </div>
+    );
+  };
+
+  const NewBucketButton = () => {
+    return (
+      <button
+        onClick={() => setNewModalOpen(true)}
+        className={`flex items-center gap-2
               p-2 mt-2 rounded-md
               cursor-pointer text-sm
               border border-sidebar-button-border
               bg-transparent
               transition-all duration-200"
             `}
-          >
-            <span className="text-lg">+</span>
-            Add New
-          </button>
+      >
+        <span className="text-lg">+</span>
+        Add New
+      </button>
+    );
+  };
+
+  return (
+    <>
+      <div>
+        <SidebarTitle />
+        <div className="flex flex-col gap-2">
+          {bucketMetadataData
+            ?.filter((bucket) => {
+              return bucket.hidden_at === null;
+            })
+            .map((bucket: Tables<"BucketMetadata">) => (
+              <BucketListItem key={bucket.id} bucket={bucket} />
+            ))}
+          <NewBucketButton />
         </div>
       </div>
 

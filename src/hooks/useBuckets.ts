@@ -6,10 +6,9 @@ import {
   hideBucketMetadata as hideBucketMetadataApi,
   editBucketMetadata as editBucketMetadataApi,
 } from "@/api/buckets";
+import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 import {
   RecurrencePeriodType,
-  type NewBucketMetadata,
-  type NewBucketInstance,
 } from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -80,17 +79,17 @@ export const useBuckets = () => {
     },
   });
 
-  const createBucketMetadata = async (bucketMetadata: NewBucketMetadata) => {
+  const createBucketMetadata = async (bucketMetadata: TablesInsert<"BucketMetadata">) => {
     return createMetadataMutation.mutate(bucketMetadata);
   };
 
   const createBucketMetadataAsync = async (
-    bucketMetadata: NewBucketMetadata
+    bucketMetadata: TablesInsert<"BucketMetadata">
   ) => {
     return createMetadataMutation.mutateAsync(bucketMetadata);
   };
 
-  const createBucketInstance = async (bucketInstance: NewBucketInstance) => {
+  const createBucketInstance = async (bucketInstance: TablesInsert<"BucketInstances">) => {
     return createInstanceMutation.mutate(bucketInstance);
   };
 
@@ -100,7 +99,7 @@ export const useBuckets = () => {
 
   const editBucketMetadata = async (
     bucketMetadataId: string,
-    updatedData: NewBucketMetadata
+    updatedData: TablesUpdate<"BucketMetadata">
   ) => {
     return editMetadataMutation.mutate({ id: bucketMetadataId, updatedData });
   };
@@ -166,7 +165,7 @@ export const useBuckets = () => {
           console.warn("No bucket instance found, automatically creating one!");
           createBucketInstance({
             bucket_metadata_id: currentBucketMetadataId,
-            start: new Date(),
+            start: new Date().toDateString(),
             end: null,
           });
         }

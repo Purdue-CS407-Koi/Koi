@@ -1,11 +1,12 @@
 import supabase from "@/helpers/supabase";
-import type { NewBucketMetadata, NewBucketInstance } from "@/interfaces/Bucket";
+
+import type { Tables, TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 
 const METADATA_TABLE_NAME = "BucketMetadata";
 const INSTANCE_TABLE_NAME = "BucketInstances";
 
 // Fetches all the BucketMetadata objects associated with the logged-in user
-export const getAllBucketMetadata = async () => {
+export const getAllBucketMetadata = async (): Promise<Tables<"BucketMetadata">[]> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -23,7 +24,7 @@ export const getAllBucketMetadata = async () => {
 };
 
 // Fetches specific BucketMetadata instance
-export const getBucketMetadata = async (bucketMetadataId: string) => {
+export const getBucketMetadata = async (bucketMetadataId: string): Promise<Tables<"BucketMetadata">> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -44,7 +45,7 @@ export const getBucketMetadata = async (bucketMetadataId: string) => {
 };
 
 // Fetches all the BucketInstance objects of the supplied BucketMetadata ID
-export const getAllBucketInstances = async (bucketMetadataId: string) => {
+export const getAllBucketInstances = async (bucketMetadataId: string): Promise<Tables<"BucketInstances">[]> => {
   const { data, error } = await supabase
     .from(INSTANCE_TABLE_NAME)
     .select("*")
@@ -56,8 +57,8 @@ export const getAllBucketInstances = async (bucketMetadataId: string) => {
 
 // Create new BucketMetadata object
 export const createBucketMetadata = async (
-  bucketMetadata: NewBucketMetadata
-) => {
+  bucketMetadata: TablesInsert<"BucketMetadata">
+): Promise<Tables<"BucketMetadata">> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -77,10 +78,13 @@ export const createBucketMetadata = async (
     ])
     .select();
   if (error) throw error;
-  return data;
+  if (data.length !== 1)
+    throw new Error("Failed to create new bucket metadata entry!");
+
+  return data[0];
 };
 
-export const hideBucketMetadata = async (id: string) => {
+export const hideBucketMetadata = async (id: string): Promise<Tables<"BucketMetadata">> => {
   const { data, error } = await supabase
     .from(METADATA_TABLE_NAME)
     .update({ hidden_at: new Date().toDateString() })
@@ -88,7 +92,10 @@ export const hideBucketMetadata = async (id: string) => {
     .select();
 
   if (error) throw error;
-  return data;
+  if (data.length !== 1)
+    throw new Error("Failed to hide bucket metadata entry!");
+
+  return data[0];
 };
 
 export const editBucketMetadata = async ({
@@ -96,8 +103,8 @@ export const editBucketMetadata = async ({
   updatedData,
 }: {
   id: string;
-  updatedData: NewBucketMetadata;
-}) => {
+  updatedData: TablesUpdate<"BucketMetadata">;
+}): Promise<Tables<"BucketMetadata">> => {
   const { data, error } = await supabase
     .from(METADATA_TABLE_NAME)
     .update({
@@ -109,13 +116,15 @@ export const editBucketMetadata = async ({
     .select();
 
   if (error) throw error;
-  return data;
+  if (data.length !== 1)
+    throw new Error("Failed to edit bucket metadata entry!");
+  return data[0];
 };
 
 // Create new BucketInstance object
 export const createBucketInstance = async (
-  bucketInstance: NewBucketInstance
-) => {
+  bucketInstance: TablesInsert<"BucketInstances">
+): Promise<Tables<"BucketInstances">> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -128,11 +137,14 @@ export const createBucketInstance = async (
     .insert([
       {
         bucket_metadata_id: bucketInstance.bucket_metadata_id,
-        start: bucketInstance.start?.toDateString(),
-        end: bucketInstance.end?.toDateString(),
+        start: bucketInstance.start,
+        end: bucketInstance.end,
       },
     ])
     .select();
   if (error) throw error;
-  return data;
+  if (data.length !== 1)
+    throw new Error("Failed to create bucket instance!");
+
+  return data[0];
 };

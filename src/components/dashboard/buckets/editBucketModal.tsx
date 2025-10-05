@@ -14,12 +14,12 @@ import {
 import {
   getRecurrencePeriodDisplayName,
   RecurrencePeriodType,
-  type NewBucketMetadata,
 } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
 import { useBuckets } from "@/hooks/useBuckets";
 import { getSpendingLimit, getSpendingLimitErrorText } from "./helpers";
 import { getBucketMetadata } from "@/api/buckets";
+import type { TablesUpdate } from "@/helpers/supabase.types";
 
 export const EditBucketModal = ({
   open,
@@ -47,7 +47,7 @@ export const EditBucketModal = ({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const editedBucketData: NewBucketMetadata = {
+    const editedBucketData: TablesUpdate<"BucketMetadata"> = {
       name: bucketName,
       recurrence_period_type: recurrencePeriod as RecurrencePeriodType,
       // Spending limit gets stored as int in DB
