@@ -11,7 +11,24 @@ import { capitalizeFirstLetter } from "@/helpers/utilities";
 import BucketMoreActions from "./bucketMoreActions";
 import NewBucketModal from "./newBucketModal";
 
+const SortTypes = {
+  NONE: "None",
+  CREATION_DATE: "creation_date",
+  NAME: "name",
+  SPENDING_LIMIT: "spending_limit",
+} as const;
+
+type SortTypes = (typeof SortTypes)[keyof typeof SortTypes];
+
+const sortTypeLabels = [
+  { value: SortTypes.NONE, label: "No Sort" },
+  { value: SortTypes.CREATION_DATE, label: "Creation Date" },
+  { value: SortTypes.NAME, label: "Name" },
+  { value: SortTypes.SPENDING_LIMIT, label: "Spending Limit" },
+] as const;
+
 export const BucketList = () => {
+  const [sortBy, setSortBy] = useState<SortTypes>(SortTypes.NONE);
   const [newModalOpen, setNewModalOpen] = useState(false);
 
   const { bucketMetadataData } = useBuckets();
@@ -22,6 +39,22 @@ export const BucketList = () => {
   const SidebarTitle = () => {
     return (
       <h3 className="text-lg font-semibold mb-4 text-sidebar-title">Buckets</h3>
+    );
+  };
+
+  const SortButton = () => {
+    return (
+      <select
+        value={sortBy}
+        onChange={(e) => setSortBy(e.target.value as SortTypes)}
+        className="px-2 py-1 text-sm border border-sidebar-button-border rounded bg-transparent"
+      >
+        {sortTypeLabels.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     );
   };
 
@@ -81,12 +114,37 @@ export const BucketList = () => {
     );
   };
 
+  // Process data
+  let processedData = bucketMetadataData || [];
+  // Check sorting step
+  if (sortBy !== SortTypes.NONE) {
+    switch (sortBy) {
+      case SortTypes.CREATION_DATE:
+        processedData = [...processedData].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        break;
+      case SortTypes.NAME:
+        processedData = [...processedData].sort((a, b) =>
+          (a.name || "").localeCompare(b.name || "")
+        );
+        break;
+      case SortTypes.SPENDING_LIMIT:
+        processedData = [...processedData].sort(
+          (a, b) => (b.spending_limit || 0) - (a.spending_limit || 0)
+        );
+        break;
+    }
+  }
+
   return (
     <>
       <div>
         <SidebarTitle />
+        <SortButton />
         <div className="flex flex-col gap-2">
-          {bucketMetadataData
+          {processedData
             ?.filter((bucket) => {
               return bucket.hidden_at === null;
             })
