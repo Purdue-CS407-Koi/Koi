@@ -7,6 +7,7 @@ import { TEXT_EDITING } from "@/config/keyboardEvents";
 import useGroups from "@/hooks/useGroups";
 import useSplits from "@/hooks/useSplits";
 import useUsers from "@/hooks/useUsers";
+import { useGroupStore } from "@/stores/useGroupStore";
 
 // components
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -20,20 +21,20 @@ interface AddGroupExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (expense: NewExpense) => Promise<string>;
-  group?: any;
 }
 
 export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   isOpen,
   onClose,
   onSave,
-  group = null,
 }) => {
+  const currentGroupId = useGroupStore((state) => state.currentGroupId);
+  const { groupsData: groups, useGroupMembers } = useGroups();
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState("00");
   const [expenseCents, setExpenseCents] = useState("00");
   const [expenseDescription, setExpenseDescription] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState(group);
+  const [selectedGroup, setSelectedGroup] = useState(groups?.some( ({id}) => id == currentGroupId) ? currentGroupId : "");
   const [payers, setPayers] = useState<{ name: string; id: string }[]>([]);
   const [nonpayers, setNonpayers] = useState<{ name: string; id: string }[]>(
     []
@@ -41,10 +42,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   const [individualAmounts, setIndividualAmounts] = useState<
     Record<string, { dollars: string; cents: string }>
   >({});
-  const { groupsData: groups, useGroupMembers } = useGroups();
   const { insertNewSplit } = useSplits();
   const { userData } = useUsers();
-  const { groupMembersData: members } = useGroupMembers(selectedGroup ?? "");
+  const { groupMembersData: members } = useGroupMembers(selectedGroup);
   const [page, setPage] = useState(1);
   const [splitting, setSplitting] = useState(true);
 
@@ -56,7 +56,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     setExpenseCents("00");
     setPage(1);
     setSplitting(true);
-    setSelectedGroup(group);
+    setSelectedGroup("");
   };
 
   const handleSplitEvenly = () => {
@@ -110,8 +110,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
 
           insertNewSplit(split);
         } else {
-          const amount = Number(dollars) + Number(cents) / 100;
-          const total = Number(expenseDollars) + Number(expenseCents) / 100;
           const split = {
             amount_owed: 0,
             amount_remaining: 0,
@@ -310,12 +308,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
               />
 
               <select
-                value={selectedGroup ?? ""}
-                onChange={(e) =>
-                  setSelectedGroup(
-                    e.target.value === "" ? null : e.target.value
-                  )
-                }
+                value={selectedGroup}
+                onChange={(e) => setSelectedGroup(e.target.value) }
                 className={`
                   mt-2 p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 text-center 
                   ${error ? "border-red-500" : "border-gray-500"} 
