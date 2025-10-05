@@ -8,12 +8,21 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
-import { useState, type FormEvent } from "react";
+import { type FormEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
-export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
-  const [open, setOpen] = useState(false);
+interface EditExpenseCellRendererProps {
+  cellProps: CustomCellRendererProps;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export const EditExpenseModal = ({
+  cellProps,
+  open,
+  setOpen,
+}: EditExpenseCellRendererProps) => {
   const { updateExpense } = useExpenses();
 
   const handleClickOpen = () => {
@@ -32,7 +41,7 @@ export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
       amount: formJson.amount,
       description: formJson.description,
       name: formJson.name,
-      id: props.data.id,
+      id: cellProps.data.id,
     };
     updateExpense(updatedExpense);
     handleClose();
@@ -54,7 +63,7 @@ export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
               id="name"
               name="name"
               label="Expense Name"
-              defaultValue={props.data.name}
+              defaultValue={cellProps.data.name}
               fullWidth
             />
             <TextField
@@ -64,7 +73,7 @@ export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
               id="amount"
               name="amount"
               label="Amount"
-              defaultValue={props.data.amount}
+              defaultValue={cellProps.data.amount}
               fullWidth
             />
             <TextField
@@ -74,7 +83,7 @@ export const EditExpenseCellRenderer = (props: CustomCellRendererProps) => {
               id="description"
               name="description"
               label="Description"
-              defaultValue={props.data.description}
+              defaultValue={cellProps.data.description}
               fullWidth
             />
           </form>

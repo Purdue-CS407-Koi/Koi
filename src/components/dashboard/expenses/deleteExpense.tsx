@@ -1,16 +1,21 @@
 import useExpenses from "@/hooks/useExpenses";
 import { Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
-import { useState, type MouseEvent } from "react";
+import { type MouseEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export const DeleteExpenseCellRenderer = (props: CustomCellRendererProps) => {
-  const [open, setOpen] = useState(false);
-  const { deleteExpense } = useExpenses();
+interface DeleteExpenseCellRendererProps {
+  cellProps: CustomCellRendererProps;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+export const DeleteExpenseModal = ({
+  cellProps,
+  open,
+  setOpen,
+}: DeleteExpenseCellRendererProps) => {
+  const { deleteExpense } = useExpenses();
 
   const handleClose = () => {
     setOpen(false);
@@ -18,15 +23,12 @@ export const DeleteExpenseCellRenderer = (props: CustomCellRendererProps) => {
 
   const handleSubmit = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    deleteExpense(props.data.id);
+    deleteExpense(cellProps.data.id);
     handleClose();
   };
 
   return (
     <div>
-      <Button onClick={handleClickOpen} variant="contained">
-        <DeleteIcon />
-      </Button>
       <Dialog open={open}>
         <DialogTitle>Confirm deleting this expense?</DialogTitle>
         <DialogActions className="!p-6 !pt-0 !justify-center">

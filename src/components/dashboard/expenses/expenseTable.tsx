@@ -2,8 +2,8 @@ import useExpenses from "@/hooks/useExpenses";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import type { ColDef, SizeColumnsToFitGridStrategy } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { EditExpenseCellRenderer } from "./editExpense";
-import { DeleteExpenseCellRenderer } from "./deleteExpense";
+import { AmountCellRenderer } from "./amountCellRenderer";
+import { ActionsCellRenderer } from "./actionsCellRenderer";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -36,21 +36,18 @@ export const ExpenseTable = () => {
       valueFormatter: (params) => {
         return `$${params.value}`;
       },
+      cellRenderer: AmountCellRenderer,
     },
     {
       field: "description",
     },
-    { field: "update", cellRenderer: EditExpenseCellRenderer },
-    { field: "delete", cellRenderer: DeleteExpenseCellRenderer },
+    { field: "actions", cellRenderer: ActionsCellRenderer },
   ];
 
   const autoSizeStrategy: SizeColumnsToFitGridStrategy = {
     type: "fitGridWidth",
     defaultMinWidth: 100,
-    columnLimits: [
-      { colId: "update", maxWidth: 50 },
-      { colId: "delete", maxWidth: 50 },
-    ],
+    columnLimits: [{ colId: "actions", maxWidth: 80 }],
   };
 
   return (
