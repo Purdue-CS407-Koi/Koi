@@ -20,11 +20,11 @@ export const ActionsCellRenderer = (props: CustomCellRendererProps) => {
 
   return (
     <div>
-      <IconButton onClick={handleClickOpenDelete} aria-label="delete">
-        <DeleteIcon />
-      </IconButton>
       <IconButton onClick={handleClickOpenEdit} aria-label="edit">
         <ModeEditIcon />
+      </IconButton>
+      <IconButton onClick={handleClickOpenDelete} aria-label="delete">
+        <DeleteIcon />
       </IconButton>
       <DeleteExpenseModal
         cellProps={props}
