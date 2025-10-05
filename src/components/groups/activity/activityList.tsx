@@ -25,11 +25,8 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 }) => {
   const [split, setSplit] = useState<Activity>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [error, setError] = useState("");
 
-  console.log(activityData);
-
-  const handleModal = (activity: Activity, isYouOwe: boolean) => {
+  const handleModal = (activity: Activity) => {
     setSplit(activity);
     setIsModalOpen(true);
   };
@@ -64,9 +61,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         >
           <div 
             className="flex items-center gap-3" 
-            onClick={() => handleModal(activity, (activity.amount_owed ?? 0) <= 0)}
+            onClick={() => handleModal(activity)}
           >
-            <div style={{ fontSize: "14px", fontWeight: 500 }} className="flex-1 leading-normal">
+            <div style={{ fontSize: "14px", fontWeight: 500 }} className="flex-2 leading-normal">
               {activity.name || "Expense"}
             </div>
             <div
@@ -81,36 +78,62 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             </div>
             {(activity.amount_owed ?? 0) <= 0 ? (
               <div className="flex flex-4">
-                <div className="flex-1 leading-normal text-sm items-baseline">
+                <div className="flex-3 leading-normal text-sm items-baseline text-right">
                   You paid{" "}
-                  <span className="font-bold">
+                  <span className="font-bold pr-10">
                     ${activity.original_payment?.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex-1 leading-normal text-sm items-baseline">
-                  You'll get back{" "}
-                  <span className="text-green-500 font-bold">
-                    ${((activity.amount_owed ?? 0) * -1).toFixed(2)}
-                  </span>
-                </div>
+                {
+                  (activity.amount_remaining ?? 0) == 0 ?
+                  <div className="flex-2 leading-normal text-sm items-baseline">
+                    Settled{" "}
+                    <span className="text-[var(--color-positive-tertiary)] font-bold">
+                        ${((activity.amount_owed ?? 0) * -1).toFixed(2)}
+                    </span>
+                  </div>
+                  :
+                  <div className="flex-2 flex flex-col">
+                    <div className="leading-normal text-sm items-baseline">
+                      You'll get back{" "}
+                      <span className="text-[var(--color-positive-tertiary)] font-bold">
+                        ${((activity.amount_owed ?? 0) * -1).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="leading-normal text-[10px] items-baseline">
+                      Still pending{" "}
+                      <span className="text-[var(--color-positive-tertiary)] font-bold">
+                        ${((activity.amount_remaining ?? 0) * -1).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                }
               </div>
             ) : (
               <div className="flex flex-4">
-                <div className="flex-1 leading-normal text-sm items-baseline">
+                <div className="flex-3 leading-normal text-sm items-baseline text-right">
                   {activity.original_payer_name ||
                     ""}{" "}
                   paid{" "}
-                  <span className="font-bold">
+                  <span className="font-bold pr-10">
                     ${activity.original_payment?.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex-1 leading-normal text-sm items-baseline">
+                {
+                  (activity.amount_remaining ?? 0) == 0 ?
+                  <div className="flex-2 leading-normal text-sm items-baseline">
+                    Settled{" "}
+                    <span className="text-[var(--color-positive-tertiary)] font-bold">
+                      ${(activity.amount_owed ?? 0).toFixed(2)}
+                    </span>
+                  </div>
+                  :
+                  <div className="flex-2 leading-normal text-sm items-baseline">
                   You owe{" "}
                   <span className="text-red-500 font-bold">
                     ${(activity.amount_remaining ?? 0).toFixed(2)}
                   </span>
-                  
-                </div>
+                </div>}
               </div>
             )}
           </div>
@@ -193,11 +216,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                   </div>
                 </div>
               }
-              {error && (
-                <p className="mt-2 text-xs text-[var(--color-error)]">
-                  {error}
-                </p>
-              )}
             </div>
           </div>
         </>
