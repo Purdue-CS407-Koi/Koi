@@ -62,7 +62,7 @@ export const BucketList = () => {
     return (
       <div
         key={bucket.id}
-        className="flex flex-row items-center gap-3 px-2 py-2 cursor-pointer hover:bg-card-background rounded-2xl"
+        className="flex flex-row items-center gap-3 px-2 py-2 cursor-pointer hover:bg-surface-container-low rounded-2xl"
         onClick={() => {
           setCurrentBucketMetadataId(bucket.id);
         }}

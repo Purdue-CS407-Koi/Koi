@@ -28,6 +28,7 @@
   --color-positive-default: rgba(2, 84, 45, 1);
   --color-positive-secondary: rgba(0, 153, 81, 1);
   --color-positive-tertiary: rgba(20, 174, 92, 1);
+  --color-surface-container-low: rgba(247, 242, 250, 1);
 }
 
 :root {
