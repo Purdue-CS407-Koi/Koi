@@ -9,7 +9,7 @@ import { capitalizeFirstLetter } from "@/helpers/utilities";
 import BucketMoreActions from "./bucketMoreActions";
 
 export const BucketList = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newModalOpen, setNewModalOpen] = useState(false);
 
   const { bucketMetadataData } = useBuckets();
 
@@ -65,7 +65,7 @@ export const BucketList = () => {
               </div>
             ))}
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setNewModalOpen(true)}
             className={`flex items-center gap-2
               p-2 mt-2 rounded-md
               cursor-pointer text-sm
@@ -80,7 +80,7 @@ export const BucketList = () => {
         </div>
       </div>
 
-      <NewBucketModal open={isModalOpen} setOpen={setIsModalOpen} />
+      <NewBucketModal open={newModalOpen} setOpen={setNewModalOpen} />
     </>
   );
 };
