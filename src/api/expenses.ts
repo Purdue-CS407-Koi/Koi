@@ -13,7 +13,8 @@ export async function getExpensesFromBucket(bucket_instance_id: string) {
     .from("Expenses")
     .select("*")
     .eq("user_id", user!.id)
-    .eq("bucket_instance_id", bucket_instance_id);
+    .eq("bucket_instance_id", bucket_instance_id)
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   return data;
