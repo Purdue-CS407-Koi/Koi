@@ -5,7 +5,7 @@ import { Bookmark, BookmarkBorder } from "@mui/icons-material";
 import type { Tables } from "@/helpers/supabase.types";
 import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
-import { getRecurrencePeriodDisplayName } from "@/interfaces/Bucket";
+import { getRecurrencePeriodDisplayName, RecurrencePeriodType } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
 
 import BucketMoreActions from "./bucketMoreActions";
@@ -83,7 +83,7 @@ export const BucketList = () => {
           <div className="text-xs text-sidebar-entry-subtext">
             {bucket.recurrence_period_type !== null
               ? capitalizeFirstLetter(
-                  getRecurrencePeriodDisplayName(bucket.recurrence_period_type)
+                  getRecurrencePeriodDisplayName(bucket.recurrence_period_type as RecurrencePeriodType)
                 )
               : ""}
           </div>

@@ -5,7 +5,7 @@ export const RecurrencePeriodType = {
   Yearly: 3,
   Quarterly: 4,
   SemiAnually: 5,
-};
+} as const;
 
 export function getRecurrencePeriodDisplayName(type: RecurrencePeriodType): string {
   switch (type) {
