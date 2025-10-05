@@ -1,12 +1,14 @@
 import { useState } from "react";
-import NewBucketModal from "./newBucketModal";
-import { useBuckets } from "@/hooks/useBuckets";
 
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
+
+import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { getRecurrencePeriodDisplayName } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
+
 import BucketMoreActions from "./bucketMoreActions";
+import NewBucketModal from "./newBucketModal";
 
 export const BucketList = () => {
   const [newModalOpen, setNewModalOpen] = useState(false);
