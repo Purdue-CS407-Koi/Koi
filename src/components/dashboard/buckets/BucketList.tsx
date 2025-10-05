@@ -8,7 +8,7 @@ import { getRecurrencePeriodDisplayName } from "@/interfaces/Bucket";
 import { capitalizeFirstLetter } from "@/helpers/utilities";
 import BucketMoreActions from "./bucketMoreActions";
 
-export const BucketsList = () => {
+export const BucketList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { bucketMetadataData } = useBuckets();
