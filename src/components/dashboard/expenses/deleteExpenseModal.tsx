@@ -1,5 +1,11 @@
 import useExpenses from "@/hooks/useExpenses";
-import { Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContentText,
+} from "@mui/material";
 import { type MouseEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -30,7 +36,12 @@ export const DeleteExpenseModal = ({
   return (
     <div>
       <Dialog open={open}>
-        <DialogTitle>Confirm deleting this expense?</DialogTitle>
+        <DialogTitle className="!text-center !pb-0">
+          Delete this expense?
+        </DialogTitle>
+        <DialogContentText className="!text-center !pb-3 !pt-1">
+          {cellProps.data.name}
+        </DialogContentText>
         <DialogActions className="!p-6 !pt-0 !justify-center">
           <Button
             onClick={handleClose}
