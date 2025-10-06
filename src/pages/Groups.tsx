@@ -1,13 +1,16 @@
 import { useState } from "react";
 import useGroups from "@/hooks/useGroups";
+import useExpenses from "@/hooks/useExpenses";
 import { GroupsList } from "@/components/groups/groupsList";
 import { MembersList } from "@/components/groups/membersList";
 import Template, { Content, Sidebar } from "@/templates/template";
-import { AddGroupExpenseModal } from "@/components/groups/addGroupExpenseModal";
-import type { NewExpense } from "@/interfaces/Expense";
-import { insertNewExpense } from "@/api/expenses";
+import { AddGroupExpenseModal } from "@/components/groups/splits/addGroupExpenseModal";
 import { getGroupMembers } from "@/api/groups";
 import { ActivityList } from "@/components/groups/activity/activityList";
+import { SplitEvenlyModal } from "@/components/groups/splits/splitEvenlyModal";
+import { SplitCustomModal } from "@/components/groups/splits/splitCustomModal";
+
+import type { TablesInsert } from "@/helpers/supabase.types";
 
 interface Member {
   id: string;
@@ -16,19 +19,25 @@ interface Member {
 }
 
 const Groups = () => {
-  const { groupsData, useActivity, settleSplit } = useGroups();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { groupsData, useActivity, settleSplit, useGroupMembers } = useGroups();
+
+  const [modalPage, setModalPage] = useState(0);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [groupExpenseSelectedGroup, setGroupExpenseSelectedGroup] = useState<string>("");
+  const { groupMembersData } = useGroupMembers(groupExpenseSelectedGroup);
+
+  const [expense, setExpense] = useState<TablesInsert<"Expenses"> | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [, setIsEditModalOpen] = useState(false);
   const { data: activityData, isLoading: activityLoading } = useActivity(
     selectedGroupId ?? undefined
   );
+  const { insertNewExpenseAndReturn } = useExpenses();
   const selectedGroupName =
     groupsData?.find((g) => g.id === selectedGroupId)?.name || "";
 
-  const handleSelectGroup = async (groupId: string, groupName: string) => {
+  const handleSelectGroup = async (groupId: string) => {
     setSelectedGroupId(groupId);
 
     try {
@@ -40,13 +49,11 @@ const Groups = () => {
     }
   };
 
-  const handleAddGroupExpense = async (expense: NewExpense) => {
-    const { id } = (await insertNewExpense(expense))[0];
-    setIsModalOpen(false);
+  const handleAddGroupExpense = async (expense: TablesInsert<"Expenses">) => {
+    const { id } = (await insertNewExpenseAndReturn(expense))[0];
+    setModalPage(0);
     return id;
   };
-
-  console.log(activityData);
 
   const handleEditGroup = () => {
     setIsEditModalOpen(true);
@@ -95,7 +102,7 @@ const Groups = () => {
                   </h2>
                   <div style={{ display: "flex", gap: "12px" }}>
                     <button
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setModalPage(1)}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -136,9 +143,30 @@ const Groups = () => {
 
               {/* Modal */}
               <AddGroupExpenseModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={modalPage == 1}
+                onClose={() => setModalPage(0)}
+                onNext={setModalPage}
+                setExpense={setExpense}
+                selectedGroup={groupExpenseSelectedGroup}
+                setSelectedGroup={setGroupExpenseSelectedGroup}
+              />
+              <SplitEvenlyModal
+                isOpen={modalPage == 2}
+                onClose={() => setModalPage(0)}
                 onSave={handleAddGroupExpense}
+                setPage={setModalPage}
+                expense={expense}
+                selectedGroup={groupExpenseSelectedGroup}
+                members={groupMembersData}
+              />
+              <SplitCustomModal
+                isOpen={modalPage == 3}
+                onClose={() => setModalPage(0)}
+                onSave={handleAddGroupExpense}
+                setPage={setModalPage}
+                expense={expense}
+                selectedGroup={groupExpenseSelectedGroup}
+                members={groupMembersData}
               />
             </div>
           </div>
@@ -156,11 +184,7 @@ const Groups = () => {
           onEditGroup={handleEditGroup}
         />
       </Sidebar>
-      <AddGroupExpenseModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleAddGroupExpense}
-      />
+
     </Template>
   );
 };

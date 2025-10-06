@@ -1,6 +1,6 @@
 export interface NewExpense {
   amount: number;
-  description: string;
+  description?: string;
   name: string;
   bucket_instance_id?: string;
   settle_split_id?: string;

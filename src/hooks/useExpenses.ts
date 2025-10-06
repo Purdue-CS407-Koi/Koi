@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { NewExpense, UpdateExpenseProps } from "@/interfaces/Expense";
+import type { UpdateExpenseProps } from "@/interfaces/Expense";
 import {
   insertNewExpense as insertNewExpenseApi,
   getExpensesFromBucket,
@@ -7,6 +7,7 @@ import {
   deleteExpense as deleteExpenseApi,
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
+import type { TablesInsert } from "@/helpers/supabase.types";
 
 const useExpenses = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -62,8 +63,12 @@ const useExpenses = () => {
     },
   });
 
-  const insertNewExpense = (expense: NewExpense) => {
+  const insertNewExpense = (expense: TablesInsert<"Expenses">) => {
     createExpenseMutation.mutate(expense);
+  };
+
+  const insertNewExpenseAndReturn = async (expense: TablesInsert<"Expenses">) => {
+    return await createExpenseMutation.mutateAsync(expense);
   };
 
   const updateExpense = (expense: UpdateExpenseProps) => {
@@ -79,6 +84,7 @@ const useExpenses = () => {
     getExpensesError,
     refetchExpenses,
     insertNewExpense,
+    insertNewExpenseAndReturn,
     updateExpense,
     deleteExpense,
   };

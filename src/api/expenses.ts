@@ -1,5 +1,6 @@
 import supabase from "@/helpers/supabase";
-import type { NewExpense, UpdateExpenseProps } from "@/interfaces/Expense";
+import type { UpdateExpenseProps } from "@/interfaces/Expense";
+import type { TablesInsert } from "@/helpers/supabase.types";
 
 export async function getExpensesFromBucket(bucket_instance_id: string) {
   const {
@@ -27,7 +28,7 @@ export async function insertNewExpense({
   bucket_instance_id,
   settle_split_id,
   challenge_id,
-}: NewExpense) {
+}: TablesInsert<"Expenses">) {
   const {
     data: { user },
   } = await supabase.auth.getUser();

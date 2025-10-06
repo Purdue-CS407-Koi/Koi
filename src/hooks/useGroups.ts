@@ -63,7 +63,6 @@ const useGroups = () => {
   };
 
   const useActivity = (groupId?: string) => {
-    console.log(["activity", groupId]);
     return useQuery({
       queryKey: ["activity", groupId],
       queryFn: () => fetchActivity(groupId),
