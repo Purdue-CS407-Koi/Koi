@@ -7,6 +7,8 @@ import { TEXT_EDITING } from "@/config/keyboardEvents";
 import useGroups from "@/hooks/useGroups";
 import useSplits from "@/hooks/useSplits";
 import useUsers from "@/hooks/useUsers";
+import { useBuckets } from "@/hooks/useBuckets";
+import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useGroupStore } from "@/stores/useGroupStore";
 
 // components
@@ -29,22 +31,31 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   onSave,
 }) => {
   const currentGroupId = useGroupStore((state) => state.currentGroupId);
+
   const { groupsData: groups, useGroupMembers } = useGroups();
+  const { bucketMetadataData, refetchBucketInstance } = useBuckets();
+  const { insertNewSplit } = useSplits();
+  const { userData } = useUsers();
+  
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState("00");
   const [expenseCents, setExpenseCents] = useState("00");
   const [expenseDescription, setExpenseDescription] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(groups?.some( ({id}) => id == currentGroupId) ? currentGroupId : "");
+  const [selectedBucket, setSelectedBucket] = useState("");
   const [payers, setPayers] = useState<{ name: string; id: string }[]>([]);
   const [nonpayers, setNonpayers] = useState<{ name: string; id: string }[]>(
     []
   );
+
+  const { groupMembersData: members } = useGroupMembers(selectedGroup);
+  const { setCurrentBucketMetadataId } =
+    useBucketsStore();
+
   const [individualAmounts, setIndividualAmounts] = useState<
     Record<string, { dollars: string; cents: string }>
   >({});
-  const { insertNewSplit } = useSplits();
-  const { userData } = useUsers();
-  const { groupMembersData: members } = useGroupMembers(selectedGroup);
+
   const [page, setPage] = useState(1);
   const [splitting, setSplitting] = useState(true);
 
@@ -57,6 +68,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     setPage(1);
     setSplitting(true);
     setSelectedGroup("");
+    setSelectedBucket("");
   };
 
   const handleSplitEvenly = () => {
@@ -87,6 +99,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     const name = expenseName;
     const user_id = userData?.id;
     const description = expenseDescription;
+    const { data: refreshedInstances } = await refetchBucketInstance();
+
     if (splitting) {
       const amount = Number(expenseDollars) + Number(expenseCents) / 100;
       const expense = {
@@ -94,6 +108,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         description,
         name,
         user_id,
+        bucket_instance_id: refreshedInstances && (refreshedInstances[0].id || undefined),
       };
       const expense_id = await onSave(expense);
       Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {
@@ -143,6 +158,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         description,
         name,
         user_id,
+        bucket_instance_id: refreshedInstances && (refreshedInstances[0].id || undefined),
       };
       const expense_id = await onSave(expense);
       Object.entries(individualAmounts).forEach(([id, { dollars, cents }]) => {
@@ -313,7 +329,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                 className={`
                   mt-2 p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 text-center 
                   ${error ? "border-red-500" : "border-gray-500"} 
-                  ${selectedGroup ? "text-black" : "text-gray-600"}
+                  ${selectedGroup.trim() ? "text-black" : "text-gray-600"}
                 `}
               >
                 {/* Placeholder */}
@@ -325,6 +341,32 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   (group: { id: string; name: string; created_at: string }) => (
                     <option key={group.id} value={group.id}>
                       {group.name}
+                    </option>
+                  )
+                )}
+              </select>
+
+              <select
+                value={selectedBucket}
+                onChange={(e) => {
+                  setSelectedBucket(e.target.value);
+                  setCurrentBucketMetadataId(e.target.value);
+                }}
+                className={`
+                  mt-2 p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 text-center 
+                  ${error ? "border-red-500" : "border-gray-500"} 
+                  ${selectedBucket.trim() ? "text-black" : "text-gray-600"}
+                `}
+              >
+                {/* Placeholder */}
+                <option value="" disabled hidden>
+                  Select a Bucket
+                </option>
+
+                {bucketMetadataData?.map(
+                  (bucket) => (
+                    <option key={bucket.id} value={bucket.id}>
+                      {bucket.name}
                     </option>
                   )
                 )}
@@ -407,11 +449,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   py-0.5 pr-1.5 pl-2.5
                   border-none rounded-md
                   text-sm transition-all duration-200
-                  ${expenseName.trim() && selectedGroup 
+                  ${expenseName.trim() && selectedGroup && selectedBucket
                     ? "cursor-pointer" 
                     : "cursor-not-allowed"} 
                   text-[var(--color-text-primary)] bg-white
-                  ${!(expenseName.trim() && selectedGroup) || 
+                  ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
                   "hover:bg-[var(--color-button-hover)] hover:text-white"}
                 `}
                 onClick={handleSplitEvenly}
@@ -426,11 +468,11 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
                   py-0.5 pr-1.5 pl-2.5
                   border-none rounded-md
                   text-sm transition-all duration-200
-                  ${expenseName.trim() && selectedGroup 
+                  ${expenseName.trim() && selectedGroup && selectedBucket
                     ? "cursor-pointer" 
                     : "cursor-not-allowed"} 
                   text-[var(--color-text-primary)] bg-white
-                  ${!(expenseName.trim() && selectedGroup) || 
+                  ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
                   "hover:bg-[var(--color-button-hover)] hover:text-white"}
                 `}
               >

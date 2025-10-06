@@ -78,9 +78,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             </div>
             {(activity.amount_owed ?? 0) <= 0 ? (
               <div className="flex flex-4">
-                <div className="flex-3 leading-normal text-sm items-baseline text-right">
+                <div className="flex-3 leading-normal text-sm items-baseline text-right pr-10">
                   You paid{" "}
-                  <span className="font-bold pr-10">
+                  <span className="font-bold">
                     ${activity.original_payment?.toFixed(2)}
                   </span>
                 </div>
@@ -111,11 +111,11 @@ export const ActivityList: React.FC<ActivityListProps> = ({
               </div>
             ) : (
               <div className="flex flex-4">
-                <div className="flex-3 leading-normal text-sm items-baseline text-right">
+                <div className="flex-3 leading-normal text-sm items-baseline text-right pr-10">
                   {activity.original_payer_name ||
                     ""}{" "}
                   paid{" "}
-                  <span className="font-bold pr-10">
+                  <span className="font-bold">
                     ${activity.original_payment?.toFixed(2)}
                   </span>
                 </div>
