@@ -74,61 +74,23 @@ const Groups = () => {
   return (
     <Template>
       <Content>
-        <div
-          className="flex min-h-screen p-6"
-          style={{
-            backgroundColor: "#F0F1F6",
-          }}
-        >
+        <div className="flex min-h-screen p-6 bg-content-background">
           {/* Single Large Panel */}
           <div className="flex-1">
-            <div
-              style={{
-                backgroundColor: "white",
-                borderRadius: "12px",
-                padding: "20px",
-                display: "flex",
-                gap: "24px",
-              }}
-            >
+            <div className="bg-white rounded-xl p-5 flex gap-6">
               {/* Left Section */}
               <div className="flex-2">
                 {/* Header */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <h2
-                    style={{
-                      fontSize: "24px",
-                      fontWeight: "700",
-                      color: "#111827",
-                      margin: 0,
-                    }}
-                  >
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold m-0 text-sidebar-title">
                     {selectedGroupName || "Select a Group"}
                   </h2>
-                  <div style={{ display: "flex", gap: "12px" }}>
+                  <div className="flex gap-3">
                     <button
                       onClick={() => setModalPage(1)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        padding: "8px 16px",
-                        backgroundColor: "#8b5cf6",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                        cursor: "pointer",
-                      }}
+                      className="flex items-center gap-1.5 py-2 px-4 text-white text-sm cursor-pointer rounded-md border-none bg-expense-add-btn"
                     >
-                      <span style={{ fontSize: "16px" }}>+</span>
+                      <span className="text-base">+</span>
                       Add Expense
                     </button>
                   </div>
@@ -141,15 +103,9 @@ const Groups = () => {
               </div>
 
               {/* Vertical Divider Line */}
-              <div
-                style={{
-                  width: "1px",
-                  backgroundColor: "#e5e7eb",
-                  alignSelf: "stretch",
-                }}
-              />
+              <div className="w-[1px] self-stretch bg-divider" />
 
-              <div style={{ flex: 1 }}>
+              <div className="flex-1">
                 <MembersList members={members} />{" "}
               </div>
 

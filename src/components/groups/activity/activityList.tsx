@@ -37,43 +37,32 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   }
 
   if (activityLoading) {
-    return <div style={{ color: "#6b7280" }}>Loading activity...</div>;
+    return <div className="text-loading">Loading activity...</div>;
   }
 
   if (!activityData || activityData.length === 0) {
     return (
-      <div style={{ color: "#6b7280", fontStyle: "italic" }}>
+      <div className="text-loading italic">
         No activity found
       </div>
     );
   }
 
   return (
-    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+    <ul className="list-none p-0 m-0">
       {activityData.map((activity) => (
         <li
           key={activity.id}
-          className="cursor-pointer hover:bg-gray-200"
-          style={{
-            padding: "12px",
-            borderBottom: "1px solid #e5e7eb",
-          }}
+          className="cursor-pointer hover:bg-gray-200 p-3 border-b border-divider"
         >
           <div 
             className="flex items-center gap-3" 
             onClick={() => handleModal(activity)}
           >
-            <div style={{ fontSize: "14px", fontWeight: 500 }} className="flex-2 leading-normal">
+            <div className="text-sm font-medium flex-2 leading-normal">
               {activity.name || "Expense"}
             </div>
-            <div
-              style={{
-                fontSize: "12px",
-                color: "#6b7280",
-                marginTop: "4px",
-              }}
-              className="flex-1"
-            >
+            <div className="flex-1 text-xs mt-1 text-loading">
               {new Date(activity.created_at).toLocaleDateString()}
             </div>
             {(activity.amount_owed ?? 0) <= 0 ? (

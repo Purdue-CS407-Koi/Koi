@@ -17,6 +17,13 @@
   --color-button-hover: #8B5CF6;
   --color-text-primary: #625B71;
   --color-error-bg: #fee2e2;
+  --color-divider: #e5e7eb;
+  --color-loading: var(--color-sidebar-button-color);
+  --color-auth-input-label: #111827;
+  --color-auth-input-border: #d1d5db;
+  --color-auth-input-border-hover: #3b82f6;
+  --color-expense-add-btn: #8b5cf6;
+  --color-no-avatar: #374151;
 
   /* From material v3 kit on Figma */
   --color-primary: rgba(103, 80, 164, 1);

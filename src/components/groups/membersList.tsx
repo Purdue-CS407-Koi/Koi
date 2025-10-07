@@ -19,48 +19,30 @@ export const MembersList: React.FC<MembersListProps> = ({ members }) => {
           Select a group to view members
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div className="flex flex-col gap-3">
           {members.map((member) => (
             <div
               key={member.id}
-              style={{ display: "flex", alignItems: "center", gap: "12px" }}
+              className="flex items-center gap-3"
             >
               <div
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  backgroundColor: member.avatar ? "transparent" : "#374151",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  overflow: "hidden",
-                }}
+                className={`
+                  flex w-[40px] h-[40px] text-white justify-center items-center
+                  text-base font-semibold overflow-hidden rounded-full
+                  ${member.avatar ? "bg-transparent" : "bg-no-avatar"}
+                `}
               >
                 {member.avatar ? (
                   <img
                     src={member.avatar}
                     alt={member.name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   member.name.charAt(0).toUpperCase()
                 )}
               </div>
-              <span
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#111827",
-                }}
-              >
+              <span className="text-auth-input-label text-base font-medium">
                 {member.name}
               </span>
             </div>
