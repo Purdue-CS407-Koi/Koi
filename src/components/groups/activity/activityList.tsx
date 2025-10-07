@@ -196,7 +196,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                       onClick={handleSettleSplit}
                       className={`
                         px-5 py-2.5 rounded-[6px] text-[14px] transition-all duration-200
-                        w-auto hover:bg-[var(--color-button-hover)] hover:text-white rounded-full
+                        w-auto hover:bg-[var(--color-button-hover)] hover:text-white
                         text-[var(--color-text-primary)]
                       `}
                     >
