@@ -18,23 +18,23 @@ export type Database = {
         Row: {
           bucket_metadata_id: string | null
           created_at: string
-          end: string | null
+          end: string
           id: string
-          start: string | null
+          start: string
         }
         Insert: {
           bucket_metadata_id?: string | null
           created_at?: string
-          end?: string | null
+          end: string
           id?: string
-          start?: string | null
+          start: string
         }
         Update: {
           bucket_metadata_id?: string | null
           created_at?: string
-          end?: string | null
+          end?: string
           id?: string
-          start?: string | null
+          start?: string
         }
         Relationships: [
           {
