@@ -55,7 +55,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState("00");
   const [expenseCents, setExpenseCents] = useState("00");
-  // const [expenseDescription, setExpenseDescription] = useState("");
   const [selectedBucket, setSelectedBucket] = useState("");
 
   const { setCurrentBucketMetadataId } =
@@ -81,7 +80,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     const amount = Number(expenseDollars) + Number(expenseCents) / 100;
     const name = expenseName;
     const user_id = userData?.id;
-    // const description = expenseDescription;
     const { data: refreshedInstances } = await refetchBucketInstance();
 
     setExpense({
@@ -244,32 +242,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
           )}
           </Select>
         </FormControl>
-        {/* <input
-          type="text"
-          value={expenseDescription}
-          onChange={(e) => {
-            setExpenseDescription(e.target.value);
-            if (error) setError(""); // Clear error when user types
-          }}
-          onKeyDown={handleKeyPressText}
-          placeholder="Enter expense description"
-          autoFocus
-          style={{
-            width: "100%",
-            padding: "2px",
-            borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-            fontSize: "14px",
-            outline: "none",
-            transition: "border-color 0.2s",
-            boxSizing: "border-box",
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = error ? "#ef4444" : "#757981ff";
-          }}
-        /> */}
         <Stack direction="row" alignItems="center" spacing={1}>
           <Typography variant="h6" component="span">
             $
