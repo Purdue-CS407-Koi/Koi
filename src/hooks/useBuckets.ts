@@ -8,6 +8,7 @@ import {
 } from "@/api/buckets";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 import {
+  getEndDate,
   RecurrencePeriodType,
 } from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
@@ -149,6 +150,8 @@ export const useBuckets = () => {
         return [];
       }
 
+      const currentBucket = bucketMetadataData?.find(x => x.id === currentBucketMetadataId);
+
       const bucketInstances = await getAllBucketInstances(
         currentBucketMetadataId
       );
@@ -163,10 +166,11 @@ export const useBuckets = () => {
           setCurrentBucketInstanceId(bucketInstances[0].id);
         } else {
           console.warn("No bucket instance found, automatically creating one!");
+          const startDate = new Date();
           createBucketInstance({
             bucket_metadata_id: currentBucketMetadataId,
-            start: new Date().toISOString(),
-            end: null,
+            start: startDate.toISOString(),
+            end: getEndDate(startDate, currentBucket?.recurrence_period_type as RecurrencePeriodType).toISOString(),
           });
         }
       }

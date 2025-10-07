@@ -1,3 +1,5 @@
+import { addDays, addMonths, addQuarters, addWeeks, addYears } from "date-fns";
+
 export const RecurrencePeriodType = {
   Monthly: 0,
   Weekly: 1,
@@ -30,3 +32,21 @@ export const getRecurrencePeriodDisplayName = (
 
 export type RecurrencePeriodType =
   (typeof RecurrencePeriodType)[keyof typeof RecurrencePeriodType];
+
+
+export const getEndDate = (startDate: Date, period: RecurrencePeriodType): Date => {
+  switch(period) {
+    case RecurrencePeriodType.Monthly:
+      return addMonths(startDate, 1);
+    case RecurrencePeriodType.Weekly:
+      return addWeeks(startDate, 1);
+    case RecurrencePeriodType.Daily:
+      return addDays(startDate, 1);
+    case RecurrencePeriodType.Yearly:
+      return addYears(startDate, 1);
+    case RecurrencePeriodType.Quarterly:
+      return addQuarters(startDate, 1);
+    case RecurrencePeriodType.SemiAnually:
+      return addYears(startDate, 0.5);
+  }
+}
