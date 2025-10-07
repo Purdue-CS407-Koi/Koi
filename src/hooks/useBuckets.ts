@@ -165,7 +165,7 @@ export const useBuckets = () => {
           console.warn("No bucket instance found, automatically creating one!");
           createBucketInstance({
             bucket_metadata_id: currentBucketMetadataId,
-            start: new Date().toDateString(),
+            start: new Date().toISOString(),
             end: null,
           });
         }

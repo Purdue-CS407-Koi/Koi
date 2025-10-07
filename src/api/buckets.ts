@@ -87,7 +87,7 @@ export const createBucketMetadata = async (
 export const hideBucketMetadata = async (id: string): Promise<Tables<"BucketMetadata">> => {
   const { data, error } = await supabase
     .from(METADATA_TABLE_NAME)
-    .update({ hidden_at: new Date().toDateString() })
+    .update({ hidden_at: new Date().toISOString() })
     .eq("id", id)
     .select();
 
