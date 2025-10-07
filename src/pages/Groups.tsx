@@ -29,6 +29,8 @@ const Groups = () => {
   const [groupExpenseSelectedGroup, setGroupExpenseSelectedGroup] = useState<string>("");
   const { groupMembersData } = useGroupMembers(groupExpenseSelectedGroup);
 
+  const [page1Reset, setPage1Reset] = useState(0);
+
   const [expense, setExpense] = useState<TablesInsert<"Expenses"> | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [, setIsEditModalOpen] = useState(false);
@@ -154,15 +156,24 @@ const Groups = () => {
               {/* Modal */}
               <AddGroupExpenseModal
                 isOpen={modalPage == 1}
-                onClose={() => setModalPage(0)}
+                onClose={() => {
+                  setModalPage(0);
+                  setPage1Reset(k => k + 1);
+                  setGroupExpenseSelectedGroup("");
+                }}
                 onNext={setModalPage}
                 setExpense={setExpense}
                 selectedGroup={groupExpenseSelectedGroup}
                 setSelectedGroup={setGroupExpenseSelectedGroup}
+                key={page1Reset}
               />
               <SplitEvenlyModal
                 isOpen={modalPage == 2}
-                onClose={() => setModalPage(0)}
+                onClose={() => {
+                  setModalPage(0);
+                  setPage1Reset(k => k + 1);
+                  setGroupExpenseSelectedGroup("");
+                }}
                 onSave={handleAddGroupExpense}
                 setPage={setModalPage}
                 expense={expense}
@@ -172,7 +183,11 @@ const Groups = () => {
               />
               <SplitCustomModal
                 isOpen={modalPage == 3}
-                onClose={() => setModalPage(0)}
+                onClose={() => {
+                  setModalPage(0);
+                  setPage1Reset(k => k + 1);
+                  setGroupExpenseSelectedGroup("");
+                }}
                 onSave={handleAddGroupExpense}
                 setPage={setModalPage}
                 expense={expense}
