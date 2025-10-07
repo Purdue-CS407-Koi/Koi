@@ -91,70 +91,31 @@ export const SignUpPage = () => {
   };
 
   return (
-    <div
-      className="fixed inset-0"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        className="w-full max-w-sm"
-        style={{
-          textAlign: "center",
-          minWidth: "500px",
-          width: "100%",
-          padding: "0 1rem",
-        }}
-      >
-        <div
-          className="w-full flex justify-center items-center mb-6"
-          style={{ textAlign: "center" }}
-        >
+    <div className="fixed inset-0 flex items-center justify-center">
+      <div className="w-full max-w-sm text-center min-w-[500px] py-0 px-4">
+        <div className="w-full flex justify-center items-center mb-6 text-center">
           <img
             src={logo}
             alt="Koi Logo"
-            className="w-20 h-auto"
-            style={{ display: "block", margin: "0 auto" }}
+            className="block w-20 h-auto my-0 mx-auto"
           />
         </div>
 
-        <div className="w-full mb-6" style={{ textAlign: "center" }}>
-          <h1
-            style={{
-              textAlign: "center",
-              margin: "0 auto 0.5rem auto",
-              fontSize: "2.5rem",
-              fontWeight: "600",
-            }}
-          >
+        <div className="w-full mb-6 text-center">
+          <h1 className="text-center text-4xl font-semibold mt-0 mb-2 mx-auto">
             Create an account
           </h1>
-          <p
-            className="text-sm text-gray-600"
-            style={{ textAlign: "center", margin: "0 auto" }}
-          >
+          <p className="text-sm text-gray-600 text-center my-0 mx-auto">
             Sign up to get started.
           </p>
         </div>
 
         {/* Error Display */}
         {error && (
-          <div
-            style={{
-              backgroundColor: "#fee2e2",
-              color: "#dc2626",
-              padding: "12px",
-              borderRadius: "6px",
-              marginBottom: "16px",
-              fontSize: "14px",
-              textAlign: "left",
-            }}
-          >
+          <div className="text-sm p-3 text-left rounded-lg mb-4 bg-error-bg text-error">
             {error}
             {error.includes("already registered") && (
-              <div style={{ marginTop: "8px" }}>
+              <div className="mt-2">
                 <Link
                   to="/signIn"
                   className="text-blue-600 hover:underline font-medium"
@@ -168,8 +129,7 @@ export const SignUpPage = () => {
 
         <form
           onSubmit={handleSignUp}
-          className="space-y-4 mb-6"
-          style={{ textAlign: "left" }}
+          className="space-y-4 mb-6 text-left"
         >
           <AuthInput
             label="Name"
@@ -194,23 +154,21 @@ export const SignUpPage = () => {
           />
 
           <div
-            className="w-full flex justify-center"
-            style={{ textAlign: "center" }}
+            className="w-full flex justify-center text-center"
           >
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ margin: "0 auto", width: "100%" }}
+              className={`w-full px-4 py-2 rounded-md my-0 mx-auto
+                bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                transition-colors disabled:opacity-50 disabled:cursor-not-allowed
+              `}
             >
               {isLoading ? "Creating Account..." : "Sign Up"}
             </button>
           </div>
         </form>
-        <p
-          className="text-sm text-gray-600"
-          style={{ textAlign: "center", margin: "0 auto" }}
-        >
+        <p className="text-sm text-gray-600 text-center my-0 mx-auto">
           Already have an account?{" "}
           <Link to="/signIn" className="text-blue-600 hover:underline">
             Sign in here.
