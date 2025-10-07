@@ -41,8 +41,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   const handleSettleSplit = async () => {
     const { data: refreshedInstances } = await refetchBucketInstance();
     const bucketInstanceId = refreshedInstances && (refreshedInstances[0].id || undefined);
-    await settleSplit(split?.id ?? "", bucketInstanceId ?? "");
-    setIsModalOpen(false);
+    if (bucketInstanceId) {
+      await settleSplit(split?.id ?? "", bucketInstanceId ?? "");
+      setIsModalOpen(false);
+    }
   }
 
   if (activityLoading) {
@@ -140,7 +142,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
       ))}
       <Dialog 
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setSelectedBucket("");
+          setIsModalOpen(false);
+        }}
         fullWidth
         maxWidth="xs"
       >
@@ -225,7 +230,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
               </FormControl>
               <DialogActions>
                 <Button
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => {
+                    setSelectedBucket("");
+                    setIsModalOpen(false);
+                  }}
                   className={`
                     !text-[var(--color-text-primary)] !pl-3
                   `}
@@ -233,10 +241,14 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                   Close
                 </Button>
                 <Button
+                  disabled={!(selectedBucket.trim())}
                   onClick={handleSettleSplit}
                   className={`
                     !text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !pl-3
                     hover:!bg-[var(--color-button-hover)] hover:!text-white
+                    ${selectedBucket
+                    ? "!cursor-pointer" 
+                    : "!cursor-not-allowed"} 
                   `}
                 >
                   Settle Up
