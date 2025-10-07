@@ -19,6 +19,7 @@ interface SplitEvenlyModalProps {
   expense: TablesInsert<"Expenses"> | null;
   selectedGroup: string;
   members: any[] | undefined;
+  refetch : () => void;
 }
 
 export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
@@ -29,6 +30,7 @@ export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
   expense,
   selectedGroup,
   members,
+  refetch,
 }) => {
   const { insertNewSplit } = useSplits();
   const { userData } = useUsers();
@@ -49,6 +51,10 @@ export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
       handleEvenSplit();
     }
   }, [members]);
+
+  useEffect(() => {
+    handleEvenSplit()
+  }, [expense, JSON.stringify(payers)]);
 
   const handleSave = async () => {
     if (expense) {
@@ -79,12 +85,12 @@ export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
         }
       });
       handleClose();
+      await refetch();
     }
     else {
       setError("Please create a valid expense");
       setPage(1);
     }
-
   };
 
   const handleEvenSplit = useCallback(() => {
@@ -109,13 +115,11 @@ export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
   const removePayer = (id: string, name: string) => {
     setNonpayers((prev) => [...prev, { id, name }]);
     setPayers((prev) => prev.filter((p) => p.id !== id));
-    handleEvenSplit();
   };
 
   const addPayer = (id: string, name: string) => {
     setPayers((prev) => [...prev, { id, name }]);
     setNonpayers((prev) => prev.filter((p) => p.id !== id));
-    handleEvenSplit();
   };
 
   const handleClose = () => {

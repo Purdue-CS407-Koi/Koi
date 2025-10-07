@@ -18,6 +18,7 @@ interface SplitCustomModalProps {
   expense: TablesInsert<"Expenses"> | null;
   selectedGroup: string;
   members: any[] | undefined;
+  refetch: () => void;
 }
 
 export const SplitCustomModal: React.FC<SplitCustomModalProps> = ({
@@ -28,6 +29,7 @@ export const SplitCustomModal: React.FC<SplitCustomModalProps> = ({
   expense,
   selectedGroup,
   members,
+  refetch,
 }) => {
   const { insertNewSplit } = useSplits();
   const { userData } = useUsers();
@@ -83,11 +85,12 @@ export const SplitCustomModal: React.FC<SplitCustomModalProps> = ({
           insertNewSplit(split);
         }
       });
+      await refetch();
+      handleClose();
     } else {
       setError("Please create a valid expense");
       setPage(1);
     }
-    handleClose();
   };
 
   const setAmount = (

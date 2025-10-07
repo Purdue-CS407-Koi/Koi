@@ -12,8 +12,24 @@ import { useBucketsStore } from "@/stores/useBucketsStore";
 // components
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-//types
+// types
 import type { TablesInsert } from "@/helpers/supabase.types";
+
+// mui
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  DialogActions,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
@@ -75,6 +91,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       bucket_instance_id: refreshedInstances && (refreshedInstances[0].id || undefined),
     });
 
+    console.log(amount);
+
     onNext(2);
   };
 
@@ -126,210 +144,215 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-        onClick={handleClose}
-      >
-        {/* Modal */}
-        <div
-          className="relative bg-white rounded-xl px-6 pt-12 pb-6 w-full max-w-[400px] m-4 shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
-          onClick={(e) => e.stopPropagation()}
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="xs"
+    > 
+      {/* Header */}
+      <DialogTitle>
+        <h3 className="m-0 text-lg font-semibold text-black" >
+          Create New Group Expense
+        </h3>
+      </DialogTitle>
+
+      {/* Input */}
+      <DialogContent>
+        <TextField
+          autoFocus
+          required
+          margin="dense"
+          value={expenseName}
+          label="Expense Name"
+          onChange={(e) => {
+            setExpenseName(e.target.value);
+            if (error) setError(""); // Clear error when user types
+          }}
+          onKeyDown={handleKeyPressText}
+          fullWidth
+          className="
+            [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+            [&_.MuiOutlinedInput-root:hover_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+            [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+            !mb-4
+          "
+        />
+
+        <FormControl fullWidth 
+          className="
+            [&_.MuiInputLabel-root]:!text-gray-500
+            [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+            [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
+            [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+            [&_.MuiSelect-select]:!text-gray-800
+            [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
+            !mb-4
+          "     
         >
-          <button
-            className ="absolute top-1 left-1 px-2.5 py-1 rounded-md bg-white text-[#374151] text-sm cursor-pointer transition-all duration-200"
-            onClick={handleClose}
+          <InputLabel id="group-label">
+            Select Group
+          </InputLabel>
+          <Select
+            margin="dense"
+            labelId="group-label"
+            label="Select Group"
+            value={selectedGroup}
+            onChange={(e) => setSelectedGroup(e.target.value) }
+            fullWidth
+            required
           >
-            Cancel
-          </button>
+            {groups?.map((group: { id: string; name: string; created_at: string }) => (
+              <MenuItem value={group.id}>
+                {group.name}
+              </MenuItem>
+            ))}
+          </Select>
           
-          {/* Header */}
-          <div className="mb-5">
-            <h3 className="m-0 text-lg font-semibold text-black" >
-              Create New Group Expense
-            </h3>
+        </FormControl>
+
+        <FormControl fullWidth 
+          className="
+            [&_.MuiInputLabel-root]:!text-gray-500
+            [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+            [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
+            [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+            [&_.MuiSelect-select]:!text-gray-800
+            [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
+            !mb-4
+          "     
+        >
+          <InputLabel id="bucket-label">
+            Select Bucket
+          </InputLabel>
+          <Select
+            margin="dense"
+            labelId="bucket-label"
+            label="Select Bucket"
+            value={selectedBucket}
+            onChange={(e) => {
+              setSelectedBucket(e.target.value);
+              setCurrentBucketMetadataId(e.target.value);
+            }}
+            fullWidth
+            required
+          >
+          {bucketMetadataData?.map(
+            (bucket) => (              
+              <MenuItem key={bucket.id} value={bucket.id}>
+                {bucket.name}
+              </MenuItem>
+            )
+          )}
+          </Select>
+        </FormControl>
+        {/* <input
+          type="text"
+          value={expenseDescription}
+          onChange={(e) => {
+            setExpenseDescription(e.target.value);
+            if (error) setError(""); // Clear error when user types
+          }}
+          onKeyDown={handleKeyPressText}
+          placeholder="Enter expense description"
+          autoFocus
+          style={{
+            width: "100%",
+            padding: "2px",
+            borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
+            fontSize: "14px",
+            outline: "none",
+            transition: "border-color 0.2s",
+            boxSizing: "border-box",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = error ? "#ef4444" : "#757981ff";
+          }}
+        /> */}
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Typography variant="h6" component="span">
+            $
+          </Typography>
+          <TextField
+            variant="standard"
+            value={expenseDollars}
+            onChange={(e) => {
+              setExpenseDollars(e.target.value);
+              if (error) setError(""); // Clear error when user types
+            }}
+            onKeyDown={handleKeyPressNumber}
+            placeholder="00"
+            className="
+              [&_.MuiInput-underline:before]:!border-gray-400
+              hover:[&_.MuiInput-underline:before]:!border-[var(--color-button-hover)]
+              focus-within:[&_.MuiInput-underline:after]:!border-[var(--color-button-hover)]
+              [&_.MuiInputBase-input]:!text-right
+              [&_.MuiInput-underline:after]:!border-[var(--color-button-hover)]
+            "
+          />
+          <Typography variant="h6" component="span">
+            .
+          </Typography>
+          <TextField
+            variant="standard"
+            value={expenseCents}
+            onChange={(e) => {
+              const v = e.target.value.slice(0, 2); // max 2 chars
+              setExpenseCents(v);
+            }}
+            onKeyDown={handleKeyPressNumber}
+            placeholder="00"
+            className="
+              [&_.MuiInput-underline:before]:!border-gray-400
+              hover:[&_.MuiInput-underline:before]:!border-[var(--color-button-hover)]
+              focus-within:[&_.MuiInput-underline:after]:!border-[var(--color-button-hover)]
+              [&_.MuiInput-underline:after]:!border-[var(--color-button-hover)]
+            "
+          />
+        </Stack>
+        
+        {error && (
+          <p className="mt-2 text-xs text-[var(--color-error)]">
+            {error}
+          </p>
+        )}
+      </DialogContent>
+      <DialogActions className="!flex !gap-1 !items-center !flex-col !mb-2">
+          <div className="mt-6 leading-normal w-30">
+            Split:
           </div>
-
-          {/* Input */}
-          <div className="flex flex-col items-center mb-5">
-            <input
-              type="text"
-              value={expenseName}
-              onChange={(e) => {
-                setExpenseName(e.target.value);
-                if (error) setError(""); // Clear error when user types
-              }}
-              onKeyDown={handleKeyPressText}
-              placeholder="Enter expense name"
-              autoFocus
-              className={"w-[70%] p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 " + (error ? "border-red-500" : "border-gray-500")}
-            />
-
-            <select
-              value={selectedGroup}
-              onChange={(e) => setSelectedGroup(e.target.value) }
-              className={`
-                mt-2 p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 text-center 
-                ${error ? "border-red-500" : "border-gray-500"} 
-                ${selectedGroup.trim() ? "text-black" : "text-gray-600"}
-              `}
-            >
-              {/* Placeholder */}
-              <option value="" disabled hidden>
-                Select a Group
-              </option>
-
-              {groups?.map(
-                (group: { id: string; name: string; created_at: string }) => (
-                  <option key={group.id} value={group.id}>
-                    {group.name}
-                  </option>
-                )
-              )}
-            </select>
-
-            <select
-              value={selectedBucket}
-              onChange={(e) => {
-                setSelectedBucket(e.target.value);
-                setCurrentBucketMetadataId(e.target.value);
-              }}
-              className={`
-                mt-2 p-1.5 text-sm outline-none box-border border-b-2 transition-colors duration-200 text-center 
-                ${error ? "border-red-500" : "border-gray-500"} 
-                ${selectedBucket.trim() ? "text-black" : "text-gray-600"}
-              `}
-            >
-              {/* Placeholder */}
-              <option value="" disabled hidden>
-                Select a Bucket
-              </option>
-
-              {bucketMetadataData?.map(
-                (bucket) => (
-                  <option key={bucket.id} value={bucket.id}>
-                    {bucket.name}
-                  </option>
-                )
-              )}
-            </select>
-            {/* <input
-              type="text"
-              value={expenseDescription}
-              onChange={(e) => {
-                setExpenseDescription(e.target.value);
-                if (error) setError(""); // Clear error when user types
-              }}
-              onKeyDown={handleKeyPressText}
-              placeholder="Enter expense description"
-              autoFocus
-              style={{
-                width: "100%",
-                padding: "2px",
-                borderBottom: error ? "2px solid #ef4444" : "2px solid #757981ff",
-                fontSize: "14px",
-                outline: "none",
-                transition: "border-color 0.2s",
-                boxSizing: "border-box",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = error ? "#ef4444" : "#3b82f6";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = error ? "#ef4444" : "#757981ff";
-              }}
-            /> */}
-            <div className="mt-4 w-fit">
-              $
-              <input
-                type="text"
-                value={expenseDollars}
-                onChange={(e) => {
-                  setExpenseDollars(e.target.value);
-                  if (error) setError(""); // Clear error when user types
-                }}
-                onKeyDown={handleKeyPressNumber}
-                placeholder="00"
-                className={`
-                  w-[calc(4em+8px)] min-w-[calc(4em+8px)]
-                  p-0.5 text-sm text-right 
-                  outline-none box-border 
-                  border-b-2 transition-colors duration-200
-                  ${error ? "border-red-500" : "border-gray-500"}
-                `}
-                inputMode="numeric"
-                pattern="[0-9]*"
-              />
-              .
-              <input
-                type="text"
-                value={expenseCents}
-                onChange={(e) => {
-                  setExpenseCents(e.target.value);
-                  if (error) setError(""); // Clear error when user types
-                }}
-                onKeyDown={handleKeyPressNumber}
-                placeholder="00"
-                maxLength={2}
-                className={`
-                  w-[2em] min-w-[2em]
-                  p-0.5 text-sm  
-                  outline-none box-border 
-                  border-b-2 transition-colors duration-200
-                  ${error ? "border-red-500" : "border-gray-500"}
-                `}
-                inputMode="numeric"
-                pattern="[0-9]*"
-              />
-            </div>
-            <div className="mt-6 leading-normal w-30">
-              Split:
-            </div>
-            <button
-              className={`
-                flex flex-row justify-center items-center
-                py-0.5 pr-1.5 pl-2.5
-                border-none rounded-md
-                text-sm transition-all duration-200
-                ${expenseName.trim() && selectedGroup && selectedBucket
-                  ? "cursor-pointer" 
-                  : "cursor-not-allowed"} 
-                text-[var(--color-text-primary)] bg-white
-                ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
-                "hover:bg-[var(--color-button-hover)] hover:text-white"}
-              `}
-              onClick={handleSplitEvenly}
-            >
-              Evenly
-              <NavigateNextIcon/>
-            </button>
-            <button
-              onClick={handleCustomAmounts}
-              className={`
-                flex flex-row justify-center items-center
-                py-0.5 pr-1.5 pl-2.5
-                border-none rounded-md
-                text-sm transition-all duration-200
-                ${expenseName.trim() && selectedGroup && selectedBucket
-                  ? "cursor-pointer" 
-                  : "cursor-not-allowed"} 
-                text-[var(--color-text-primary)] bg-white
-                ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
-                "hover:bg-[var(--color-button-hover)] hover:text-white"}
-              `}
-            >
-              Custom
-              <NavigateNextIcon/>
-            </button>
-            {error && (
-              <p className="mt-2 text-xs text-[var(--color-error)]">
-                {error}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </>
+          <Button
+            onClick={handleSplitEvenly}
+            className={`
+              ${expenseName.trim() && selectedGroup && selectedBucket
+                ? "!cursor-pointer" 
+                : "!cursor-not-allowed"} 
+              !text-[var(--color-text-primary)] !bg-white !pl-3
+              ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
+              "hover:!bg-[var(--color-button-hover)] hover:!text-white"}
+            `}
+          >
+            Evenly
+            <NavigateNextIcon/>
+          </Button>
+          <Button
+            onClick={handleCustomAmounts}
+            className={`
+              ${expenseName.trim() && selectedGroup && selectedBucket
+                ? "!cursor-pointer" 
+                : "!cursor-not-allowed"} 
+              !text-[var(--color-text-primary)] !bg-white !pl-3
+              ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
+              "hover:!bg-[var(--color-button-hover)] hover:!text-white"}
+            `}
+          >
+            Custom
+            <NavigateNextIcon/>
+          </Button>
+        </DialogActions>
+    </Dialog>
   );
 };

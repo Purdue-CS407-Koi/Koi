@@ -30,7 +30,7 @@ const Groups = () => {
   const [expense, setExpense] = useState<TablesInsert<"Expenses"> | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [, setIsEditModalOpen] = useState(false);
-  const { data: activityData, isLoading: activityLoading } = useActivity(
+  const { data: activityData, isLoading: activityLoading, refetch } = useActivity(
     selectedGroupId ?? undefined
   );
   const { insertNewExpenseAndReturn } = useExpenses();
@@ -158,6 +158,7 @@ const Groups = () => {
                 expense={expense}
                 selectedGroup={groupExpenseSelectedGroup}
                 members={groupMembersData}
+                refetch={refetch}
               />
               <SplitCustomModal
                 isOpen={modalPage == 3}
@@ -167,6 +168,7 @@ const Groups = () => {
                 expense={expense}
                 selectedGroup={groupExpenseSelectedGroup}
                 members={groupMembersData}
+                refetch={refetch}
               />
             </div>
           </div>
