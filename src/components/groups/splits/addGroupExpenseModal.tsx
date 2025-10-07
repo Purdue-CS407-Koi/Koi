@@ -91,7 +91,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       bucket_instance_id: refreshedInstances && (refreshedInstances[0].id || undefined),
     });
 
-    console.log(amount);
+    resetToDefault();
 
     onNext(2);
   };
@@ -114,6 +114,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       user_id,
       bucket_instance_id: refreshedInstances && (refreshedInstances[0].id || undefined),
     });
+
+    resetToDefault();
 
     onNext(3);
   };
