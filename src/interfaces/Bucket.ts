@@ -7,24 +7,26 @@ export const RecurrencePeriodType = {
   SemiAnually: 5,
 } as const;
 
-export function getRecurrencePeriodDisplayName(type: RecurrencePeriodType): string {
+export const getRecurrencePeriodDisplayName = (
+  type: RecurrencePeriodType
+): string => {
   switch (type) {
     case RecurrencePeriodType.Monthly:
-      return 'monthly';
+      return "monthly";
     case RecurrencePeriodType.Weekly:
-      return 'weekly';
+      return "weekly";
     case RecurrencePeriodType.Daily:
-      return 'daily';
+      return "daily";
     case RecurrencePeriodType.Yearly:
-      return 'yearly';
+      return "yearly";
     case RecurrencePeriodType.Quarterly:
-      return 'quarterly';
+      return "quarterly";
     case RecurrencePeriodType.SemiAnually:
-      return 'semi-annually';
+      return "semi-annually";
     default:
-      return '';
+      return "";
   }
-}
+};
 
 export type RecurrencePeriodType =
   (typeof RecurrencePeriodType)[keyof typeof RecurrencePeriodType];
