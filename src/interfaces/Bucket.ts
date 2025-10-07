@@ -1,4 +1,15 @@
-import { addDays, addMonths, addQuarters, addWeeks, addYears } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  addQuarters,
+  addWeeks,
+  addYears,
+  subDays,
+  subMonths,
+  subQuarters,
+  subWeeks,
+  subYears,
+} from "date-fns";
 
 export const RecurrencePeriodType = {
   Monthly: 0,
@@ -50,5 +61,25 @@ export const getEndDate = (
       return addQuarters(startDate, 1);
     case RecurrencePeriodType.SemiAnually:
       return addYears(startDate, 0.5);
+  }
+};
+
+export const getStartDate = (
+  endDate: Date,
+  period: RecurrencePeriodType
+): Date => {
+  switch (period) {
+    case RecurrencePeriodType.Monthly:
+      return subMonths(endDate, 1);
+    case RecurrencePeriodType.Weekly:
+      return subWeeks(endDate, 1);
+    case RecurrencePeriodType.Daily:
+      return subDays(endDate, 1);
+    case RecurrencePeriodType.Yearly:
+      return subYears(endDate, 1);
+    case RecurrencePeriodType.Quarterly:
+      return subQuarters(endDate, 1);
+    case RecurrencePeriodType.SemiAnually:
+      return subYears(endDate, 0.5);
   }
 };

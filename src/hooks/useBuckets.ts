@@ -7,9 +7,14 @@ import {
   editBucketMetadata as editBucketMetadataApi,
 } from "@/api/buckets";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
-import { getEndDate, RecurrencePeriodType } from "@/interfaces/Bucket";
+import {
+  getEndDate,
+  getStartDate,
+  RecurrencePeriodType,
+} from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { addMilliseconds, subMilliseconds } from "date-fns";
 
 export const useBuckets = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -93,6 +98,12 @@ export const useBuckets = () => {
     bucketInstance: TablesInsert<"BucketInstances">
   ) => {
     return createInstanceMutation.mutate(bucketInstance);
+  };
+
+  const createBucketInstanceAsync = async (
+    bucketInstance: TablesInsert<"BucketInstances">
+  ) => {
+    return createInstanceMutation.mutateAsync(bucketInstance);
   };
 
   const hideBucketMetadata = async (bucketMetadataId: string) => {
@@ -185,6 +196,91 @@ export const useBuckets = () => {
     },
   });
 
+  /// Finds and returns the instance ID for the given date. Will also automatically
+  /// create instances if needed.
+  const getInstanceIdForDate = async (date: Date): Promise<string> => {
+    if (!currentBucketMetadataId) {
+      throw new Error("No bucket has been selected!");
+    }
+
+    const currentBucket = bucketMetadataData?.find(
+      (x) => x.id === currentBucketMetadataId
+    );
+
+    const bucketInstances = await getAllBucketInstances(
+      currentBucketMetadataId
+    );
+
+    // Sort bucket by start date
+    bucketInstances.sort(
+      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+    );
+
+    // Depending on whether the given date is in the range or not...
+    if (
+      bucketInstances.some((instance) => {
+        const startDate = new Date(instance.start);
+        const endDate = new Date(instance.end);
+        return date >= startDate && date <= endDate;
+      })
+    ) {
+      // In range, find the instance ID for instance start/end that encloses date and return
+      const targetInstance = bucketInstances.find((instance) => {
+        const startDate = new Date(instance.start);
+        const endDate = new Date(instance.end);
+        return date >= startDate && date <= endDate;
+      });
+      return targetInstance!.id;
+    } else {
+      // Start walking backwards or forwards, creating buckets as we go.
+      if (date.getTime() < new Date(bucketInstances[0].start).getTime()) {
+        // Walk backwards
+        let lastDate = new Date(bucketInstances[0].start);
+        let lastBucketId = null;
+
+        while (date < lastDate) {
+          const endDate = subMilliseconds(lastDate, 1);
+          const startDate = getStartDate(
+            endDate,
+            currentBucket?.recurrence_period_type as RecurrencePeriodType
+          );
+
+          const newBucket = await createBucketInstanceAsync({
+            bucket_metadata_id: currentBucketMetadataId,
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+          });
+          lastBucketId = newBucket.id;
+          lastDate = startDate;
+        }
+        return lastBucketId!;
+      } else {
+        // Walk forwards
+        let lastDate = new Date(
+          bucketInstances[bucketInstances.length - 1].end
+        );
+        let lastBucketId = null;
+
+        while (date > lastDate) {
+          const startDate = addMilliseconds(lastDate, 1);
+          const endDate = getEndDate(
+            startDate,
+            currentBucket?.recurrence_period_type as RecurrencePeriodType
+          );
+
+          const newBucket = await createBucketInstanceAsync({
+            bucket_metadata_id: currentBucketMetadataId,
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+          });
+          lastBucketId = newBucket.id;
+          lastDate = endDate;
+        }
+        return lastBucketId!;
+      }
+    }
+  };
+
   return {
     bucketMetadataData,
     bucketInstanceData,
@@ -197,5 +293,6 @@ export const useBuckets = () => {
     createBucketInstance,
     hideBucketMetadata,
     editBucketMetadata,
+    getInstanceIdForDate,
   };
 };
