@@ -127,10 +127,7 @@ export const SignUpPage = () => {
           </div>
         )}
 
-        <form
-          onSubmit={handleSignUp}
-          className="space-y-4 mb-6 text-left"
-        >
+        <form onSubmit={handleSignUp} className="space-y-4 mb-6 text-left">
           <AuthInput
             label="Name"
             type="text"
@@ -153,9 +150,7 @@ export const SignUpPage = () => {
             placeholder="Enter your password (min. 6 characters)"
           />
 
-          <div
-            className="w-full flex justify-center text-center"
-          >
+          <div className="w-full flex justify-center text-center">
             <button
               type="submit"
               disabled={isLoading}
