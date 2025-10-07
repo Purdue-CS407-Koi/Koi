@@ -11,8 +11,6 @@ import { SplitEvenlyModal } from "@/components/groups/splits/splitEvenlyModal";
 import { SplitCustomModal } from "@/components/groups/splits/splitCustomModal";
 
 import type { TablesInsert } from "@/helpers/supabase.types";
-import { useBucketsStore } from "@/stores/useBucketsStore";
-import { useBuckets } from "@/hooks/useBuckets";
 
 interface Member {
   id: string;
@@ -39,9 +37,6 @@ const Groups = () => {
   );
   const { insertNewExpenseAndReturn } = useExpenses();
 
-  const { setCurrentBucketInstanceId } = useBucketsStore();
-  const { getInstanceIdForDate } = useBuckets();
-
   const selectedGroupName =
     groupsData?.find((g) => g.id === selectedGroupId)?.name || "";
 
@@ -58,10 +53,6 @@ const Groups = () => {
   };
 
   const handleAddGroupExpense = async (expense: TablesInsert<"Expenses">) => {
-    // Set correct bucket instance before creating new expense
-    const date = new Date();
-    setCurrentBucketInstanceId(await getInstanceIdForDate(date));
-
     const { id } = (await insertNewExpenseAndReturn(expense))[0];
     setModalPage(0);
     return id;

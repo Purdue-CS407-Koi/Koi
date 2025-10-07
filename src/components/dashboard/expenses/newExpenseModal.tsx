@@ -1,4 +1,3 @@
-import { useBuckets } from "@/hooks/useBuckets";
 import useExpenses from "@/hooks/useExpenses";
 import type { NewExpense } from "@/interfaces/Expense";
 import { useBucketsStore } from "@/stores/useBucketsStore";
@@ -14,9 +13,8 @@ import { useState, type FormEvent } from "react";
 
 export const NewExpenseModal = () => {
   const [open, setOpen] = useState(false);
-  const { currentBucketInstanceId, setCurrentBucketInstanceId } = useBucketsStore();
+  const { currentBucketInstanceId } = useBucketsStore();
   const { insertNewExpense } = useExpenses();
-  const { getInstanceIdForDate } = useBuckets();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,10 +34,6 @@ export const NewExpenseModal = () => {
 
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries((formData as any).entries());
-
-    // Set correct bucket instance before creating new expense
-    const date = new Date();
-    setCurrentBucketInstanceId(await getInstanceIdForDate(date));
 
     const newExpense: NewExpense = {
       amount: formJson.amount,

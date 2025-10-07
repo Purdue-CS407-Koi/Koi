@@ -177,7 +177,8 @@ export const useBuckets = () => {
         )
       ) {
         if (bucketInstances.length > 0) {
-          setCurrentBucketInstanceId(bucketInstances[0].id);
+          // Set the bucket instance to the one for today's date
+          setCurrentBucketInstanceId((await getInstanceIdForDate(new Date())));
         } else {
           console.warn("No bucket instance found, automatically creating one!");
           const startDate = new Date();
@@ -293,6 +294,5 @@ export const useBuckets = () => {
     createBucketInstance,
     hideBucketMetadata,
     editBucketMetadata,
-    getInstanceIdForDate,
   };
 };
