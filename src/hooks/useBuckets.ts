@@ -7,10 +7,7 @@ import {
   editBucketMetadata as editBucketMetadataApi,
 } from "@/api/buckets";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
-import {
-  getEndDate,
-  RecurrencePeriodType,
-} from "@/interfaces/Bucket";
+import { getEndDate, RecurrencePeriodType } from "@/interfaces/Bucket";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -80,7 +77,9 @@ export const useBuckets = () => {
     },
   });
 
-  const createBucketMetadata = async (bucketMetadata: TablesInsert<"BucketMetadata">) => {
+  const createBucketMetadata = async (
+    bucketMetadata: TablesInsert<"BucketMetadata">
+  ) => {
     return createMetadataMutation.mutate(bucketMetadata);
   };
 
@@ -90,7 +89,9 @@ export const useBuckets = () => {
     return createMetadataMutation.mutateAsync(bucketMetadata);
   };
 
-  const createBucketInstance = async (bucketInstance: TablesInsert<"BucketInstances">) => {
+  const createBucketInstance = async (
+    bucketInstance: TablesInsert<"BucketInstances">
+  ) => {
     return createInstanceMutation.mutate(bucketInstance);
   };
 
@@ -150,7 +151,9 @@ export const useBuckets = () => {
         return [];
       }
 
-      const currentBucket = bucketMetadataData?.find(x => x.id === currentBucketMetadataId);
+      const currentBucket = bucketMetadataData?.find(
+        (x) => x.id === currentBucketMetadataId
+      );
 
       const bucketInstances = await getAllBucketInstances(
         currentBucketMetadataId
@@ -170,7 +173,10 @@ export const useBuckets = () => {
           createBucketInstance({
             bucket_metadata_id: currentBucketMetadataId,
             start: startDate.toISOString(),
-            end: getEndDate(startDate, currentBucket?.recurrence_period_type as RecurrencePeriodType).toISOString(),
+            end: getEndDate(
+              startDate,
+              currentBucket?.recurrence_period_type as RecurrencePeriodType
+            ).toISOString(),
           });
         }
       }

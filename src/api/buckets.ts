@@ -1,12 +1,18 @@
 import supabase from "@/helpers/supabase";
 
-import type { Tables, TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
+import type {
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+} from "@/helpers/supabase.types";
 
 const METADATA_TABLE_NAME = "BucketMetadata";
 const INSTANCE_TABLE_NAME = "BucketInstances";
 
 // Fetches all the BucketMetadata objects associated with the logged-in user
-export const getAllBucketMetadata = async (): Promise<Tables<"BucketMetadata">[]> => {
+export const getAllBucketMetadata = async (): Promise<
+  Tables<"BucketMetadata">[]
+> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -24,7 +30,9 @@ export const getAllBucketMetadata = async (): Promise<Tables<"BucketMetadata">[]
 };
 
 // Fetches specific BucketMetadata instance
-export const getBucketMetadata = async (bucketMetadataId: string): Promise<Tables<"BucketMetadata">> => {
+export const getBucketMetadata = async (
+  bucketMetadataId: string
+): Promise<Tables<"BucketMetadata">> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -45,7 +53,9 @@ export const getBucketMetadata = async (bucketMetadataId: string): Promise<Table
 };
 
 // Fetches all the BucketInstance objects of the supplied BucketMetadata ID
-export const getAllBucketInstances = async (bucketMetadataId: string): Promise<Tables<"BucketInstances">[]> => {
+export const getAllBucketInstances = async (
+  bucketMetadataId: string
+): Promise<Tables<"BucketInstances">[]> => {
   const { data, error } = await supabase
     .from(INSTANCE_TABLE_NAME)
     .select("*")
@@ -84,7 +94,9 @@ export const createBucketMetadata = async (
   return data[0];
 };
 
-export const hideBucketMetadata = async (id: string): Promise<Tables<"BucketMetadata">> => {
+export const hideBucketMetadata = async (
+  id: string
+): Promise<Tables<"BucketMetadata">> => {
   const { data, error } = await supabase
     .from(METADATA_TABLE_NAME)
     .update({ hidden_at: new Date().toISOString() })
@@ -143,8 +155,7 @@ export const createBucketInstance = async (
     ])
     .select();
   if (error) throw error;
-  if (data.length !== 1)
-    throw new Error("Failed to create bucket instance!");
+  if (data.length !== 1) throw new Error("Failed to create bucket instance!");
 
   return data[0];
 };

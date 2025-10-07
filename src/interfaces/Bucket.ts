@@ -33,9 +33,11 @@ export const getRecurrencePeriodDisplayName = (
 export type RecurrencePeriodType =
   (typeof RecurrencePeriodType)[keyof typeof RecurrencePeriodType];
 
-
-export const getEndDate = (startDate: Date, period: RecurrencePeriodType): Date => {
-  switch(period) {
+export const getEndDate = (
+  startDate: Date,
+  period: RecurrencePeriodType
+): Date => {
+  switch (period) {
     case RecurrencePeriodType.Monthly:
       return addMonths(startDate, 1);
     case RecurrencePeriodType.Weekly:
@@ -49,4 +51,4 @@ export const getEndDate = (startDate: Date, period: RecurrencePeriodType): Date 
     case RecurrencePeriodType.SemiAnually:
       return addYears(startDate, 0.5);
   }
-}
+};
