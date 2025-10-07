@@ -137,8 +137,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       e.preventDefault();
   };
 
-  if (!isOpen) return null;
-
   return (
     <Dialog
       open={isOpen}
@@ -291,38 +289,38 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         )}
       </DialogContent>
       <DialogActions className="!flex !gap-1 !items-center !flex-col !mb-2">
-          <div className="mt-6 leading-normal w-30">
-            Split:
-          </div>
-          <Button
-            onClick={handleSplitEvenly}
-            className={`
-              ${expenseName.trim() && selectedGroup && selectedBucket
-                ? "!cursor-pointer" 
-                : "!cursor-not-allowed"} 
-              !text-[var(--color-text-primary)] !bg-white !pl-3
-              ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
-              "hover:!bg-[var(--color-button-hover)] hover:!text-white"}
-            `}
-          >
-            Evenly
-            <NavigateNextIcon/>
-          </Button>
-          <Button
-            onClick={handleCustomAmounts}
-            className={`
-              ${expenseName.trim() && selectedGroup && selectedBucket
-                ? "!cursor-pointer" 
-                : "!cursor-not-allowed"} 
-              !text-[var(--color-text-primary)] !bg-white !pl-3
-              ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
-              "hover:!bg-[var(--color-button-hover)] hover:!text-white"}
-            `}
-          >
-            Custom
-            <NavigateNextIcon/>
-          </Button>
-        </DialogActions>
+        <div className="mt-6 leading-normal w-30">
+          Split:
+        </div>
+        <Button
+          onClick={handleSplitEvenly}
+          className={`
+            ${expenseName.trim() && selectedGroup && selectedBucket
+              ? "!cursor-pointer" 
+              : "!cursor-not-allowed"} 
+            !text-[var(--color-text-primary)] !bg-white !pl-3
+            ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
+            "hover:!bg-[var(--color-button-hover)] hover:!text-white"}
+          `}
+        >
+          Evenly
+          <NavigateNextIcon/>
+        </Button>
+        <Button
+          onClick={handleCustomAmounts}
+          className={`
+            ${expenseName.trim() && selectedGroup && selectedBucket
+              ? "!cursor-pointer" 
+              : "!cursor-not-allowed"} 
+            !text-[var(--color-text-primary)] !bg-white !pl-3
+            ${!(expenseName.trim() && selectedGroup && selectedBucket) || 
+            "hover:!bg-[var(--color-button-hover)] hover:!text-white"}
+          `}
+        >
+          Custom
+          <NavigateNextIcon/>
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };

@@ -213,7 +213,7 @@ export const fetchActivity = async (groupId?: string) => {
   return mapping;
 };
 
-export const settleSplit = async (settle_split_id: string) => {
+export const settleSplit = async (settle_split_id: string, bucket_instance_id: string) => {
   const { data: split, error: splitError } = await supabase
     .from("Splits")
     .select()
@@ -237,7 +237,7 @@ export const settleSplit = async (settle_split_id: string) => {
         description: expense.description,
         settle_split_id: settle_split_id,
         user_id: split.user_id,
-        bucket_instance_id: null,
+        bucket_instance_id: bucket_instance_id,
       },
     ]);
   if (payExpenseError) throw payExpenseError;

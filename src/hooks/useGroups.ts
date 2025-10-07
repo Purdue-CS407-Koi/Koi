@@ -70,8 +70,8 @@ const useGroups = () => {
   };
 
   const settlingMutation = useMutation({
-    mutationFn: (settle_split_id: string) =>
-      settleSplitApi(settle_split_id),
+    mutationFn: ({ settle_split_id, bucket_instance_id }: {settle_split_id: string, bucket_instance_id: string}) =>
+      settleSplitApi(settle_split_id, bucket_instance_id),
 
     onSuccess: (_data) => {
       queryClient.invalidateQueries({ queryKey: ["activity", _data.group_id] });
@@ -83,8 +83,8 @@ const useGroups = () => {
     },
   });
 
-  const settleSplit = (settle_split_id: string,) => {
-    settlingMutation.mutate(settle_split_id);
+  const settleSplit = (settle_split_id: string, bucket_instance_id: string) => {
+    settlingMutation.mutate({settle_split_id, bucket_instance_id});
   };
 
   const currentGroupId = useGroupStore((state) => state.currentGroupId);

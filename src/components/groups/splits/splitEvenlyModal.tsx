@@ -10,6 +10,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 
 //types
 import type { TablesInsert } from "@/helpers/supabase.types";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 
 interface SplitEvenlyModalProps {
   isOpen: boolean;
@@ -132,103 +133,94 @@ export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
     setError("");
   };
 
-  if (!isOpen) return null;
-
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-        onClick={handleClose}
+      {/* Modal */}
+      <Dialog
+        open={isOpen}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="xs"
       >
-        {/* Modal */}
-        <div
-          className="relative bg-white rounded-xl p-6 w-full max-w-[400px] m-4 shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="mb-5">
-            <h3 className="m-0 text-lg font-semibold text-black" >
-              Splitting Evenly
-            </h3>
-          </div>
-          {/* Input */}
-          <div className="mb-5">
-            <div>
-              <ul>
-                {payers?.map((m) => (
-                  <li key={m.id} className="p-3 flex items-center gap-3">
-                    {m.id == userData?.id ? (
-                      <div>
-                        {"(Paid by) " + m.name}
-                        {`: $${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          className="px-2 py-1 flex justify-center items-center"
-                          onClick={() => removePayer(m.id, m.name)}
-                        >
-                          <RemoveIcon fontSize="small"/>
-                        </button>
-                        <div>
-                          {m.name ?? "Unnamed user"}
-                          {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
-                        </div>
-                      </div>
-                    )}
-                  </li>
-                ))}
-                {nonpayers?.map((m) => (
-                  <li key={m.id} className="p-3 flex items-center gap-3">
-                    <button
-                      type="button"
-                      className="px-2 py-1 flex justify-center items-center"
-                      onClick={() => addPayer(m.id, m.name)}
-                    >
-                      <AddIcon fontSize="small" />
-                    </button>
-                    <div className="text-gray-400">
-                      {m.name ?? "Unnamed user"}
+        {/* Header */}
+        <DialogTitle>
+          <h3 className="m-0 text-lg font-semibold text-black" >
+            Splitting Evenly
+          </h3>
+        </DialogTitle>
+        
+        {/* Input */}
+        <DialogContent>
+          <div>
+            <ul>
+              {payers?.map((m) => (
+                <li key={m.id} className="p-3 flex items-center gap-3">
+                  {m.id == userData?.id ? (
+                    <div>
+                      {"(Paid by) " + m.name}
+                      {`: $${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {error && (
-              <p className="mt-2 text-xs text-[var(--color-error)]">
-                {error}
-              </p>
-            )}
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        className="px-2 py-1 flex justify-center items-center"
+                        onClick={() => removePayer(m.id, m.name)}
+                      >
+                        <RemoveIcon fontSize="small"/>
+                      </button>
+                      <div>
+                        {m.name ?? "Unnamed user"}
+                        {`: ${individualAmounts[m.id]?.dollars ?? "00"}.${individualAmounts[m.id]?.cents ?? "00"}`}
+                      </div>
+                    </div>
+                  )}
+                </li>
+              ))}
+              {nonpayers?.map((m) => (
+                <li key={m.id} className="p-3 flex items-center gap-3">
+                  <button
+                    type="button"
+                    className="px-2 py-1 flex justify-center items-center"
+                    onClick={() => addPayer(m.id, m.name)}
+                  >
+                    <AddIcon fontSize="small" />
+                  </button>
+                  <div className="text-gray-400">
+                    {m.name ?? "Unnamed user"}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
+          {error && (
+            <p className="mt-2 text-xs text-[var(--color-error)]">
+              {error}
+            </p>
+          )}
+        </DialogContent>
 
-          {/* Buttons */}
-          <div className={"flex gap-3 justify-end"}>
-            <button
-              onClick={handleBack}
-              className={`
-                px-5 py-2.5 border border-gray-300 rounded-md bg-white 
-                text-gray-700 text-sm cursor-pointer transition-all duration-200
-                hover:bg-gray-300
-              `}
-            >
-              Back
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={!expense}
-              className={`
-                px-5 py-2.5 rounded-[6px] text-[14px] transition-all duration-200
-                ${expense ? "cursor-pointer" : "cursor-not-allowed"}
-                hover:bg-[var(--color-button-hover)] hover:text-white
-              `}
-            >
-              Create Expense
-            </button>
-          </div>
-        </div>
-      </div>
+        {/* Buttons */}
+        <DialogActions>
+          <Button
+            onClick={handleBack}
+            className={`
+              !text-[var(--color-text-primary)] !pl-3
+            `}
+          >
+            Back
+          </Button>
+          <Button
+            onClick={handleSave}
+            className={`
+              !text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !pl-3
+              hover:!bg-[var(--color-button-hover)] hover:!text-white
+            `}
+          >
+            Create Expense
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

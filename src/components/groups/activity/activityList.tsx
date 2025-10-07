@@ -1,3 +1,6 @@
+import { useBuckets } from "@/hooks/useBuckets";
+import { useBucketsStore } from "@/stores/useBucketsStore";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
 
 interface Activity {
@@ -15,7 +18,7 @@ interface Activity {
 interface ActivityListProps {
   activityData?: Activity[];
   activityLoading: boolean;
-  settleSplit: (settle_split_id: string) => void;
+  settleSplit: (settle_split_id: string, bucket_instance_id: string) => void;
 }
 
 export const ActivityList: React.FC<ActivityListProps> = ({
@@ -25,6 +28,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 }) => {
   const [split, setSplit] = useState<Activity>();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBucket, setSelectedBucket] = useState("");
+  const { bucketMetadataData, refetchBucketInstance } = useBuckets();
+  const { setCurrentBucketMetadataId } =
+    useBucketsStore();
 
   const handleModal = (activity: Activity) => {
     setSplit(activity);
@@ -32,7 +39,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   };
 
   const handleSettleSplit = async () => {
-    await settleSplit(split?.id ?? "")
+    const { data: refreshedInstances } = await refetchBucketInstance();
+    const bucketInstanceId = refreshedInstances && (refreshedInstances[0].id || undefined);
+    await settleSplit(split?.id ?? "", bucketInstanceId ?? "");
     setIsModalOpen(false);
   }
 
@@ -56,7 +65,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           className="cursor-pointer hover:bg-gray-200 p-3 border-b border-divider"
         >
           <div 
-            className="flex items-center gap-3" 
+            className="flex items-center gap-3 relative z-10" 
             onClick={() => handleModal(activity)}
           >
             <div className="text-sm font-medium flex-2 leading-normal">
@@ -129,86 +138,114 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           
         </li>
       ))}
-      {isModalOpen &&
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-            onClick={() => setIsModalOpen(false)}
-          >
-            {/* Modal */}
-            <div
-              className="relative bg-white rounded-xl px-12 py-6 w-full max-w-[400px] m-4 shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* <button
-                className ="absolute top-1 left-1 px-2.5 py-1 rounded-md bg-white text-[#374151] text-sm cursor-pointer transition-all duration-200"
-                onClick={handleClose}
-              >
-                Cancel
-              </button> */}
-              
-              {/* Header */}
-              <div className="mb-5">
-                <h3 className="m-0 text-lg font-semibold text-black text-center" >
-                  Details
-                </h3>
+      <Dialog 
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        fullWidth
+        maxWidth="xs"
+      >
+        {/* Header */}
+        <DialogTitle>
+          <h3 className="m-0 text-lg font-semibold text-black text-center" >
+            Details
+          </h3>
+        </DialogTitle>
+
+        {/* Input */}
+        <DialogContent>
+          {(split?.amount_owed ?? 0) <= 0 ?
+            <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)]">
+              <div className="text-lg">
+                {split?.name}
               </div>
-  
-              {/* Input */}
-              {(split?.amount_owed ?? 0) <= 0 ?
-                <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)]">
-                  <div className="text-lg">
-                    {split?.name}
-                  </div>
-                  <div className="text-2xl">
-                    ${split?.original_payment?.toFixed(2)}
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    Added on {new Date(split?.created_at ?? "").toLocaleDateString()}
-                  </div>
-                  <div className="mt-4 text-xl">
-                    You paid ${split?.original_payment?.toFixed(2)}
-                  </div>
-                  <div>
-                    You are owed ${((split?.amount_remaining ?? 0) * -1).toFixed(2)}
-                  </div>
-                </div>
-                :
-                <div className="leading-normal flex flex-col text-[var(--color-text-primary)]">
-                  <div className="text-xl">
-                    {split?.name}
-                  </div>
-                  <div className="text-2xl">
-                    ${split?.original_payment?.toFixed(2)}
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    Added on {new Date(split?.created_at ?? "").toLocaleDateString()}
-                  </div>
-                  <div className="mt-4 text-xl">
-                    {split?.original_payer_name ?? "unknown"} paid ${split?.original_payment?.toFixed(2)}
-                  </div>
-                  <div className="mb-5">
-                    You owe ${split?.amount_remaining?.toFixed(2)}
-                  </div>
-                  <div className="justify-center flex">
-                    <button
-                      onClick={handleSettleSplit}
-                      className={`
-                        px-5 py-2.5 rounded-[6px] text-[14px] transition-all duration-200
-                        w-auto hover:bg-[var(--color-button-hover)] hover:text-white
-                        text-[var(--color-text-primary)]
-                      `}
-                    >
-                      Settle Up
-                    </button>
-                  </div>
-                </div>
-              }
+              <div className="text-2xl">
+                ${split?.original_payment?.toFixed(2)}
+              </div>
+              <div className="text-sm text-gray-400">
+                Added on {new Date(split?.created_at ?? "").toLocaleDateString()}
+              </div>
+              <div className="mt-4 text-xl">
+                You paid ${split?.original_payment?.toFixed(2)}
+              </div>
+              <div>
+                You are owed ${((split?.amount_remaining ?? 0) * -1).toFixed(2)}
+              </div>
             </div>
-          </div>
-        </>
-      }
+            :
+            <div className="leading-normal flex flex-col text-[var(--color-text-primary)]">
+              <div className="text-xl">
+                {split?.name}
+              </div>
+              <div className="text-2xl">
+                ${split?.original_payment?.toFixed(2)}
+              </div>
+              <div className="text-sm text-gray-400">
+                Added on {new Date(split?.created_at ?? "").toLocaleDateString()}
+              </div>
+              <div className="mt-4 text-xl">
+                {split?.original_payer_name ?? "unknown"} paid ${split?.original_payment?.toFixed(2)}
+              </div>
+              <div className="mb-5">
+                You owe ${split?.amount_remaining?.toFixed(2)}
+              </div>
+              <FormControl fullWidth 
+                className="
+                  [&_.MuiInputLabel-root]:!text-gray-500
+                  [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+                  [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
+                  [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                  [&_.MuiSelect-select]:!text-gray-800
+                  [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
+                  !mb-4
+                "     
+              >
+                <InputLabel id="bucket-label">
+                  Select Bucket
+                </InputLabel>
+                <Select
+                  margin="dense"
+                  labelId="bucket-label"
+                  label="Select Bucket"
+                  value={selectedBucket}
+                  onChange={(e) => {
+                    setSelectedBucket(e.target.value);
+                    setCurrentBucketMetadataId(e.target.value);
+                  }}
+                  fullWidth
+                  required
+                >
+                {bucketMetadataData?.map(
+                  (bucket) => (              
+                    <MenuItem key={bucket.id} value={bucket.id}>
+                      {bucket.name}
+                    </MenuItem>
+                  )
+                )}
+                </Select>
+              </FormControl>
+              <DialogActions>
+                <Button
+                  onClick={() => setIsModalOpen(false)}
+                  className={`
+                    !text-[var(--color-text-primary)] !pl-3
+                  `}
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={handleSettleSplit}
+                  className={`
+                    !text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !pl-3
+                    hover:!bg-[var(--color-button-hover)] hover:!text-white
+                  `}
+                >
+                  Settle Up
+                </Button>
+              </DialogActions>
+            </div>
+          }
+        </DialogContent>
+      </Dialog>
     </ul>
   );
 };
