@@ -270,6 +270,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             onChange={(e) => {
               const v = e.target.value.slice(0, 2); // max 2 chars
               setExpenseCents(v);
+              setError("");
             }}
             onKeyDown={handleKeyPressNumber}
             placeholder="00"

@@ -193,41 +193,43 @@ export const ActivityList: React.FC<ActivityListProps> = ({
               <div className="mb-5">
                 You owe ${split?.amount_remaining?.toFixed(2)}
               </div>
-              <FormControl fullWidth 
-                className="
-                  [&_.MuiInputLabel-root]:!text-gray-500
-                  [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
-                  [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
-                  [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
-                  [&_.MuiSelect-select]:!text-gray-800
-                  [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
-                  !mb-4
-                "     
-              >
-                <InputLabel id="bucket-label">
-                  Select Bucket
-                </InputLabel>
-                <Select
-                  margin="dense"
-                  labelId="bucket-label"
-                  label="Select Bucket"
-                  value={selectedBucket}
-                  onChange={(e) => {
-                    setSelectedBucket(e.target.value);
-                    setCurrentBucketMetadataId(e.target.value);
-                  }}
-                  fullWidth
-                  required
+              {split?.amount_remaining == 0 ||
+                <FormControl fullWidth 
+                  className="
+                    [&_.MuiInputLabel-root]:!text-gray-500
+                    [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+                    [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
+                    [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                    [&_.MuiSelect-select]:!text-gray-800
+                    [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
+                    !mb-4
+                  "     
                 >
-                {bucketMetadataData?.map(
-                  (bucket) => (              
-                    <MenuItem key={bucket.id} value={bucket.id}>
-                      {bucket.name}
-                    </MenuItem>
-                  )
-                )}
-                </Select>
-              </FormControl>
+                  <InputLabel id="bucket-label">
+                    Select Bucket
+                  </InputLabel>
+                  <Select
+                    margin="dense"
+                    labelId="bucket-label"
+                    label="Select Bucket"
+                    value={selectedBucket}
+                    onChange={(e) => {
+                      setSelectedBucket(e.target.value);
+                      setCurrentBucketMetadataId(e.target.value);
+                    }}
+                    fullWidth
+                    required
+                  >
+                  {bucketMetadataData?.map(
+                    (bucket) => (              
+                      <MenuItem key={bucket.id} value={bucket.id}>
+                        {bucket.name}
+                      </MenuItem>
+                    )
+                  )}
+                  </Select>
+                </FormControl>
+              }
               <DialogActions>
                 <Button
                   onClick={() => {
@@ -240,19 +242,21 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                 >
                   Close
                 </Button>
-                <Button
-                  disabled={!(selectedBucket.trim())}
-                  onClick={handleSettleSplit}
-                  className={`
-                    !text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !pl-3
-                    hover:!bg-[var(--color-button-hover)] hover:!text-white
-                    ${selectedBucket
-                    ? "!cursor-pointer" 
-                    : "!cursor-not-allowed"} 
-                  `}
-                >
-                  Settle Up
-                </Button>
+                {split?.amount_remaining == 0 ||
+                  <Button
+                    disabled={!(selectedBucket.trim())}
+                    onClick={handleSettleSplit}
+                    className={`
+                      !text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !pl-3
+                      hover:!bg-[var(--color-button-hover)] hover:!text-white
+                      ${selectedBucket
+                      ? "!cursor-pointer" 
+                      : "!cursor-not-allowed"} 
+                    `}
+                  >
+                    Settle Up
+                  </Button>
+                }
               </DialogActions>
             </div>
           }

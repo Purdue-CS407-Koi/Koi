@@ -189,7 +189,8 @@ export const SplitCustomModal: React.FC<SplitCustomModalProps> = ({
                           variant="standard"
                           value={individualAmounts[m.id]?.cents}
                           onChange={(e) => {
-                            setAmount(m.id, { cents: e.target.value });
+                            const v = e.target.value.slice(0, 2);
+                            setAmount(m.id, { cents: v });
                             if (error) setError(""); // Clear error when user types
                           }}
                           onKeyDown={handleKeyPressNumber}
