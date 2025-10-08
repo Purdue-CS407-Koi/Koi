@@ -102,7 +102,7 @@ export const SignUpPage = () => {
         </div>
 
         <div className="w-full mb-6 text-center">
-          <h1 className="text-center text-4xl font-semibold mt-0 mb-2 mx-auto">
+          <h1 className="text-center text-4xl font-semibold mt-0 mb-6 mx-auto">
             Create an account
           </h1>
           <p className="text-sm text-gray-600 text-center my-0 mx-auto">
