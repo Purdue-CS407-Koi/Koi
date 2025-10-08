@@ -231,13 +231,16 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             fullWidth
             required
           >
-          {bucketMetadataData?.map(
-            (bucket) => (              
+          {bucketMetadataData
+            ?.filter((bucket) => {
+              return bucket.hidden_at === null;
+            })?.map((bucket) => (              
               <MenuItem key={bucket.id} value={bucket.id}>
                 {bucket.name}
               </MenuItem>
+              )
             )
-          )}
+          }
           </Select>
         </FormControl>
         <Stack direction="row" alignItems="center" spacing={1}>
