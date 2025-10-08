@@ -3,7 +3,7 @@ import NavLink from "./NavLink";
 
 const Navbar = () => {
   const navLinks = [
-    { target: "/", title: "Dashboard" },
+    { target: "/", title: "Overview" },
     { target: "/groups", title: "Groups" },
     { target: "/challenges", title: "Challenges" },
     { target: "/forum", title: "Forum" },
