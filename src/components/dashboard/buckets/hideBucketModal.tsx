@@ -12,11 +12,9 @@ import { HideSource } from "@mui/icons-material";
 import { useBuckets } from "@/hooks/useBuckets";
 
 export const HideBucketModal = ({
-  open,
   setOpen,
   bucketMetadataId,
 }: {
-  open: boolean;
   setOpen: (open: boolean) => void;
   bucketMetadataId: string;
 }) => {
@@ -33,7 +31,7 @@ export const HideBucketModal = ({
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={true}>
       <DialogTitle>Confirm bucket hide</DialogTitle>
       <DialogContent>
         <DialogContentText>

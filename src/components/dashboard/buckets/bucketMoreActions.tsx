@@ -60,17 +60,19 @@ const BucketMoreActions = ({
         <MenuItem onClick={handleHide}>Hide</MenuItem>
       </Menu>
 
-      <EditBucketModal
-        open={editModalOpen}
-        setOpen={setEditModalOpen}
-        bucketMetadataId={bucketMetadataId}
-      />
+      {editModalOpen && (
+        <EditBucketModal
+          setOpen={setEditModalOpen}
+          bucketMetadataId={bucketMetadataId}
+        />
+      )}
 
-      <HideBucketModal
-        open={hideModalOpen}
-        setOpen={setHideModalOpen}
-        bucketMetadataId={bucketMetadataId}
-      />
+      {hideModalOpen && (
+        <HideBucketModal
+          setOpen={setHideModalOpen}
+          bucketMetadataId={bucketMetadataId}
+        />
+      )}
     </div>
   );
 };

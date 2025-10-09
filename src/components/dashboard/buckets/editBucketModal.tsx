@@ -22,11 +22,9 @@ import { getBucketMetadata } from "@/api/buckets";
 import type { TablesUpdate } from "@/helpers/supabase.types";
 
 export const EditBucketModal = ({
-  open,
   setOpen,
   bucketMetadataId,
 }: {
-  open: boolean;
   setOpen: (open: boolean) => void;
   bucketMetadataId: string;
 }) => {
@@ -76,11 +74,11 @@ export const EditBucketModal = ({
         setRawSpendingLimit("");
       }
     })();
-  }, [bucketMetadataId, open]);
+  }, [bucketMetadataId]);
 
   return (
     <Dialog
-      open={open}
+      open={true}
       onClose={() => {
         setOpen(false);
       }}
