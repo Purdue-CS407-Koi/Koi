@@ -46,7 +46,7 @@ const NewBucketModal = ({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (formValid) return;
+    if (!formValid) return;
 
     const newBucket: TablesInsert<"BucketMetadata"> = {
       name: bucketName,

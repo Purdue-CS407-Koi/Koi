@@ -51,7 +51,7 @@ export const EditBucketModal = ({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (formValid) return;
+    if (!formValid) return;
 
     const editedBucketData: TablesUpdate<"BucketMetadata"> = {
       name: bucketName,
