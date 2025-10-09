@@ -85,7 +85,11 @@ export const EditBucketModal = ({
     >
       <DialogTitle>Edit Bucket</DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit} id="edit-bucket-form" className="flex flex-col gap-4">
+        <form
+          onSubmit={handleSubmit}
+          id="edit-bucket-form"
+          className="flex flex-col gap-4"
+        >
           <FormControl fullWidth>
             <TextField
               autoFocus
@@ -160,7 +164,12 @@ export const EditBucketModal = ({
         >
           Cancel
         </Button>
-        <Button type="submit" form="edit-bucket-form" variant="contained" disabled={!formValid}>
+        <Button
+          type="submit"
+          form="edit-bucket-form"
+          variant="contained"
+          disabled={!formValid}
+        >
           Edit
         </Button>
       </DialogActions>

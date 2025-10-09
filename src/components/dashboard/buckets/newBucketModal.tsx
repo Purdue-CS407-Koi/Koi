@@ -162,7 +162,12 @@ const NewBucketModal = ({
         >
           Cancel
         </Button>
-        <Button type="submit" form="new-bucket-form" variant="contained" disabled={!formValid}>
+        <Button
+          type="submit"
+          form="new-bucket-form"
+          variant="contained"
+          disabled={!formValid}
+        >
           Add
         </Button>
       </DialogActions>
