@@ -39,10 +39,12 @@ const NewBucketModal = ({
   const spendingLimitErrorText = getSpendingLimitErrorText(rawSpendingLimit);
   const spendingLimitError = spendingLimitErrorText !== null;
 
+  const formValid = !spendingLimitError;
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (spendingLimitError) return;
+    if (formValid) return;
 
     const newBucket: TablesInsert<"BucketMetadata"> = {
       name: bucketName,
@@ -158,7 +160,7 @@ const NewBucketModal = ({
         >
           Cancel
         </Button>
-        <Button type="submit" form="new-bucket-form" variant="contained">
+        <Button type="submit" form="new-bucket-form" variant="contained" disabled={!formValid}>
           Add
         </Button>
       </DialogActions>

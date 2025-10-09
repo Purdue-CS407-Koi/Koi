@@ -40,6 +40,8 @@ export const EditBucketModal = ({
   const spendingLimitErrorText = getSpendingLimitErrorText(rawSpendingLimit);
   const spendingLimitError = spendingLimitErrorText !== null;
 
+  const formValid = !spendingLimitError;
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -47,7 +49,7 @@ export const EditBucketModal = ({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (spendingLimitError) return;
+    if (formValid) return;
 
     const editedBucketData: TablesUpdate<"BucketMetadata"> = {
       name: bucketName,
@@ -158,7 +160,7 @@ export const EditBucketModal = ({
         >
           Cancel
         </Button>
-        <Button type="submit" form="edit-bucket-form" variant="contained">
+        <Button type="submit" form="edit-bucket-form" variant="contained" disabled={!formValid}>
           Edit
         </Button>
       </DialogActions>
