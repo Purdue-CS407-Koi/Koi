@@ -40,7 +40,9 @@ export const EditBucketModal = ({
   const spendingLimitErrorText = getSpendingLimitErrorText(rawSpendingLimit);
   const spendingLimitError = spendingLimitErrorText !== null;
 
-  const formValid = !spendingLimitError;
+  const bucketNameEmpty = bucketName === "";
+
+  const formValid = !spendingLimitError && !bucketNameEmpty;
 
   const handleClose = () => {
     setOpen(false);

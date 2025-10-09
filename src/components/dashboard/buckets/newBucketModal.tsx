@@ -39,7 +39,9 @@ const NewBucketModal = ({
   const spendingLimitErrorText = getSpendingLimitErrorText(rawSpendingLimit);
   const spendingLimitError = spendingLimitErrorText !== null;
 
-  const formValid = !spendingLimitError;
+  const bucketNameEmpty = bucketName === "";
+
+  const formValid = !spendingLimitError && !bucketNameEmpty;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
