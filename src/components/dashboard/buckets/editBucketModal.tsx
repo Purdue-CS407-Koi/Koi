@@ -47,6 +47,8 @@ export const EditBucketModal = ({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (spendingLimitError) return;
+
     const editedBucketData: TablesUpdate<"BucketMetadata"> = {
       name: bucketName,
       recurrence_period_type: recurrencePeriod as RecurrencePeriodType,
