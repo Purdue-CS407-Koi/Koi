@@ -40,7 +40,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
   const handleSettleSplit = async () => {
     const { data: refreshedInstances } = await refetchBucketInstance();
-    const bucketInstanceId = refreshedInstances && (refreshedInstances[0].id || undefined);
+    const bucketInstanceId = refreshedInstances && (refreshedInstances[refreshedInstances.length - 1].id || undefined);
     if (bucketInstanceId) {
       await settleSplit(split?.id ?? "", bucketInstanceId ?? "");
       setIsModalOpen(false);
