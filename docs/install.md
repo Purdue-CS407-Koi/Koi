@@ -50,7 +50,7 @@ starting the guide.
 - Copy the connection string. Remember to replace `[YOUR-PASSWORD]` with the
   database password you set earlier.
 
-![Connection string in Connect](./assets/supabase_connection_string.png)
+![Connection string in Connect](./assets/supabase_connection_string_copy.png)
 
 - Type in the following command, replacing `[CONNECTION-STRING]` with your
   connection string from above. (estimate: 1 minute)
