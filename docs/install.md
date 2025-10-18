@@ -6,13 +6,30 @@ the connection strings from Supabase.
 
 This guide will take approximately 20 to 30 minutes.
 
-*Note*: to avoid new changes from the next sprints conflicting with the schema as
-it currently is, please check out the `sprint-1` tag in this repository before
-starting the guide.
-
 - Make sure you have [`pnpm` installed][pnpm-install]. (estimate: 5 minutes)
 
 [pnpm-install]: https://pnpm.io/installation
+
+- Clone the repository. (estimate: 2 minutes)
+
+```
+git clone git@github.com:Purdue-CS407-Koi/Koi.git
+```
+
+If you are getting an error about SSH or authentication, try cloning over HTTP:
+
+```
+git clone https://github.com/Purdue-CS407-Koi/Koi.git
+```
+
+- Check out the `sprint-1` tag in this repository, as we want to avoid having
+  commits from future sprints from conflicting with this guide. This guide was
+  written with the code from Sprint 1 in mind, so if you use newer commits you
+  may end up with a newer codebase trying to interact with an older schema!
+
+```
+git checkout sprint-1
+```
 
 - Sign up for an account on Supabase. (estimate: 5 minutes)
 - Create a new organization and give it a name. For this tutorial, we'll use
