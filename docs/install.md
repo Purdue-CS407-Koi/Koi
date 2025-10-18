@@ -31,7 +31,10 @@ git clone https://github.com/Purdue-CS407-Koi/Koi.git
 git checkout sprint-1
 ```
 
-- Sign up for an account on Supabase. (estimate: 5 minutes)
+- [Sign up for an account on Supabase][supabase-signup]. (estimate: 5 minutes)
+
+[supabase-signup]: https://supabase.com/dashboard/sign-up
+
 - Create a new organization and give it a name. For this tutorial, we'll use
   "Koi-reinstall-demo". Leave Type at "Personal" and Plan at "Free - $0/month".
   (estimate: 3 minutes)
