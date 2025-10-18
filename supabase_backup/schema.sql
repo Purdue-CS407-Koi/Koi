@@ -13,13 +13,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
-
-
-
-
-
-
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
@@ -67,8 +60,8 @@ CREATE TABLE IF NOT EXISTS "public"."BucketInstances" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "bucket_metadata_id" "uuid" DEFAULT "gen_random_uuid"(),
-    "start" timestamp with time zone,
-    "end" timestamp with time zone
+    "start" timestamp with time zone NOT NULL,
+    "end" timestamp with time zone NOT NULL
 );
 
 
@@ -81,7 +74,8 @@ CREATE TABLE IF NOT EXISTS "public"."BucketMetadata" (
     "name" character varying,
     "recurrence_period_type" integer,
     "spending_limit" numeric,
-    "user_id" "uuid"
+    "user_id" "uuid",
+    "hidden_at" timestamp with time zone
 );
 
 
@@ -304,40 +298,10 @@ CREATE POLICY "Enable read access for all users" ON "public"."BucketInstances" F
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
-
-
-
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
