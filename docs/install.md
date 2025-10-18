@@ -51,8 +51,9 @@ git checkout sprint-1
 
 - Once the new project is created, we need to restore the database schema that is
   saved in this repository. Install the PostgreSQL CLI, `psql`, [by following the
-  official instructions on the PostgreSQL website][psql-download]. (estimate:
-  10 minutes)
+  official instructions on the PostgreSQL website][psql-download]. You should be
+  able to type `psql --version` and get a version number back after you are done!
+  (estimate: 10 minutes)
 
 [psql-download]: https://www.postgresql.org/download/
 
