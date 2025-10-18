@@ -6,6 +6,10 @@ the connection strings from Supabase.
 
 This guide will take approximately 20 to 30 minutes.
 
+*Note*: to avoid new changes from the next sprints conflicting with the schema as
+it currently is, please check out the `sprint-1` tag in this repository before
+starting the guide.
+
 - Make sure you have [`pnpm` installed][pnpm-install]. (estimate: 5 minutes)
 
 [pnpm-install]: https://pnpm.io/installation
@@ -101,7 +105,7 @@ pnpm run dev
 
 - To test if the connection is working properly, use the sign up form. You should
   see a new account in the "Users" table.
-  
+
 ![Filled sign-up form on Koi](./assets/koi_signup_form.png)
 
 ![Verify new account is visible in Accounts table](./assets/new_user_account_table_confirm.png)
