@@ -6,6 +6,27 @@ the connection strings from Supabase.
 
 This guide will take approximately 20 to 30 minutes.
 
+## Requirements
+
+As Koi uses Supabase for the database and authentication systems, the only
+requirement is hosting the frontend that will interact with Supabase. Any computer
+within the last decade is capable of running Koi, so long as it can also run
+NodeJS.
+
+We recommend the following configuration for running Koi:
+
+- CPU: x86-64, aarch64, or any other architecture that NodeJS supports, with at
+  least four logical cores or more
+- RAM: 8 GB or more (but could probably get away with less)
+- Storage: Enough for the repository and dependencies, around 2-5 GB free space
+- OS: UNIX-based (Linux, macOS), can also run on Windows
+- Tools: Your editor or IDE of choice, such as Zed
+- Detailed configurations are covered in the steps below, such as environment
+  variables and API keys that Koi requires to connect to the Supabase instance.
+
+
+## Steps
+
 - Make sure you have [`pnpm` installed][pnpm-install]. (estimate: 5 minutes)
 
 [pnpm-install]: https://pnpm.io/installation
