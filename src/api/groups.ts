@@ -109,6 +109,37 @@ export const getGroupMembers = async (groupId: string) => {
   }));
 };
 
+export const leaveGroup = async (groupId: string) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User is undefined");
+  }
+
+  const { error } = await supabase
+    .from("GroupMemberships")
+    .delete()
+    .eq("group_id", groupId)
+    .eq("user_id", user.id);
+
+  if (error) throw error;
+
+  return true;
+};
+
+export const removeGroupMember = async (group_id: string, user_id: string) => {
+  const { error } = await supabase
+    .from("GroupMemberships")
+    .delete()
+    .eq("group_id", group_id)
+    .eq("user_id", user_id);
+
+  if (error) throw error;
+  return { success: true };
+};
+
 export const fetchActivity = async (groupId?: string) => {
   const {
     data: { user },

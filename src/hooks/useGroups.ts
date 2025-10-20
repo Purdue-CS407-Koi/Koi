@@ -8,6 +8,8 @@ import {
   getGroup,
   fetchGroupMembers,
   settleSplit as settleSplitApi,
+  leaveGroup as leaveGroupApi,
+  removeGroupMember as removeGroupMemberApi
 } from "@/api/groups";
 import { useGroupStore } from "@/stores/useGroupStore";
 
@@ -39,6 +41,29 @@ const useGroups = () => {
     },
   });
 
+  const leaveGroupMutation = useMutation({
+    mutationFn: async (groupId: string) => {
+      return await leaveGroupApi(groupId);
+    },
+    onError: (err) => {
+      console.error("Error leaving group:", err);
+    },
+    onSuccess: async () => {
+      refetchGroups();
+    },
+  });
+  
+  const removeMemberMutation = useMutation({
+    mutationFn: async ({ group_id, user_id }: { group_id: string; user_id: string }) =>
+      removeGroupMemberApi(group_id, user_id),
+    onSuccess: (_, { group_id }) => {
+      queryClient.invalidateQueries({ queryKey: ["groupMembers", group_id] });
+    },
+    onError: (err) => {
+      console.error("Error removing member:", err);
+    },
+  });
+
   const {
     data: groupsData,
     error: getGroupsError,
@@ -62,6 +87,12 @@ const useGroups = () => {
     editMutation.mutate({ groupId, groupName });
   };
 
+const leaveGroup = (groupId: string) => {
+    leaveGroupMutation.mutate(groupId);
+  };
+const removeMember = (group_id: string, user_id: string) => {
+  removeMemberMutation.mutate({ group_id, user_id });
+};
   const useActivity = (groupId?: string) => {
     return useQuery({
       queryKey: ["activity", groupId],
@@ -110,7 +141,7 @@ const useGroups = () => {
     return { groupMembersData, isLoading, error };
   };
 
-  return { groupsData, getGroupsError, useGroupMembers, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup, settleSplit };
+  return { groupsData, getGroupsError, useGroupMembers, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup, removeMember, leaveGroup, settleSplit };
 };
 
 export default useGroups;
