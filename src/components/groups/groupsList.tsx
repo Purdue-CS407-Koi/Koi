@@ -1,9 +1,6 @@
-import { IconButton, Tooltip } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useState } from "react";
 import { AddGroupModal } from "./addGroupModal";
 import { Bookmark, BookmarkBorder } from "@mui/icons-material";
-import { EditGroupModal } from "./editGroupModal";
+import { GroupMoreActions } from "./groupMoreActions";
 
 interface Group {
   id: string;
@@ -23,22 +20,6 @@ export const GroupsList: React.FC<GroupsListProps> = ({
   selectedGroupId,
   onSelectGroup,
 }) => {
-  const [editOpen, setEditOpen] = useState(false);
-  const [editGroupId, setEditGroupId] = useState<string | null>(null);
-  const [editGroupName, setEditGroupName] = useState("");
-
-  const handleEditOpen = (groupId: string, groupName: string) => {
-    setEditGroupId(groupId);
-    setEditGroupName(groupName);
-    setEditOpen(true);
-  };
-
-  const handleEditClose = () => {
-    setEditOpen(false);
-    setEditGroupId(null);
-    setEditGroupName("");
-  };
-
   return (
     <div>
       <h3 className="text-lg font-semibold mb-4 text-sidebar-title">Groups</h3>
@@ -61,49 +42,30 @@ export const GroupsList: React.FC<GroupsListProps> = ({
                 className={`group flex items-center justify-between py-2 px-2 rounded-md cursor-pointer transition-colors
               ${isSelected ? "bg-gray-200" : "hover:bg-gray-100"}
             `}
-            >
-              {/* Left: Icon + text */}
-              <div className="flex items-center gap-3 w-full">
-                <div className="flex items-center justify-center w-5">
-                { isSelected ? (<Bookmark />) : (<BookmarkBorder />)}
-              </div>
-                <div className="w-full">
-                  <div className="text-sm font-medium text-sidebar-entry flex w-full">
-                    {group.name}
+              >
+                {/* Left: Icon + text */}
+                <div className="flex items-center gap-3 w-full">
+                  <div className="flex items-center justify-center w-5">
+                    {isSelected ? <Bookmark /> : <BookmarkBorder />}
                   </div>
-                  <div className="text-xs text-sidebar-entry-subtext">
-                    {`Created ${group.createdDate}`}
+                  <div className="w-full">
+                    <div className="text-sm font-medium text-sidebar-entry flex w-full">
+                      {group.name}
+                    </div>
+                    <div className="text-xs text-sidebar-entry-subtext">
+                      {`Created ${group.createdDate}`}
+                    </div>
                   </div>
                 </div>
-              </div>
-
-                {/* Right: Edit button (appears on hover) */}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Tooltip title="Edit Group">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditOpen(group.id, group.name);
-                      }}
-                    >
-                      <MoreVertIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <GroupMoreActions groupId={group.id} groupName={group.name} />
                 </div>
               </div>
             );
           })
         )}
       </div>
-
       <AddGroupModal />
-      <EditGroupModal
-        open={editOpen}
-        onClose={handleEditClose}
-        groupId={editGroupId}
-        groupName={editGroupName}
-      />
     </div>
   );
 };
