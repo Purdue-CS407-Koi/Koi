@@ -1,5 +1,6 @@
 import Brand from "./Brand";
 import NavLink from "./NavLink";
+import Profile from "./Profile";
 
 const Navbar = () => {
   const navLinks = [
@@ -12,10 +13,13 @@ const Navbar = () => {
   return (
     <div className="flex items-center font-bold justify-between p-4 mx-8 text-lg">
       <Brand />
-      <div className="flex justify-center gap-12">
-        {navLinks.map((item) => {
-          return <NavLink key={item.title} target={item.target} title={item.title} />;
-        })}
+      <div className="flex gap-10">
+        <div className="flex justify-center gap-12">
+          {navLinks.map((item) => {
+            return <NavLink key={item.title} target={item.target} title={item.title} />;
+          })}
+        </div>
+        <Profile />
       </div>
     </div>
   );
