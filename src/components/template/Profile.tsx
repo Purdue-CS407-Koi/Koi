@@ -21,17 +21,23 @@ const Profile = () => {
   const handleSignOut = () => {
     handleClose();
     signOut();
-  }
-
+  };
 
   return (
     <>
-    <div className="cursor-pointer" onClick={(e) => {
-      e.stopPropagation();
-      setAnchorEl(e.currentTarget);
-    }}>
-      <img className="inline w-9 h-9 rounded-full bg-white" src={logo} alt="Profile picture of user"/>
-    </div>
+      <div
+        className="cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation();
+          setAnchorEl(e.currentTarget);
+        }}
+      >
+        <img
+          className="inline w-9 h-9 rounded-full bg-white"
+          src={logo}
+          alt="Profile picture of user"
+        />
+      </div>
 
       <Menu
         id="profile-menu"
@@ -47,8 +53,7 @@ const Profile = () => {
         <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
       </Menu>
     </>
-  )
-  
-}
+  );
+};
 
 export default Profile;

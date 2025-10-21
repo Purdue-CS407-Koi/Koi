@@ -87,8 +87,8 @@ export const BucketList = () => {
             {bucket.recurrence_period_type !== null
               ? capitalizeFirstLetter(
                   getRecurrencePeriodDisplayName(
-                    bucket.recurrence_period_type as RecurrencePeriodType
-                  )
+                    bucket.recurrence_period_type as RecurrencePeriodType,
+                  ),
                 )
               : ""}
           </div>
@@ -127,17 +127,17 @@ export const BucketList = () => {
       case SortTypes.CREATION_DATE:
         processedData = [...processedData].sort(
           (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         );
         break;
       case SortTypes.NAME:
         processedData = [...processedData].sort((a, b) =>
-          (a.name || "").localeCompare(b.name || "")
+          (a.name || "").localeCompare(b.name || ""),
         );
         break;
       case SortTypes.SPENDING_LIMIT:
         processedData = [...processedData].sort(
-          (a, b) => (b.spending_limit || 0) - (a.spending_limit || 0)
+          (a, b) => (b.spending_limit || 0) - (a.spending_limit || 0),
         );
         break;
     }

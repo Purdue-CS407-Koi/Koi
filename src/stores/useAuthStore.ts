@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from "zustand/middleware";
 import type { User } from "@supabase/supabase-js";
 
 interface AuthState {
@@ -13,11 +13,11 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       setUser: (user) => set({ user }),
-      signOut: () => set({user: null}),
+      signOut: () => set({ user: null }),
     }),
     {
-      name: 'koi-user-store',
-      storage: createJSONStorage(() => sessionStorage)
+      name: "koi-user-store",
+      storage: createJSONStorage(() => sessionStorage),
     },
   ),
 );
