@@ -1,8 +1,9 @@
 import { useState } from "react";
 import logo from "@/assets/logo.png";
-import { Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem, Snackbar, Alert } from "@mui/material";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { ProfileModal } from "./ProfileModal";
+import supabase from "@/helpers/supabase";
 
 const Profile = () => {
   const signOut = useAuthStore((state) => state.signOut);
@@ -16,7 +17,11 @@ const Profile = () => {
     : null;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [profileOpen, setProfileOpen] = useState(false);
-
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error",
+  });
   const open = Boolean(anchorEl);
 
   const handleClose = () => setAnchorEl(null);
@@ -31,9 +36,28 @@ const Profile = () => {
     setProfileOpen(true);
   };
 
-  const handleSaveProfile = (updatedEmail: string) => {
-    // TODO: save email change to Supabase
-    console.log("Saving updated email:", updatedEmail);
+  const handleSaveProfile = async (updatedEmail: string) => {
+    if (!updatedEmail || !supabaseUser) return;
+
+    const { error } = await supabase.auth.updateUser({
+      email: updatedEmail,
+    });
+
+     if (error) {
+      console.error("Error updating email:", error.message);
+      setSnackbar({
+        open: true,
+        message: `Failed to update email: ${error.message}`,
+        severity: "error",
+      });
+    } else {
+      setSnackbar({
+        open: true,
+        message:
+          "Email update request sent. Check your inbox to confirm the change.",
+        severity: "success",
+      });
+    }
   };
 
   return (
@@ -76,6 +100,20 @@ const Profile = () => {
         user={user}
         onSave={handleSaveProfile}
       />
+       {/* Snackbar for feedback */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
