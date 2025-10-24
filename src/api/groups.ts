@@ -297,3 +297,98 @@ export const settleSplit = async (settle_split_id: string, bucket_instance_id: s
 
   return data;
 }
+
+// Invite a friend by their email
+export const inviteFriendToGroup = async (groupId: string, friendEmail: string) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("User is undefined");
+
+  // Get friend's user ID
+  const { data: friendData, error: friendError } = await supabase
+    .from("Users")
+    .select("id")
+    .eq("email", friendEmail)
+    .single();
+  if (friendError) throw friendError;
+  if (!friendData) throw new Error("No user found with that email");
+
+  // Insert a pending invite
+  const { data, error } = await supabase
+    .from("Invites")
+    .insert([
+      {
+        group_id: groupId,
+        inviter_id: user.id,
+        invitee_id: friendData.id,
+        status: "pending",
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+// Fetch invites for the current user (as invitee)
+export const getPendingInvites = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("User is undefined");
+
+  const { data, error } = await supabase
+    .from("Invites")
+    .select("id, group_id, inviter_id, status, Groups(name)")
+    .eq("invitee_id", user.id)
+    .eq("status", "pending");
+
+  if (error) throw error;
+  return data ?? [];
+};
+
+// Accept an invite → adds the user to the group and updates status
+export const acceptInvite = async (inviteId: string) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("User is undefined");
+
+  // Get invite info
+  const { data: invite, error: inviteError } = await supabase
+    .from("Invites")
+    .select("group_id, invitee_id, status")
+    .eq("id", inviteId)
+    .single();
+  if (inviteError) throw inviteError;
+
+  if (invite.status !== "pending") throw new Error("Invite already handled");
+
+  // Add the user to the group
+  const { error: membershipError } = await supabase
+    .from("GroupMemberships")
+    .insert([{ group_id: invite.group_id, user_id: user.id }]);
+  if (membershipError) throw membershipError;
+
+  // Update invite status
+  const { error: updateError } = await supabase
+    .from("Invites")
+    .update({ status: "accepted" })
+    .eq("id", inviteId);
+  if (updateError) throw updateError;
+
+  return true;
+};
+
+// Decline an invite
+export const declineInvite = async (inviteId: string) => {
+  const { error } = await supabase
+    .from("Invites")
+    .update({ status: "declined" })
+    .eq("id", inviteId);
+
+  if (error) throw error;
+  return true;
+};

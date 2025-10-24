@@ -4,6 +4,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import RemoveMemberModal from "@/components/groups/removeMemberModal";
 import useGroups from "@/hooks/useGroups";
 import useUsers from "@/hooks/useUsers";
+import { InviteFriendModal } from "@/components/groups/invite/inviteFriendModal";
 import { useGroupStore } from "@/stores/useGroupStore";
 
 interface Member {
@@ -19,13 +20,25 @@ interface MembersListProps {
 export const MembersList: React.FC<MembersListProps> = ({ members }) => {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const { removeMember } = useGroups();
+  const [inviteOpen, setInviteOpen] = useState(false);
   const currentGroupId = useGroupStore((state) => state.currentGroupId);
   const user = useUsers();
 
   return (
     <div>
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Members</h3>
-
+      <button
+        onClick={() => setInviteOpen(true)}
+        className='flex items-center gap-2
+              p-2 mt-2 rounded-md
+              cursor-pointer text-sm
+              border border-sidebar-button-border
+              bg-transparent
+              transition-all duration-200"
+            '
+      >
+        Invite Friend
+      </button>
       {members.length === 0 ? (
         <div className="text-sm italic text-gray-500">
           Select a group to view members
@@ -78,7 +91,7 @@ export const MembersList: React.FC<MembersListProps> = ({ members }) => {
                     </IconButton>
                   </Tooltip>
                 </div>
-              )} 
+              )}
             </div>
           ))}
         </div>
@@ -97,6 +110,10 @@ export const MembersList: React.FC<MembersListProps> = ({ members }) => {
           memberName={selectedMember.name}
         />
       )}
+      <InviteFriendModal
+        open={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+      />
     </div>
   );
 };

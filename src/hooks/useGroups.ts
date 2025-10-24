@@ -9,7 +9,11 @@ import {
   fetchGroupMembers,
   settleSplit as settleSplitApi,
   leaveGroup as leaveGroupApi,
-  removeGroupMember as removeGroupMemberApi
+  removeGroupMember as removeGroupMemberApi,
+inviteFriendToGroup,
+  getPendingInvites,
+  acceptInvite,
+  declineInvite,
 } from "@/api/groups";
 import { useGroupStore } from "@/stores/useGroupStore";
 
@@ -93,6 +97,45 @@ const leaveGroup = (groupId: string) => {
 const removeMember = (group_id: string, user_id: string) => {
   removeMemberMutation.mutate({ group_id, user_id });
 };
+
+
+const inviteFriendMutation = useMutation({
+    mutationFn: async ({ groupId, friendEmail }: { groupId: string; friendEmail: string }) =>
+      inviteFriendToGroup(groupId, friendEmail),
+    onError: (err) => console.error("Error inviting friend:", err),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pendingInvites"] });
+    },
+  });
+
+  const { data: pendingInvites, refetch: refetchPendingInvites } = useQuery({
+    queryKey: ["pendingInvites"],
+    queryFn: getPendingInvites,
+  });
+
+  const acceptInviteMutation = useMutation({
+    mutationFn: async (inviteId: string) => acceptInvite(inviteId),
+    onError: (err) => console.error("Error accepting invite:", err),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["pendingInvites"] });
+      await refetchGroups();
+    },
+  });
+
+  const declineInviteMutation = useMutation({
+    mutationFn: async (inviteId: string) => declineInvite(inviteId),
+    onError: (err) => console.error("Error declining invite:", err),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pendingInvites"] });
+    },
+  });
+
+  const inviteFriend = (groupId: string, friendEmail: string) =>
+    inviteFriendMutation.mutate({ groupId, friendEmail });
+  const acceptGroupInvite = (inviteId: string) => acceptInviteMutation.mutate(inviteId);
+  const declineGroupInvite = (inviteId: string) => declineInviteMutation.mutate(inviteId);
+
+
   const useActivity = (groupId?: string) => {
     return useQuery({
       queryKey: ["activity", groupId],
@@ -141,7 +184,28 @@ const removeMember = (group_id: string, user_id: string) => {
     return { groupMembersData, isLoading, error };
   };
 
-  return { groupsData, getGroupsError, useGroupMembers, useActivity, refetchGroups, insertNewGroup, currentGroupData, isLoading, error, editGroup, removeMember, leaveGroup, settleSplit };
-};
+return {
+    groupsData,
+    getGroupsError,
+    refetchGroups,
+    currentGroupData,
+    isLoading,
+    error,
+    useGroupMembers,
+    useActivity,
+
+    insertNewGroup,
+    editGroup,
+    leaveGroup,
+    removeMember,
+    settleSplit,
+
+    // Invites
+    inviteFriend,
+    pendingInvites,
+    refetchPendingInvites,
+    acceptGroupInvite,
+    declineGroupInvite,
+  };};
 
 export default useGroups;
