@@ -29,16 +29,12 @@ export default function Template({ children }: LayoutProps) {
   );
 
   return (
-    <div
-      className="flex w-full h-screen box-border bg-content-background"
-    >
+    <div className="flex w-full h-screen box-border bg-content-background">
       <div className="flex-5">
         <Navbar />
         <div>{content}</div>
       </div>
-      <div className="flex-2 p-8 bg-side-panel-background">
-        {sidebar}
-      </div>
+      <div className="flex-1 p-8 bg-side-panel-background">{sidebar}</div>
     </div>
   );
 }
