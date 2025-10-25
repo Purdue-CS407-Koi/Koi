@@ -1,12 +1,13 @@
 import Template, { Content, Sidebar } from "@/templates/template";
 import { BucketList } from "@/components/dashboard/buckets/BucketList";
 import { ExpensePanel } from "@/components/dashboard/expenses/expensePanel";
+import { MainPanel } from "@/components/dashboard/expenses/mainPanel";
 
 const Index = () => {
   return (
     <Template>
       <Content>
-        <ExpensePanel />
+        <MainPanel />
       </Content>
       <Sidebar>
         <BucketList />
