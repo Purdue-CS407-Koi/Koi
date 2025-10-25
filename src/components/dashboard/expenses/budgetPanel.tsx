@@ -12,7 +12,7 @@ export const BudgetPanel = () => {
   const { bucketInstanceData } = useBuckets();
 
   return (
-    <div className="flex-2">
+    <div className="flex-2 p-5">
       <p className="text-xl font-medium">Budget</p>
       <div className="flex flex-row gap-2">
         <p className="text-sm self-center">Current Period: </p>
