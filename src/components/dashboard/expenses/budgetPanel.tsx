@@ -27,7 +27,7 @@ export const BudgetPanel = () => {
             sx={{ fontSize: "14px" }}
           >
             {bucketInstanceData?.map((data) => (
-              <MenuItem key={data.id} value={data.id}>
+              <MenuItem key={data.id} value={data.id} sx={{ fontSize: "14px" }}>
                 {data.start.split("T")[0]} to {data.end.split("T")[0]}
               </MenuItem>
             ))}
