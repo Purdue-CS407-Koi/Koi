@@ -5,7 +5,6 @@ import RemoveMemberModal from "@/components/groups/removeMemberModal";
 import useGroups from "@/hooks/useGroups";
 import useUsers from "@/hooks/useUsers";
 import { InviteFriendModal } from "@/components/groups/invite/inviteFriendModal";
-import { useGroupStore } from "@/stores/useGroupStore";
 
 interface Member {
   id: string;
@@ -15,13 +14,13 @@ interface Member {
 
 interface MembersListProps {
   members: Member[];
+  groupId: string | null;
 }
 
-export const MembersList: React.FC<MembersListProps> = ({ members }) => {
+export const MembersList: React.FC<MembersListProps> = ({ members, groupId }) => {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const { removeMember } = useGroups();
   const [inviteOpen, setInviteOpen] = useState(false);
-  const currentGroupId = useGroupStore((state) => state.currentGroupId);
   const user = useUsers();
 
   return (
@@ -102,8 +101,8 @@ export const MembersList: React.FC<MembersListProps> = ({ members }) => {
           open={!!selectedMember}
           onClose={() => setSelectedMember(null)}
           onConfirm={() => {
-            if (currentGroupId && selectedMember.id) {
-              removeMember(currentGroupId, selectedMember.id);
+            if (groupId && selectedMember.id) {
+              removeMember(groupId, selectedMember.id);
             }
             setSelectedMember(null);
           }}
@@ -113,6 +112,7 @@ export const MembersList: React.FC<MembersListProps> = ({ members }) => {
       <InviteFriendModal
         open={inviteOpen}
         onClose={() => setInviteOpen(false)}
+        groupId={groupId}
       />
     </div>
   );

@@ -135,7 +135,6 @@ export const removeGroupMember = async (group_id: string, user_id: string) => {
     .delete()
     .eq("group_id", group_id)
     .eq("user_id", user_id);
-
   if (error) throw error;
   return true;
 };

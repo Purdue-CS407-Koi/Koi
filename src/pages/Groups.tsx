@@ -5,18 +5,10 @@ import { GroupsList } from "@/components/groups/groupsList";
 import { MembersList } from "@/components/groups/membersList";
 import Template, { Content, Sidebar } from "@/templates/template";
 import { AddGroupExpenseModal } from "@/components/groups/splits/addGroupExpenseModal";
-import { getGroupMembers } from "@/api/groups";
 import { ActivityList } from "@/components/groups/activity/activityList";
 import { SplitEvenlyModal } from "@/components/groups/splits/splitEvenlyModal";
 import { SplitCustomModal } from "@/components/groups/splits/splitCustomModal";
-
 import type { TablesInsert } from "@/helpers/supabase.types";
-
-interface Member {
-  id: string;
-  name: string;
-  avatar?: string;
-}
 
 const Groups = () => {
   const { groupsData, useActivity, settleSplit, useGroupMembers } = useGroups();
@@ -24,32 +16,24 @@ const Groups = () => {
   const [modalPage, setModalPage] = useState(0);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
-  const [groupExpenseSelectedGroup, setGroupExpenseSelectedGroup] = useState<string>("");
-  const { groupMembersData } = useGroupMembers(groupExpenseSelectedGroup);
-
+  const [groupExpenseSelectedGroup, setGroupExpenseSelectedGroup] =
+    useState<string>("");
+  const { groupMembersData } = useGroupMembers(selectedGroupId ?? "");
   const [page1Reset, setPage1Reset] = useState(0);
 
   const [expense, setExpense] = useState<TablesInsert<"Expenses"> | null>(null);
-  const [members, setMembers] = useState<Member[]>([]);
   const [, setIsEditModalOpen] = useState(false);
-  const { data: activityData, isLoading: activityLoading, refetch } = useActivity(
-    selectedGroupId ?? undefined
-  );
+  const {
+    data: activityData,
+    isLoading: activityLoading,
+    refetch,
+  } = useActivity(selectedGroupId ?? undefined);
   const { insertNewExpenseAndReturn } = useExpenses();
-
   const selectedGroupName =
     groupsData?.find((g) => g.id === selectedGroupId)?.name || "";
 
   const handleSelectGroup = async (groupId: string) => {
     setSelectedGroupId(groupId);
-
-    try {
-      const groupMembers = await getGroupMembers(groupId);
-      setMembers(groupMembers);
-    } catch (error) {
-      console.error("Failed to fetch group members:", error);
-      setMembers([]);
-    }
   };
 
   const handleAddGroupExpense = async (expense: TablesInsert<"Expenses">) => {
@@ -97,7 +81,10 @@ const Groups = () => {
               <div className="w-[1px] self-stretch bg-divider" />
 
               <div className="flex-1">
-                <MembersList members={members} />{" "}
+                <MembersList
+                  members={groupMembersData ?? []}
+                  groupId={selectedGroupId}
+                />
               </div>
 
               {/* Modal */}
@@ -105,7 +92,7 @@ const Groups = () => {
                 isOpen={modalPage == 1}
                 onClose={() => {
                   setModalPage(0);
-                  setPage1Reset(k => k + 1);
+                  setPage1Reset((k) => k + 1);
                   setGroupExpenseSelectedGroup("");
                 }}
                 onNext={setModalPage}
@@ -118,7 +105,7 @@ const Groups = () => {
                 isOpen={modalPage == 2}
                 onClose={() => {
                   setModalPage(0);
-                  setPage1Reset(k => k + 1);
+                  setPage1Reset((k) => k + 1);
                   setGroupExpenseSelectedGroup("");
                 }}
                 onSave={handleAddGroupExpense}
@@ -132,7 +119,7 @@ const Groups = () => {
                 isOpen={modalPage == 3}
                 onClose={() => {
                   setModalPage(0);
-                  setPage1Reset(k => k + 1);
+                  setPage1Reset((k) => k + 1);
                   setGroupExpenseSelectedGroup("");
                 }}
                 onSave={handleAddGroupExpense}
@@ -158,7 +145,6 @@ const Groups = () => {
           onEditGroup={handleEditGroup}
         />
       </Sidebar>
-
     </Template>
   );
 };

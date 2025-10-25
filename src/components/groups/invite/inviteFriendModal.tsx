@@ -8,21 +8,21 @@ import {
   TextField,
   Alert,
 } from "@mui/material";
-import { useGroupStore } from "@/stores/useGroupStore";
 import useGroups from "@/hooks/useGroups";
 
 export const InviteFriendModal = ({
   open,
   onClose,
+  groupId,
 }: {
   open: boolean;
   onClose: () => void;
+  groupId: string | null;
 }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const currentGroupId = useGroupStore((state) => state.currentGroupId);
   const { inviteFriend } = useGroups();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -35,9 +35,12 @@ export const InviteFriendModal = ({
       return;
     }
 
+    if (!groupId) {
+      setError("No group selected.");
+      return;
+    }
     try {
-      inviteFriend(currentGroupId, email.trim());
-
+      inviteFriend(groupId, email.trim());
       setSuccessMsg("Invite sent successfully!");
       setEmail("");
     } catch (err: any) {
@@ -74,12 +77,24 @@ export const InviteFriendModal = ({
           />
         </form>
 
-        {error && <Alert severity="error" className="mt-2">{error}</Alert>}
-        {successMsg && <Alert severity="success" className="mt-2">{successMsg}</Alert>}
+        {error && (
+          <Alert severity="error" className="mt-2">
+            {error}
+          </Alert>
+        )}
+        {successMsg && (
+          <Alert severity="success" className="mt-2">
+            {successMsg}
+          </Alert>
+        )}
       </DialogContent>
 
       <DialogActions className="!p-6 !pt-0">
-        <Button onClick={handleClose} variant="contained" className="!bg-gray-400">
+        <Button
+          onClick={handleClose}
+          variant="contained"
+          className="!bg-gray-400"
+        >
           Cancel
         </Button>
         <Button

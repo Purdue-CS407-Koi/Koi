@@ -6,7 +6,7 @@ import {
   fetchActivity,
   updateGroupName as editGroupApi,
   getGroup,
-  fetchGroupMembers,
+  getGroupMembers,
   settleSplit as settleSplitApi,
   leaveGroup as leaveGroupApi,
   removeGroupMember as removeGroupMemberApi,
@@ -178,7 +178,7 @@ const inviteFriendMutation = useMutation({
       error,
     } = useQuery({
       queryKey: ["groupMembers", group_id], // Zustand state as part of key
-      queryFn: () => fetchGroupMembers(group_id),
+      queryFn: () => getGroupMembers(group_id),
     });
   
     return { groupMembersData, isLoading, error };
