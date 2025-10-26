@@ -313,15 +313,16 @@ export const inviteFriendToGroup = async (groupId: string, friendEmail: string) 
   if (friendError) throw friendError;
   if (!friendData) throw new Error("No user found with that email");
 
+  // type: 0 = pending, 1 = accepted
   // Insert a pending invite
   const { data, error } = await supabase
-    .from("Invites")
+    .from("GroupInvites")
     .insert([
       {
         group_id: groupId,
-        inviter_id: user.id,
-        invitee_id: friendData.id,
-        status: "pending",
+        invite_from: user.id,
+        invitee_to: friendData.id,
+        type: 0,
       },
     ])
     .select()
@@ -339,10 +340,10 @@ export const getPendingInvites = async () => {
   if (!user) throw new Error("User is undefined");
 
   const { data, error } = await supabase
-    .from("Invites")
-    .select("id, group_id, inviter_id, status, Groups(name)")
-    .eq("invitee_id", user.id)
-    .eq("status", "pending");
+    .from("GroupInvites")
+    .select("id, group_id, invite_from, type, Groups(name)")
+    .eq("invite_to", user.id)
+    .eq("type", 0);
 
   if (error) throw error;
   return data ?? [];
@@ -357,15 +358,18 @@ export const acceptInvite = async (inviteId: string) => {
 
   // Get invite info
   const { data: invite, error: inviteError } = await supabase
-    .from("Invites")
-    .select("group_id, invitee_id, status")
+    .from("GroupInvites")
+    .select("group_id, invite_to, type")
     .eq("id", inviteId)
     .single();
   if (inviteError) throw inviteError;
 
-  if (invite.status !== "pending") throw new Error("Invite already handled");
+  if (invite.type !== 0) throw new Error("Invite already handled");
 
   // Add the user to the group
+  if (!invite || !invite.group_id) {
+    throw new Error("Invite or group_id is missing");
+  }
   const { error: membershipError } = await supabase
     .from("GroupMemberships")
     .insert([{ group_id: invite.group_id, user_id: user.id }]);
@@ -373,8 +377,8 @@ export const acceptInvite = async (inviteId: string) => {
 
   // Update invite status
   const { error: updateError } = await supabase
-    .from("Invites")
-    .update({ status: "accepted" })
+    .from("GroupInvites")
+    .update({ type: 1 })
     .eq("id", inviteId);
   if (updateError) throw updateError;
 
@@ -384,8 +388,8 @@ export const acceptInvite = async (inviteId: string) => {
 // Decline an invite
 export const declineInvite = async (inviteId: string) => {
   const { error } = await supabase
-    .from("Invites")
-    .update({ status: "declined" })
+    .from("GroupInvites")
+    .delete()
     .eq("id", inviteId);
 
   if (error) throw error;

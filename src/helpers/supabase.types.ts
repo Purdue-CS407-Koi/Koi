@@ -88,7 +88,7 @@ export type Database = {
         Row: {
           challenge_id: string | null
           created_at: string
-          id: number
+          id: string
           invite_from: string | null
           invite_to: string | null
           type: number | null
@@ -96,7 +96,7 @@ export type Database = {
         Insert: {
           challenge_id?: string | null
           created_at?: string
-          id?: number
+          id?: string
           invite_from?: string | null
           invite_to?: string | null
           type?: number | null
@@ -104,7 +104,7 @@ export type Database = {
         Update: {
           challenge_id?: string | null
           created_at?: string
-          id?: number
+          id?: string
           invite_from?: string | null
           invite_to?: string | null
           type?: number | null
@@ -264,7 +264,7 @@ export type Database = {
         Row: {
           created_at: string
           group_id: string | null
-          id: number
+          id: string
           invite_from: string | null
           invite_to: string | null
           type: number | null
@@ -272,7 +272,7 @@ export type Database = {
         Insert: {
           created_at?: string
           group_id?: string | null
-          id?: number
+          id?: string
           invite_from?: string | null
           invite_to?: string | null
           type?: number | null
@@ -280,7 +280,7 @@ export type Database = {
         Update: {
           created_at?: string
           group_id?: string | null
-          id?: number
+          id?: string
           invite_from?: string | null
           invite_to?: string | null
           type?: number | null
@@ -294,14 +294,14 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "Invites_invite_from_fkey"
+            foreignKeyName: "GroupInvites_invite_from_fkey"
             columns: ["invite_from"]
             isOneToOne: false
             referencedRelation: "Users"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "Invites_invite_to_fkey"
+            foreignKeyName: "GroupInvites_invite_to_fkey"
             columns: ["invite_to"]
             isOneToOne: false
             referencedRelation: "Users"
