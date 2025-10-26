@@ -17,7 +17,10 @@ interface MembersListProps {
   groupId: string | null;
 }
 
-export const MembersList: React.FC<MembersListProps> = ({ members, groupId }) => {
+export const MembersList: React.FC<MembersListProps> = ({
+  members,
+  groupId,
+}) => {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const { removeMember } = useGroups();
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -26,24 +29,24 @@ export const MembersList: React.FC<MembersListProps> = ({ members, groupId }) =>
   return (
     <div>
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Members</h3>
-      <button
-        onClick={() => setInviteOpen(true)}
-        className='flex items-center gap-2
-              p-2 mt-2 rounded-md
-              cursor-pointer text-sm
-              border border-sidebar-button-border
-              bg-transparent
-              transition-all duration-200"
-            '
-      >
-        Invite Friend
-      </button>
       {members.length === 0 ? (
         <div className="text-sm italic text-gray-500">
           Select a group to view members
         </div>
       ) : (
         <div className="flex flex-col gap-3">
+          <button
+            onClick={() => setInviteOpen(true)}
+            className='flex items-center gap-2
+              p-2 mt-2 rounded-md
+              cursor-pointer text-sm
+              border border-sidebar-button-border
+              bg-transparent
+              transition-all duration-200"
+            '
+          >
+            Invite Friend
+          </button>
           {members.map((member) => (
             <div
               key={member.id}
