@@ -304,14 +304,15 @@ export const inviteFriendToGroup = async (groupId: string, friendEmail: string) 
   } = await supabase.auth.getUser();
   if (!user) throw new Error("User is undefined");
 
-  // Get friend's user ID
-  const { data: friendData, error: friendError } = await supabase
-    .from("Users")
-    .select("id")
-    .eq("email", friendEmail)
-    .single();
-  if (friendError) throw friendError;
-  if (!friendData) throw new Error("No user found with that email");
+// Get friend's user ID from Supabase Auth
+// TODO: Find the user whose email matches
+const { data: { users }, error: friendError } = await supabase.auth.admin.listUsers();
+if (friendError) throw friendError;
+const friend = users.find(
+  (u) => u.email?.toLowerCase() === friendEmail.toLowerCase()
+);
+if (!friend) throw new Error("No user found with that email");
+const friendId = friend.id;
 
   // type: 0 = pending, 1 = accepted
   // Insert a pending invite
@@ -321,7 +322,7 @@ export const inviteFriendToGroup = async (groupId: string, friendEmail: string) 
       {
         group_id: groupId,
         invite_from: user.id,
-        invitee_to: friendData.id,
+        invite_to: friendId,
         type: 0,
       },
     ])

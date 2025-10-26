@@ -42,6 +42,8 @@ export const MembersList: React.FC<MembersListProps> = ({
               cursor-pointer text-sm
               border border-sidebar-button-border
               bg-transparent
+              hover:bg-gray-100
+              focus:outline-none
               transition-all duration-200"
             '
           >

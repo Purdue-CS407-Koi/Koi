@@ -3,6 +3,7 @@ import logo from "@/assets/logo.png";
 import { Menu, MenuItem, Snackbar, Alert } from "@mui/material";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { ProfileModal } from "./ProfileModal";
+import { InvitesModal } from "../groups/invite/invitesModal";
 import supabase from "@/helpers/supabase";
 
 const Profile = () => {
@@ -17,6 +18,7 @@ const Profile = () => {
     : null;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [invitesOpen, setInvitesOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -35,7 +37,10 @@ const Profile = () => {
     handleClose();
     setProfileOpen(true);
   };
-
+  const handleViewInvites = () => {
+    handleClose();
+    setInvitesOpen(true);
+  };
   const handleSaveProfile = async (updatedEmail: string) => {
     if (!updatedEmail || !supabaseUser) return;
 
@@ -43,7 +48,7 @@ const Profile = () => {
       email: updatedEmail,
     });
 
-     if (error) {
+    if (error) {
       console.error("Error updating email:", error.message);
       setSnackbar({
         open: true,
@@ -90,6 +95,7 @@ const Profile = () => {
         }}
       >
         <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
+        <MenuItem onClick={handleViewInvites}>Invites</MenuItem>
         <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
       </Menu>
 
@@ -100,7 +106,8 @@ const Profile = () => {
         user={user}
         onSave={handleSaveProfile}
       />
-       {/* Snackbar for feedback */}
+      <InvitesModal open={invitesOpen} onClose={() => setInvitesOpen(false)} />
+      {/* Snackbar for feedback */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
