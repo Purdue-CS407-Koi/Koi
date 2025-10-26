@@ -84,6 +84,55 @@ export type Database = {
           },
         ]
       }
+      ChallengeInvites: {
+        Row: {
+          challenge_id: string | null
+          created_at: string
+          id: number
+          invite_from: string | null
+          invite_to: string | null
+          type: number | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string
+          id?: number
+          invite_from?: string | null
+          invite_to?: string | null
+          type?: number | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string
+          id?: number
+          invite_from?: string | null
+          invite_to?: string | null
+          type?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ChallengeInvites_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "Challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ChallengeInvites_invite_from_fkey"
+            columns: ["invite_from"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ChallengeInvites_invite_to_fkey"
+            columns: ["invite_to"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ChallengeMemberships: {
         Row: {
           challenge_id: string | null
@@ -211,6 +260,55 @@ export type Database = {
           },
         ]
       }
+      GroupInvites: {
+        Row: {
+          created_at: string
+          group_id: string | null
+          id: number
+          invite_from: string | null
+          invite_to: string | null
+          type: number | null
+        }
+        Insert: {
+          created_at?: string
+          group_id?: string | null
+          id?: number
+          invite_from?: string | null
+          invite_to?: string | null
+          type?: number | null
+        }
+        Update: {
+          created_at?: string
+          group_id?: string | null
+          id?: number
+          invite_from?: string | null
+          invite_to?: string | null
+          type?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "GroupInvites_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "Groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Invites_invite_from_fkey"
+            columns: ["invite_from"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Invites_invite_to_fkey"
+            columns: ["invite_to"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       GroupMemberships: {
         Row: {
           created_at: string
@@ -264,45 +362,6 @@ export type Database = {
           name?: string
         }
         Relationships: []
-      }
-      Invites: {
-        Row: {
-          created_at: string
-          id: number
-          invite_from: string | null
-          invite_to: string | null
-          type: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          invite_from?: string | null
-          invite_to?: string | null
-          type?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          invite_from?: string | null
-          invite_to?: string | null
-          type?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "Invites_invite_from_fkey"
-            columns: ["invite_from"]
-            isOneToOne: false
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "Invites_invite_to_fkey"
-            columns: ["invite_to"]
-            isOneToOne: false
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       Splits: {
         Row: {
