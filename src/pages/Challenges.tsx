@@ -3,8 +3,10 @@ import { AppChallenges } from "@/components/challenges/appChallenges";
 import { CurrentlyParticipating } from "@/components/challenges/currentlyParticipating";
 import { MyChallenges } from "@/components/challenges/myChallenges";
 import { Leaderboard } from "@/components/challenges/leaderboard";
+import useChallenges from "@/hooks/useChallenges";
 
 const Challenges = () => {
+  const { appChallengeData } = useChallenges();
   return (
     <Template>
       <Content>
@@ -14,7 +16,7 @@ const Challenges = () => {
           </div>
           <div className="grid gap-8">
             <MyChallenges />
-            <AppChallenges />
+            <AppChallenges appChallengeData={appChallengeData} />
           </div>
         </div>
       </Content>
