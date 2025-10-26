@@ -265,6 +265,45 @@ export type Database = {
         }
         Relationships: []
       }
+      Invites: {
+        Row: {
+          created_at: string
+          id: number
+          invite_from: string | null
+          invite_to: string | null
+          type: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          invite_from?: string | null
+          invite_to?: string | null
+          type?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          invite_from?: string | null
+          invite_to?: string | null
+          type?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Invites_invite_from_fkey"
+            columns: ["invite_from"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Invites_invite_to_fkey"
+            columns: ["invite_to"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Splits: {
         Row: {
           amount_owed: number | null
