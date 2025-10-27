@@ -2,14 +2,44 @@ import supabase from "@/helpers/supabase";
 
 import type {
   Tables,
-//   TablesInsert,
+// TablesInsert,
 //   TablesUpdate,
 } from "@/helpers/supabase.types";
 
 // Fetches all the app-wide challenges
-export const getAppChallenges = async (): Promise<
-  Tables<"Challenges">[]
-> => {
+export const getAppChallenges = async (): Promise<{
+  accepted: Tables<"Challenges">[],
+  notAccepted: Tables<"Challenges">[],
+}> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Failed to fetch current user!");
+
+  const { data, error } = await supabase
+    .from("Challenges")
+    .select(`
+      *,
+      ChallengeMemberships!left (
+        user_id,
+        challenge_id
+      )
+    `)
+    .is("owner", null)
+    .eq("ChallengeMemberships.user_id", user.id);
+
+  if (error) throw error;
+
+  const rows = (data ?? []);
+
+  const accepted = rows.filter(r => r.ChallengeMemberships?.length > 0);
+  const notAccepted = rows.filter(r => !r.ChallengeMemberships || r.ChallengeMemberships.length === 0);
+
+  return { accepted, notAccepted };
+};
+
+// Creates a new ChallengeMemberships entry for the current user and supplied challenge ID
+export const createChallengeMembership = async (
+  challengeId: string
+): Promise<Tables<"ChallengeMemberships">> => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -18,10 +48,18 @@ export const getAppChallenges = async (): Promise<
   }
 
   const { data, error } = await supabase
-    .from("Challenges")
-    .select("*")
-    .is("owner", null);
-
+    .from("ChallengeMemberships")
+    .insert([
+      {
+        challenge_id: challengeId,
+        user_id: user?.id,
+      },
+    ])
+    .select();
+    
   if (error) throw error;
-  return data;
+  if (data.length !== 1)
+    throw new Error("Failed to create new bucket metadata entry!");
+
+  return data[0];
 };

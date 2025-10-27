@@ -1,6 +1,6 @@
 import Template, { Content, Sidebar } from "@/templates/template";
 import { AppChallenges } from "@/components/challenges/appChallenges";
-import { CurrentlyParticipating } from "@/components/challenges/currentlyParticipating";
+import { ActiveChallenges } from "@/components/challenges/activeChallenges";
 import { MyChallenges } from "@/components/challenges/myChallenges";
 import { Leaderboard } from "@/components/challenges/leaderboard";
 import useChallenges from "@/hooks/useChallenges";
@@ -10,9 +10,9 @@ const Challenges = () => {
   return (
     <Template>
       <Content>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-6 mx-10 h-full">
           <div>
-            <CurrentlyParticipating />
+            <ActiveChallenges />
           </div>
           <div className="grid gap-8">
             <MyChallenges />
