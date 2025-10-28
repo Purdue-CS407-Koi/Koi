@@ -4,6 +4,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import type {
   Tables,
 } from "@/helpers/supabase.types";
+import { ConfirmationModal } from './modals/confirmationModal';
+import { useState } from 'react';
 
 type ChallengeListProps = {
   appChallengeData?: {
@@ -12,7 +14,17 @@ type ChallengeListProps = {
   };
 };
 
+
+
 export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedChallenge, setSelectedChallenge] = useState<Tables<"Challenges"> | null>(null);
+
+  const onPressJoinChallenge = (challenge: Tables<"Challenges">) => {
+    setSelectedChallenge(challenge);
+    setIsOpen(true);
+  };
+
   if (!appChallengeData || 
     (appChallengeData.notAccepted.length + appChallengeData.accepted.length) === 0) 
   {
@@ -41,14 +53,14 @@ export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) 
                 {new Date() > new Date(challenge.start) ? "Started" : "Starts"}: {new Date(challenge.start).toLocaleDateString()}
               </div>
             </div>
-            <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end">
+            <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">
               <div>${challenge.amount}</div>
             </div>
           </div>
         ))}
         {appChallengeData?.notAccepted.map((challenge) => (
           <div key={challenge.id} className="mb-4 p-4 flex leading-normal">
-            <div className="flex-1 flex justify-center items-center"> 
+            <div className="flex-1 flex justify-center items-center" onClick={() => onPressJoinChallenge(challenge)}>
               <AddCircleOutlineIcon className="text-4xl mr-2 text-button-hover cursor-pointer" />
             </div>
             <div className="flex-5">
@@ -57,12 +69,15 @@ export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) 
                 {new Date() > new Date(challenge.start) ? "Started" : "Starts"}: {new Date(challenge.start).toLocaleDateString()}
               </div>
             </div>
-            <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end">
+            <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">
               <div>${challenge.amount}</div>
             </div>
           </div>
         ))}
       </div>
+      <ConfirmationModal isOpen={isOpen} closeModal={() => setIsOpen(false)} onSubmit={() => {}}>
+        Do you want to join {selectedChallenge?.name}?
+      </ConfirmationModal>
     </div>
   );
 }

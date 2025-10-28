@@ -37,7 +37,7 @@ export const MyChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) =
               <div className="text-gray-600">Ends: {new Date(challenge.end).toLocaleDateString()}</div>
             }
           </div>
-          <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end">
+          <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">
             <div>${challenge.amount}</div>
           </div>
         </div>
