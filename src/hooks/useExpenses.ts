@@ -67,7 +67,9 @@ const useExpenses = () => {
     createExpenseMutation.mutate(expense);
   };
 
-  const insertNewExpenseAndReturn = async (expense: TablesInsert<"Expenses">) => {
+  const insertNewExpenseAndReturn = async (
+    expense: TablesInsert<"Expenses">
+  ) => {
     return await createExpenseMutation.mutateAsync(expense);
   };
 
