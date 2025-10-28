@@ -1,17 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAppChallenges } from "@/api/challenges";
+import { getAppChallenges, getGroupChallenges } from "@/api/challenges";
 
 const useChallenges = () => {
   const {
     data: appChallengeData,
-    isLoading,
-    error,
+    isLoading: isAppLoading,
+    error: appError,
   } = useQuery({
     queryKey: ["challenges", "appChallenges"],
     queryFn: () => getAppChallenges(),
   });
 
-  return { appChallengeData, isLoading, error };
+  const {
+    data: groupChallengeData,
+    isLoading: isGroupLoading,
+    error: groupError,
+  } = useQuery({
+    queryKey: ["challenges", "groupChallenges"],
+    queryFn: () => getGroupChallenges(),
+  });
+
+  const {
+    data: activeChallengeData,
+    isLoading: isActiveLoading,
+    error: activeError,
+  } = useQuery({
+    queryKey: ["challenges", "activeChallenges"],
+    queryFn: () => getGroupChallenges(),
+  });
+
+  return { 
+    appChallengeData, 
+    groupChallengeData, 
+    activeChallengeData, 
+    isAppLoading, 
+    isGroupLoading, 
+    isActiveLoading,
+    appError, 
+    groupError,
+    activeError,
+  };
 };
 
 export default useChallenges;
