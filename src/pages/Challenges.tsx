@@ -6,17 +6,17 @@ import { Leaderboard } from "@/components/challenges/leaderboard";
 import useChallenges from "@/hooks/useChallenges";
 
 const Challenges = () => {
-  const { appChallengeData } = useChallenges();
+  const { appChallengeData, groupChallengeData, activeChallengeData, insertNewChallengeMembership } = useChallenges();
   return (
     <Template>
       <Content>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-6 mx-10 h-full">
           <div>
-            <ActiveChallenges />
+            <ActiveChallenges activeChallengeData={activeChallengeData} />
           </div>
           <div className="flex flex-col gap-8">
-            <MyChallenges />
-            <AppChallenges appChallengeData={appChallengeData} />
+            <MyChallenges groupChallengeData={groupChallengeData} />
+            <AppChallenges appChallengeData={appChallengeData} insertNewChallengeMembership={insertNewChallengeMembership} />
           </div>
         </div>
       </Content>

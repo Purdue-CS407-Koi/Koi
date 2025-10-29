@@ -5,11 +5,11 @@ import type {
 } from "@/helpers/supabase.types";
 
 type ChallengeListProps = {
-  appChallengeData?: Tables<"Challenges">[];
+  groupChallengeData?: Tables<"Challenges">[];
 };
 
-export const MyChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) => {
-  if (!appChallengeData || appChallengeData.length === 0) {
+export const MyChallenges: React.FC<ChallengeListProps> = ({groupChallengeData}) => {
+  if (!groupChallengeData || groupChallengeData.length === 0) {
     return (
       <div className="p-4 bg-side-panel-background h-full rounded-xl flex flex-col">
         <h2 className="text-xl mb-4">My Challenges</h2>
@@ -23,7 +23,7 @@ export const MyChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) =
   return (
     <div className="p-4 bg-side-panel-background rounded-xl">
       <h2 className="text-xl mb-4">My Challenges</h2>
-      {appChallengeData?.map((challenge) => (
+      {groupChallengeData?.map((challenge) => (
         <div key={challenge.id} className="mb-4 p-4 flex leading-normal">
           <div className="flex-1 flex justify-center items-center"> 
             <AccessTimeIcon className="text-3xl mr-2 text-button-hover cursor-pointer" />

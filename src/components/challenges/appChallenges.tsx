@@ -11,18 +11,24 @@ type ChallengeListProps = {
   appChallengeData?: {
     accepted: Tables<"Challenges">[],
     notAccepted: Tables<"Challenges">[],
-  };
+  },
+  insertNewChallengeMembership?: (challenge_id: string) => void,
 };
 
-
-
-export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) => {
+export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData, insertNewChallengeMembership}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<Tables<"Challenges"> | null>(null);
 
   const onPressJoinChallenge = (challenge: Tables<"Challenges">) => {
     setSelectedChallenge(challenge);
     setIsOpen(true);
+  };
+
+  const onSubmit = () => {
+    if (selectedChallenge && insertNewChallengeMembership) {
+      insertNewChallengeMembership(selectedChallenge.id);
+    }
+    setIsOpen(false);
   };
 
   if (!appChallengeData || 
@@ -75,7 +81,7 @@ export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData}) 
           </div>
         ))}
       </div>
-      <ConfirmationModal isOpen={isOpen} closeModal={() => setIsOpen(false)} onSubmit={() => {}}>
+      <ConfirmationModal isOpen={isOpen} closeModal={() => setIsOpen(false)} onSubmit={onSubmit} >
         Do you want to join {selectedChallenge?.name}?
       </ConfirmationModal>
     </div>

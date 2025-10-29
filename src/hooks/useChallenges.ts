@@ -1,11 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAppChallenges, getGroupChallenges } from "@/api/challenges";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getAppChallenges, getGroupChallenges, insertChallengeMembership } from "@/api/challenges";
 
 const useChallenges = () => {
   const {
     data: appChallengeData,
     isLoading: isAppLoading,
     error: appError,
+    refetch: refetchAppChallenges
   } = useQuery({
     queryKey: ["challenges", "appChallenges"],
     queryFn: () => getAppChallenges(),
@@ -15,6 +16,7 @@ const useChallenges = () => {
     data: groupChallengeData,
     isLoading: isGroupLoading,
     error: groupError,
+    // refetch: refetchGroupChallenges,
   } = useQuery({
     queryKey: ["challenges", "groupChallenges"],
     queryFn: () => getGroupChallenges(),
@@ -24,10 +26,26 @@ const useChallenges = () => {
     data: activeChallengeData,
     isLoading: isActiveLoading,
     error: activeError,
+    refetch: refetchActiveChallenges
   } = useQuery({
     queryKey: ["challenges", "activeChallenges"],
     queryFn: () => getGroupChallenges(),
   });
+
+  const createChallengeMembershipMutation = useMutation({
+    mutationFn: insertChallengeMembership,
+    onError: (err) => {
+      console.log("error inserting new expense: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchAppChallenges();
+      refetchActiveChallenges();
+    },
+  });
+
+  const insertNewChallengeMembership = (challenge_id: string) => {
+    createChallengeMembershipMutation.mutate(challenge_id);
+  };
 
   return { 
     appChallengeData, 
@@ -39,6 +57,7 @@ const useChallenges = () => {
     appError, 
     groupError,
     activeError,
+    insertNewChallengeMembership,
   };
 };
 
