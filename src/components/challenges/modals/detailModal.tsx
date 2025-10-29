@@ -34,10 +34,10 @@ export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, ch
             ${challenge.amount_used}/${challenge.amount}
           </div>
           <div className="text-sm text-gray-400">
-            Joined on {new Date(challenge.joined ?? "").toLocaleDateString()}
+            Joined: {new Date(challenge.joined ?? "").toLocaleDateString()}
           </div>
           <div className="text-sm text-gray-400">
-            Created on {new Date(challenge.created_at ?? "").toLocaleDateString()}
+            Challenge {new Date() > new Date(challenge.start) ? "started" : "starts"}: {new Date(challenge.start).toLocaleDateString()}
           </div>
           {challenge.end && 
             <div className="text-sm text-gray-400">
