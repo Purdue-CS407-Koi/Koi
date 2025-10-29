@@ -1,14 +1,24 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { DetailModal } from './modals/detailModal';
 
 import type {
   Tables,
 } from "@/helpers/supabase.types";
+import { useState } from 'react';
 
 type ChallengeListProps = {
-  activeChallengeData?: (Tables<"Challenges"> & { amount_used: number })[];
+  activeChallengeData?: (Tables<"Challenges"> & { amount_used: number, joined: string })[];
 };
 
 export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeData}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedChallenge, setSelectedChallenge] = useState<(Tables<"Challenges"> & { amount_used: number, joined: string }) | null>(null);
+
+  const openDetailModal = (challenge: (Tables<"Challenges"> & { amount_used: number, joined: string })) => {
+    setSelectedChallenge(challenge);
+    setIsOpen(true);
+  };
+
    if (!activeChallengeData || activeChallengeData.length === 0) {
     return (
       <div className="p-4 bg-side-panel-background h-full rounded-xl flex flex-col">
@@ -24,7 +34,11 @@ export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeD
     <div className="p-4 bg-side-panel-background h-full rounded-xl">
       <h2 className="text-xl mb-4">Active Challenges</h2>
       {activeChallengeData?.map((challenge) => (
-        <div key={challenge.id} className="mb-4 p-4 flex leading-normal">
+        <div key={challenge.id} 
+          className="mb-4 p-4 flex leading-normal hover:!bg-gray-200 rounded-lg
+            cursor-pointer transition-colors duration-150" 
+          onClick={() => openDetailModal(challenge)}
+        >
           <div className="flex-1 flex justify-center items-center"> 
             <AccessTimeIcon className="text-3xl mr-2 text-button-hover cursor-pointer" />
           </div>
@@ -36,12 +50,16 @@ export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeD
             {challenge.end && 
               <div className="text-gray-600">Ends: {new Date(challenge.end).toLocaleDateString()}</div>
             }
+            <div className="text-gray-600">
+              Joined: {new Date(challenge.joined).toLocaleDateString()}
+            </div>
           </div>
           <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">
             <div>${challenge.amount_used}/${challenge.amount}</div>
           </div>
         </div>
       ))}
+      <DetailModal isOpen={isOpen} closeModal={() => {setIsOpen(false)}} challenge={selectedChallenge} />
     </div>
   );
 }

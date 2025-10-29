@@ -51,7 +51,7 @@ export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData, i
         {appChallengeData?.accepted.map((challenge) => (
           <div key={challenge.id} className="mb-4 p-4 flex leading-normal">
             <div className="flex-1 flex justify-center items-center"> 
-              <CheckIcon className="text-3xl mr-2 text-button-hover cursor-pointer" />
+              <CheckIcon className="text-3xl mr-2 text-button-hover" />
             </div>
             <div className="flex-5">
               <div className="text-m">{challenge.name}</div>
