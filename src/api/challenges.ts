@@ -54,26 +54,32 @@ export const getGroupChallenges = async (): Promise<
 };
 
 // gets all group challenges created by the current user
-export const getActive = async (): Promise<
+export const getActiveChallenges = async (): Promise<
   Tables<"Challenges">[]
 > => {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Failed to fetch current user!");
 
   const { data, error } = await supabase
-    .from("Challenges")
-    .select(`
-      *,
-      ChallengeMemberships!left (
-        user_id,
-        challenge_id
-      )
-    `)
-    .eq("ChallengeMemberships.user_id", user.id);
+  .from('Challenges')
+  .select(`
+    *,
+    ChallengeMemberships!inner(user_id),
+    Expenses!left(amount)
+  `)
+  .eq('ChallengeMemberships.user_id', user.id)
+  .eq("Expenses.user_id", user.id);
 
   if (error) throw error;
 
-  return data ?? [];
+  const challengesWithSums = (data ?? []).map(ch => ({
+    ...ch,
+    amount_used: (ch.Expenses ?? []).reduce((s, e) => s + Number(e?.amount ?? 0), 0),
+  }));
+
+  if (error) throw error;
+
+  return challengesWithSums;
 };
 
 // Creates a new ChallengeMemberships entry for the current user and supplied challenge ID

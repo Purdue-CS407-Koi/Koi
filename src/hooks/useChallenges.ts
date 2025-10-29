@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAppChallenges, getGroupChallenges, insertChallengeMembership } from "@/api/challenges";
+import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges } from "@/api/challenges";
 
 const useChallenges = () => {
   const {
@@ -29,7 +29,7 @@ const useChallenges = () => {
     refetch: refetchActiveChallenges
   } = useQuery({
     queryKey: ["challenges", "activeChallenges"],
-    queryFn: () => getGroupChallenges(),
+    queryFn: () => getActiveChallenges(),
   });
 
   const createChallengeMembershipMutation = useMutation({

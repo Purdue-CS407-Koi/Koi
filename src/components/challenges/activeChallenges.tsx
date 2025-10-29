@@ -5,7 +5,7 @@ import type {
 } from "@/helpers/supabase.types";
 
 type ChallengeListProps = {
-  activeChallengeData?: Tables<"Challenges">[];
+  activeChallengeData?: (Tables<"Challenges"> & { amount_used: number })[];
 };
 
 export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeData}) => {
@@ -38,7 +38,7 @@ export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeD
             }
           </div>
           <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">
-            <div>${challenge.amount}</div>
+            <div>${challenge.amount_used}/${challenge.amount}</div>
           </div>
         </div>
       ))}
