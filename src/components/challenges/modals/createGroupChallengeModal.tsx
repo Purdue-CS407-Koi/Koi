@@ -258,7 +258,7 @@ export const CreateGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
               onSubmit({
                 name: challengeName.trim(),
                 description: challengeDescription.trim() ?? null,
-                amount: totalAmount,
+                amount: totalAmount / 100,
                 start: start.toISOString(),
                 end: end ? end.toISOString() : null,
               });

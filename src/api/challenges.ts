@@ -131,10 +131,20 @@ export const insertChallenge = async (
       },
     ])
     .select();
-    
+  
   if (error) throw error;
   if (data.length !== 1)
     throw new Error("Failed to create new bucket metadata entry!");
+
+  await supabase
+    .from("ChallengeMemberships")
+    .insert([
+      {
+        challenge_id: data[0].id,
+        user_id: user?.id,
+      },
+    ])
+    .select();
 
   return data[0];
 };
