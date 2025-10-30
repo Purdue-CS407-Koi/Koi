@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -363,6 +363,41 @@ export type Database = {
         }
         Relationships: []
       }
+      RecurringExpenses: {
+        Row: {
+          amount: number | null
+          bucket_metadata_id: string | null
+          created_at: string
+          description: string | null
+          id: number
+          name: string | null
+        }
+        Insert: {
+          amount?: number | null
+          bucket_metadata_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          name?: string | null
+        }
+        Update: {
+          amount?: number | null
+          bucket_metadata_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "RecurringExpenses_bucket_metadata_id_fkey"
+            columns: ["bucket_metadata_id"]
+            isOneToOne: false
+            referencedRelation: "BucketMetadata"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Splits: {
         Row: {
           amount_owed: number | null
@@ -441,7 +476,7 @@ export type Database = {
       get_user_id_by_email: {
         Args: { email_input: string }
         Returns: {
-          id: string
+          user_id: string
         }[]
       }
     }
