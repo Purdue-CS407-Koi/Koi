@@ -6,7 +6,7 @@ import { Leaderboard } from "@/components/challenges/leaderboard";
 import useChallenges from "@/hooks/useChallenges";
 
 const Challenges = () => {
-  const { appChallengeData, groupChallengeData, activeChallengeData, insertNewChallengeMembership } = useChallenges();
+  const { appChallengeData, groupChallengeData, activeChallengeData, insertNewChallengeMembership, insertNewChallenge } = useChallenges();
   return (
     <Template>
       <Content>
@@ -15,7 +15,7 @@ const Challenges = () => {
             <ActiveChallenges activeChallengeData={activeChallengeData} />
           </div>
           <div className="flex flex-col gap-8">
-            <MyChallenges groupChallengeData={groupChallengeData} />
+            <MyChallenges groupChallengeData={groupChallengeData} insertNewChallenge={insertNewChallenge} />
             <AppChallenges appChallengeData={appChallengeData} insertNewChallengeMembership={insertNewChallengeMembership} />
           </div>
         </div>

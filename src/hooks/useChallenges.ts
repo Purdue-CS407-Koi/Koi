@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges } from "@/api/challenges";
+import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge } from "@/api/challenges";
+import type { TablesInsert } from "@/helpers/supabase.types";
 
 const useChallenges = () => {
   const {
@@ -16,7 +17,7 @@ const useChallenges = () => {
     data: groupChallengeData,
     isLoading: isGroupLoading,
     error: groupError,
-    // refetch: refetchGroupChallenges,
+    refetch: refetchGroupChallenges,
   } = useQuery({
     queryKey: ["challenges", "groupChallenges"],
     queryFn: () => getGroupChallenges(),
@@ -47,6 +48,22 @@ const useChallenges = () => {
     createChallengeMembershipMutation.mutate(challenge_id);
   };
 
+  const createChallengeMutation = useMutation({
+    mutationFn: insertChallenge,
+    onError: (err) => {
+      console.log("error inserting new challenge: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchActiveChallenges();
+      refetchGroupChallenges();
+      refetchAppChallenges();
+    },
+  });
+
+  const insertNewChallenge = (challenge: TablesInsert<"Challenges">) => {
+    createChallengeMutation.mutate(challenge);
+  }
+
   return { 
     appChallengeData, 
     groupChallengeData, 
@@ -58,6 +75,7 @@ const useChallenges = () => {
     groupError,
     activeError,
     insertNewChallengeMembership,
+    insertNewChallenge,
   };
 };
 

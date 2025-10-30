@@ -2,6 +2,7 @@ import supabase from "@/helpers/supabase";
 
 import type {
   Tables,
+  TablesInsert,
 // TablesInsert,
 //   TablesUpdate,
 } from "@/helpers/supabase.types";
@@ -100,6 +101,33 @@ export const insertChallengeMembership = async (
       {
         challenge_id: challenge_id,
         user_id: user?.id,
+      },
+    ])
+    .select();
+    
+  if (error) throw error;
+  if (data.length !== 1)
+    throw new Error("Failed to create new bucket metadata entry!");
+
+  return data[0];
+};
+
+export const insertChallenge = async (
+  challenge: TablesInsert<"Challenges">
+): Promise<Tables<"Challenges">> => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("Failed to fetch current user!");
+  }
+
+  const { data, error } = await supabase
+    .from("Challenges")
+    .insert([
+      {
+        ...challenge,
+        owner: user?.id,
       },
     ])
     .select();

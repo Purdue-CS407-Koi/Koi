@@ -3,15 +3,6 @@ import React, { useState } from "react";
 // constants
 import { TEXT_EDITING } from "@/config/keyboardEvents";
 
-// hooks
-import useGroups from "@/hooks/useGroups";
-import useUsers from "@/hooks/useUsers";
-import { useBuckets } from "@/hooks/useBuckets";
-import { useBucketsStore } from "@/stores/useBucketsStore";
-
-// components
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-
 // types
 import type { TablesInsert } from "@/helpers/supabase.types";
 
@@ -23,13 +14,12 @@ import {
   DialogTitle,
   TextField,
   DialogActions,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Stack,
   Typography,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 interface AddGroupChallengeModalProps {
   isOpen: boolean;
@@ -37,7 +27,7 @@ interface AddGroupChallengeModalProps {
   onSubmit: (expense: TablesInsert<"Challenges">) => void;
 }
 
-export const AddGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
+export const CreateGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
   isOpen,
   closeModal,
   onSubmit
@@ -46,6 +36,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
   const [challengeDescription, setChallengeDescription] = useState("");
   const [challengeDollars, setChallengeDollars] = useState("00");
   const [challengeCents, setChallengeCents] = useState("00");
+  const [start, setStart] = useState<Date | null>(new Date());
+  const [end, setEnd] = useState<Date | null>(null);
 
   const [error, setError] = useState("");
 
@@ -53,6 +45,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
     setChallengeName("");
     setChallengeDollars("00");
     setChallengeCents("00");
+    setStart(new Date());
+    setEnd(null);
+    setChallengeDescription("");
   };
 
   const handleClose = () => {
@@ -116,7 +111,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
 
         <TextField
           autoFocus
-          required
           margin="dense"
           value={challengeDescription}
           label="Challenge Description"
@@ -133,23 +127,58 @@ export const AddGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
             !mb-4
           "
         />
+        
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <div
+            className="
+              hover:[&_.MuiPickersOutlinedInput-root_fieldset.MuiPickersOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+              focus-within:[&_.MuiPickersOutlinedInput-root_fieldset.MuiPickersOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+              mb-4
+            "
+          >
+            <DatePicker
+              label="Start date *"
+              value={start}
+              onChange={(newValue) => setStart(newValue)}
+              slotProps={{ 
+                textField: {
+                  fullWidth: true,
+                  className: `
+                    [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+                    [&_.MuiOutlinedInput-root:hover_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                    [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                  `,
+                },
+              }}
+            />
+          </div>
+        </LocalizationProvider>
 
-        <FormControl fullWidth 
-          className="
-            [&_.MuiInputLabel-root]:!text-gray-500
-            [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
-            [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
-            [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
-            [&_.MuiSelect-select]:!text-gray-800
-            [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
-            !mb-4
-          "     
-        >
-          <InputLabel id="group-label">
-            Select Date
-          </InputLabel>
-          
-        </FormControl>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>     
+          <div
+            className="
+              hover:[&_.MuiPickersOutlinedInput-root_fieldset.MuiPickersOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+              focus-within:[&_.MuiPickersOutlinedInput-root_fieldset.MuiPickersOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+              mb-4
+            "
+          >
+            <DatePicker
+              label="End date"
+              value={end}
+              onChange={(newValue) => setEnd(newValue)}
+              slotProps={{ 
+                textField: {
+                  fullWidth: true,
+                  className: `
+                    [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+                    [&_.MuiOutlinedInput-root:hover_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                    [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                  `,
+                },
+              }}
+            />
+          </div>     
+        </LocalizationProvider>
 
         <Stack direction="row" alignItems="center" spacing={1}>
           <Typography variant="h6" component="span">
@@ -200,9 +229,9 @@ export const AddGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
           </p>
         )}
       </DialogContent>
-      <DialogActions className="!flex !gap-1 !items-center !flex-col !mb-2">
+      <DialogActions className="!flex !gap-1 !items-center !mb-2 mr-4">
         <Button
-            onClick={closeModal}
+            onClick={handleClose}
             className={`
               !text-[var(--color-text-primary)] !pl-3
             `}
@@ -210,10 +239,30 @@ export const AddGroupExpenseModal: React.FC<AddGroupChallengeModalProps> = ({
             Cancel
           </Button>
           <Button
-            className="!text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !pl-3 
+            className="!text-[var(--color-text-primary)] !bg-[var(--color-primary-container)]
               hover:!bg-[var(--color-button-hover)] hover:!text-white"
             onClick={() => {
               const totalAmount = parseInt(challengeDollars || "0") * 100 + parseInt(challengeCents || "0");
+              if (!challengeName.trim()) {
+                setError("Challenge name is required.");
+                return;
+              }
+              if (!start) {
+                setError("Start date is required.");
+                return;
+              }
+              if (end && start > end) {
+                setError("End date must be after start date.");
+                return;
+              }
+              onSubmit({
+                name: challengeName.trim(),
+                description: challengeDescription.trim() ?? null,
+                amount: totalAmount,
+                start: start.toISOString(),
+                end: end ? end.toISOString() : null,
+              });
+              handleClose();
             }}
           >
             Save Challenge

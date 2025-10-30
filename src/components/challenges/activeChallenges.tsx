@@ -40,7 +40,7 @@ export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeD
           onClick={() => openDetailModal(challenge)}
         >
           <div className="flex-1 flex justify-center items-center"> 
-            <AccessTimeIcon className="text-3xl mr-2 text-button-hover cursor-pointer" />
+            <AccessTimeIcon className="text-3xl mr-4 text-button-hover cursor-pointer" />
           </div>
           <div className="flex-5">
             <div className="text-m">{challenge.name}</div>
