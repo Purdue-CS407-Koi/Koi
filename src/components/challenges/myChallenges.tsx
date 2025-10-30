@@ -45,17 +45,17 @@ export const MyChallenges: React.FC<ChallengeListProps> = ({groupChallengeData, 
         </div>
       </div>
       {groupChallengeData?.map((challenge) => (
-        <div key={challenge.id} className="mb-4 p-4 flex leading-normal">
+        <div key={challenge.id} className="p-2 flex leading-normal">
           <div className="flex-1 flex justify-center items-center"> 
             <AccessTimeIcon className="text-3xl mr-4 text-button-hover cursor-pointer" />
           </div>
           <div className="flex-5">
             <div className="text-m">{challenge.name}</div>
-            <div className="text-gray-600">
+            <div className="text-gray-600 text-sm">
               {new Date() > new Date(challenge.start) ? "Started" : "Starts"}: {new Date(challenge.start).toLocaleDateString()}
             </div>
             {challenge.end && 
-              <div className="text-gray-600">Ends: {new Date(challenge.end).toLocaleDateString()}</div>
+              <div className="text-gray-600 text-sm">Ends: {new Date(challenge.end).toLocaleDateString()}</div>
             }
           </div>
           <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">

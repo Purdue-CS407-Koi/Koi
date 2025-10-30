@@ -49,13 +49,13 @@ export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData, i
       <h2 className="text-xl mb-4">App Challenges</h2>
       <div>
         {appChallengeData?.accepted.map((challenge) => (
-          <div key={challenge.id} className="mb-4 p-4 flex leading-normal">
+          <div key={challenge.id} className="p-2 flex leading-normal">
             <div className="flex-1 flex justify-center items-center"> 
               <CheckIcon className="text-3xl mr-4 text-button-hover" />
             </div>
             <div className="flex-5">
               <div className="text-m">{challenge.name}</div>
-              <div className="text-gray-600">
+              <div className="text-gray-600 text-sm">
                 {new Date() > new Date(challenge.start) ? "Started" : "Starts"}: {new Date(challenge.start).toLocaleDateString()}
               </div>
             </div>
@@ -65,13 +65,13 @@ export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData, i
           </div>
         ))}
         {appChallengeData?.notAccepted.map((challenge) => (
-          <div key={challenge.id} className="mb-4 p-4 flex leading-normal">
+          <div key={challenge.id} className="p-2 flex leading-normal">
             <div className="flex-1 flex justify-center items-center" onClick={() => onPressJoinChallenge(challenge)}>
               <AddCircleOutlineIcon className="text-4xl mr-4 text-button-hover cursor-pointer" />
             </div>
             <div className="flex-5">
               <div className="text-m">{challenge.name}</div>
-              <div className="text-gray-600">
+              <div className="text-gray-600 text-sm">
                 {new Date() > new Date(challenge.start) ? "Started" : "Starts"}: {new Date(challenge.start).toLocaleDateString()}
               </div>
             </div>

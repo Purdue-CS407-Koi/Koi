@@ -35,7 +35,7 @@ export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeD
       <h2 className="text-xl mb-4">Active Challenges</h2>
       {activeChallengeData?.map((challenge) => (
         <div key={challenge.id} 
-          className="mb-4 p-4 flex leading-normal hover:!bg-gray-200 rounded-lg
+          className="p-2 flex leading-normal hover:!bg-gray-200 rounded-lg
             cursor-pointer transition-colors duration-150" 
           onClick={() => openDetailModal(challenge)}
         >
@@ -44,13 +44,13 @@ export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeD
           </div>
           <div className="flex-5">
             <div className="text-m">{challenge.name}</div>
-            <div className="text-gray-600">
+            <div className="text-gray-600 text-sm">
               {new Date() > new Date(challenge.start) ? "Started" : "Starts"}: {new Date(challenge.start).toLocaleDateString()}
             </div>
             {challenge.end && 
-              <div className="text-gray-600">Ends: {new Date(challenge.end).toLocaleDateString()}</div>
+              <div className="text-gray-600 text-sm">Ends: {new Date(challenge.end).toLocaleDateString()}</div>
             }
-            <div className="text-gray-600">
+            <div className="text-gray-600 text-sm">
               Joined: {new Date(challenge.joined).toLocaleDateString()}
             </div>
           </div>
