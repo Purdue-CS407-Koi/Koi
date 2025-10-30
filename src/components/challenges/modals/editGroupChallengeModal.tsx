@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // constants
 import { TEXT_EDITING } from "@/config/keyboardEvents";
 
 // types
-import type { TablesInsert } from "@/helpers/supabase.types";
+import type { Tables, TablesUpdate } from "@/helpers/supabase.types";
 
 // mui
 import {
@@ -21,33 +21,41 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-interface CreateGroupChallengeModalProps {
+interface EditGroupChallengeModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  onSubmit: (challenge: TablesInsert<"Challenges">) => void;
+  onSubmit: (challenge: TablesUpdate<"Challenges">) => void;
+  challenge: Tables<"Challenges"> | null;
 }
 
-export const CreateGroupChallengeModal: React.FC<CreateGroupChallengeModalProps> = ({
+export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = ({
   isOpen,
   closeModal,
-  onSubmit
+  onSubmit,
+  challenge
 }) => {
-  const [challengeName, setChallengeName] = useState("");
-  const [challengeDescription, setChallengeDescription] = useState("");
-  const [challengeDollars, setChallengeDollars] = useState("00");
-  const [challengeCents, setChallengeCents] = useState("00");
-  const [start, setStart] = useState<Date | null>(new Date());
-  const [end, setEnd] = useState<Date | null>(new Date());
+  if (!challenge) return null;
+
+  const [challengeName, setChallengeName] = useState(challenge.name);
+  const [challengeDescription, setChallengeDescription] = useState(challenge.description || "");
+  const [challengeDollars, setChallengeDollars] = useState(Math.floor(challenge.amount).toString());
+  const [challengeCents, setChallengeCents] = useState((challenge.amount * 100).toString().padEnd(2, '0'));
+  const [start, setStart] = useState<Date | null>(new Date(challenge.start));
+  const [end, setEnd] = useState<Date | null>(challenge.end ? new Date(challenge.end) : new Date());
+
+  useEffect(() => {
+    resetToDefault();
+  }, [challenge]);
 
   const [error, setError] = useState("");
 
   const resetToDefault = () => {
-    setChallengeName("");
-    setChallengeDollars("00");
-    setChallengeCents("00");
-    setStart(new Date());
-    setEnd(new Date());
-    setChallengeDescription("");
+    setChallengeName(challenge.name);
+    setChallengeDescription(challenge.description || "");
+    setChallengeDollars(Math.floor(challenge.amount).toString());
+    setChallengeCents(((challenge.amount * 100) % 100).toString().padEnd(2, '0'));
+    setStart(new Date(challenge.start));
+    setEnd(challenge.end ? new Date(challenge.end) : new Date());
   };
 
   const handleClose = () => {
@@ -73,6 +81,7 @@ export const CreateGroupChallengeModal: React.FC<CreateGroupChallengeModalProps>
       e.preventDefault();
   };
 
+
   return (
     <Dialog
       open={isOpen}
@@ -82,9 +91,9 @@ export const CreateGroupChallengeModal: React.FC<CreateGroupChallengeModalProps>
     > 
       {/* Header */}
       <DialogTitle>
-        <h3 className="m-0 text-lg font-semibold text-black" >
-          Create New Group Challenge
-        </h3>
+        <div className="m-0 text-lg font-semibold text-black" >
+          Edit Group Challenge
+        </div>
       </DialogTitle>
 
       {/* Input */}

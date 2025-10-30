@@ -3,6 +3,7 @@ import supabase from "@/helpers/supabase";
 import type {
   Tables,
   TablesInsert,
+  TablesUpdate,
 // TablesInsert,
 //   TablesUpdate,
 } from "@/helpers/supabase.types";
@@ -148,3 +149,30 @@ export const insertChallenge = async (
 
   return data[0];
 };
+
+export const editChallenge = async (
+  challenge: TablesUpdate<"Challenges">
+): Promise<Tables<"Challenges">> => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Failed to fetch current user!");
+  }
+
+  if (challenge.id === undefined) {
+    throw new Error("Challenge not found!");
+  }
+
+  const { data, error } = await supabase
+    .from("Challenges")
+    .update(challenge)
+    .eq("id", challenge.id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
