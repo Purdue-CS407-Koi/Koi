@@ -71,8 +71,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   };
 
   const handleSplitEvenly = async () => {
-    if (!expenseName.trim() || !selectedGroup) {
-      setError("Expense name/group is required");
+    if (!expenseName.trim() || !selectedGroup || !selectedBucket) {
+      setError("Expense name/group/bucket is required");
       return;
     }
     setError("");
@@ -93,8 +93,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   };
 
   const handleCustomAmounts = async () => {
-    if (!expenseName.trim() || !selectedGroup) {
-      setError("Expense name/group is required");
+    if (!expenseName.trim() || !selectedGroup || !selectedBucket) {
+      setError("Expense name/group/bucket is required");
       return;
     }
     setError("");

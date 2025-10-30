@@ -19,6 +19,9 @@ const Groups = () => {
   const [groupExpenseSelectedGroup, setGroupExpenseSelectedGroup] =
     useState<string>("");
   const { groupMembersData } = useGroupMembers(selectedGroupId ?? "");
+  const { groupMembersData: groupExpenseMembersData } = useGroupMembers(
+    groupExpenseSelectedGroup ?? ""
+  );
   const [page1Reset, setPage1Reset] = useState(0);
 
   const [expense, setExpense] = useState<TablesInsert<"Expenses"> | null>(null);
@@ -112,7 +115,7 @@ const Groups = () => {
                 setPage={setModalPage}
                 expense={expense}
                 selectedGroup={groupExpenseSelectedGroup}
-                members={groupMembersData}
+                members={groupExpenseMembersData}
                 refetch={refetch}
               />
               <SplitCustomModal
@@ -126,7 +129,7 @@ const Groups = () => {
                 setPage={setModalPage}
                 expense={expense}
                 selectedGroup={groupExpenseSelectedGroup}
-                members={groupMembersData}
+                members={groupExpenseMembersData}
                 refetch={refetch}
               />
             </div>
