@@ -306,31 +306,63 @@ export const inviteFriendToGroup = async (groupId: string, friendEmail: string) 
 
 // Get friend's user ID from Supabase Auth
 // TODO: Find the user whose email matches
-const { data: { users }, error: friendError } = await supabase.auth.admin.listUsers();
-if (friendError) throw friendError;
-const friend = users.find(
-  (u) => u.email?.toLowerCase() === friendEmail.toLowerCase()
-);
-if (!friend) throw new Error("No user found with that email");
-const friendId = friend.id;
+// const { data: { users }, error: friendError } = await supabase.auth.admin.listUsers();
+// if (friendError) throw friendError;
+// const friend = users.find(
+//   (u) => u.email?.toLowerCase() === friendEmail.toLowerCase()
+// );
+// if (!friend) throw new Error("No user found with that email");
+// const friendId = friend.id;
+
+// const { data, error } = await supabase.rpc("get_user_id_by_email", {
+//   email: friendEmail,
+// });
+
+// if (error) throw error;
+// if (!data?.length) throw new Error("No user found with that email");
+
+// const friendId = data[0].id;
+const { data, error } = await supabase.rpc("get_user_id_by_email", { email_input: friendEmail });
+
+if (error) throw error;
+if (!data || data.length === 0) throw new Error("No user found with that email");
+
+const friendId = data[0].id;
+
+
+const { data: invite, error: insertError } = await supabase
+  .from("GroupInvites")
+  .insert([
+    {
+      group_id: groupId,
+      invite_from: user.id,
+      invite_to: friendId,
+      type: 0,
+    },
+  ])
+  .select()
+  .single();
+
+if (insertError) throw insertError;
+return invite;
 
   // type: 0 = pending, 1 = accepted
   // Insert a pending invite
-  const { data, error } = await supabase
-    .from("GroupInvites")
-    .insert([
-      {
-        group_id: groupId,
-        invite_from: user.id,
-        invite_to: friendId,
-        type: 0,
-      },
-    ])
-    .select()
-    .single();
+  // const { data, error } = await supabase
+  //   .from("GroupInvites")
+  //   .insert([
+  //     {
+  //       group_id: groupId,
+  //       invite_from: user.id,
+  //       invite_to: friendId,
+  //       type: 0,
+  //     },
+  //   ])
+  //   .select()
+  //   .single();
 
-  if (error) throw error;
-  return data;
+  // if (error) throw error;
+  // return data;
 };
 
 // Fetch invites for the current user (as invitee)
