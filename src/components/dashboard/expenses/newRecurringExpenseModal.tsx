@@ -7,9 +7,11 @@ import {
   DialogTitle,
   TextField,
   DialogActions,
+  IconButton,
 } from "@mui/material";
 import { useState, type FormEvent } from "react";
 import type { TablesInsert } from "@/helpers/supabase.types";
+import AddIcon from "@mui/icons-material/Add";
 
 export const NewRecurringExpenseModal = () => {
   const [open, setOpen] = useState(false);
@@ -51,9 +53,9 @@ export const NewRecurringExpenseModal = () => {
 
   return (
     <div>
-      <Button onClick={handleClickOpen} variant="contained">
-        New
-      </Button>
+      <IconButton onClick={handleClickOpen} aria-label="add">
+        <AddIcon className="text-[var(--color-primary)]" />
+      </IconButton>
       <Dialog open={open}>
         <DialogTitle>Add New Recurring Expense</DialogTitle>
         <DialogContent>
