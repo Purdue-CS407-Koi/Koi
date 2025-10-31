@@ -21,6 +21,24 @@ export async function getExpensesFromBucket(bucket_instance_id: string) {
   return data;
 }
 
+export async function getRecurringExpenses(bucket_metadata_id: string) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+
+  const { data, error } = await supabase
+    .from("RecurringExpenses")
+    .select("*")
+    .eq("bucket_metadata_id", bucket_metadata_id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
 export async function insertNewExpense({
   amount,
   description,
@@ -43,6 +61,27 @@ export async function insertNewExpense({
         bucket_instance_id,
         settle_split_id,
         challenge_id,
+      },
+    ])
+    .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function insertNewRecurringExpense({
+  amount,
+  description,
+  name,
+  bucket_metadata_id,
+}: TablesInsert<"RecurringExpenses">) {
+  const { data, error } = await supabase
+    .from("RecurringExpenses")
+    .insert([
+      {
+        amount,
+        description,
+        name,
+        bucket_metadata_id,
       },
     ])
     .select();
