@@ -2,7 +2,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { UpdateExpenseProps } from "@/interfaces/Expense";
 import {
   insertNewExpense as insertNewExpenseApi,
+  insertNewRecurringExpense as insertNewRecurringExpenseApi,
   getExpensesFromBucket,
+  getRecurringExpenses,
   updateExpense as updateExpenseApi,
   deleteExpense as deleteExpenseApi,
 } from "@/api/expenses";
@@ -14,6 +16,10 @@ const useExpenses = () => {
     (state) => state.currentBucketInstanceId
   );
 
+  const currentBucketMetadataId = useBucketsStore(
+    (state) => state.currentBucketMetadataId
+  );
+
   const createExpenseMutation = useMutation({
     mutationFn: insertNewExpenseApi,
     onError: (err) => {
@@ -21,6 +27,26 @@ const useExpenses = () => {
     },
     onSuccess: () => {
       refetchExpenses();
+    },
+  });
+
+  const createRecurringExpenseMutation = useMutation({
+    mutationFn: insertNewRecurringExpenseApi,
+    onError: (err) => {
+      console.log(
+        "error inserting new recurring expense: " + JSON.stringify(err)
+      );
+    },
+    onSuccess: (data) => {
+      refetchRecurringExpenses();
+      if (data[0]) {
+        insertNewExpense({
+          name: data[0].name!,
+          amount: data[0].amount!,
+          description: data[0].description,
+          bucket_instance_id: currentBucketInstanceId,
+        });
+      }
     },
   });
 
@@ -63,8 +89,33 @@ const useExpenses = () => {
     },
   });
 
+  const {
+    data: recurringExpenseData,
+    error: getRecurringExpensesError,
+    refetch: refetchRecurringExpenses,
+  } = useQuery({
+    queryKey: ["expenses", currentBucketMetadataId],
+    queryFn: async () => {
+      if (!currentBucketMetadataId) {
+        return [];
+      }
+
+      const rawData = await getRecurringExpenses(currentBucketMetadataId);
+      return rawData?.map((item) => ({
+        ...item,
+        created_at: item.created_at.split("T")[0],
+      }));
+    },
+  });
+
   const insertNewExpense = (expense: TablesInsert<"Expenses">) => {
     createExpenseMutation.mutate(expense);
+  };
+
+  const insertNewRecurringExpense = (
+    expense: TablesInsert<"RecurringExpenses">
+  ) => {
+    createRecurringExpenseMutation.mutate(expense);
   };
 
   const insertNewExpenseAndReturn = async (
@@ -83,9 +134,12 @@ const useExpenses = () => {
 
   return {
     expenseData,
+    recurringExpenseData,
     getExpensesError,
+    getRecurringExpensesError,
     refetchExpenses,
     insertNewExpense,
+    insertNewRecurringExpense,
     insertNewExpenseAndReturn,
     updateExpense,
     deleteExpense,
