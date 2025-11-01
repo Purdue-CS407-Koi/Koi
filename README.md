@@ -1,5 +1,7 @@
 # Koi
 
+[![codecov](https://codecov.io/gh/Purdue-CS407-Koi/Koi/branch/main/graph/badge.svg?token=6PRT0RZ4ZR)](https://codecov.io/gh/Purdue-CS407-Koi/Koi)
+
 ## Setup
 
 Create an `.env` file with the following contents:
