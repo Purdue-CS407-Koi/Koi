@@ -6,15 +6,17 @@ import type {
 } from "@/helpers/supabase.types";
 import { useState } from 'react';
 
+type ActiveChallengeType = Tables<"Challenges"> & { amount_used: number, joined: string, owner_name?: string | null, is_owner: boolean };
+
 type ChallengeListProps = {
-  activeChallengeData?: (Tables<"Challenges"> & { amount_used: number, joined: string })[];
+  activeChallengeData?: ActiveChallengeType[];
 };
 
 export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeData}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedChallenge, setSelectedChallenge] = useState<(Tables<"Challenges"> & { amount_used: number, joined: string }) | null>(null);
+  const [selectedChallenge, setSelectedChallenge] = useState<(ActiveChallengeType) | null>(null);
 
-  const openDetailModal = (challenge: (Tables<"Challenges"> & { amount_used: number, joined: string })) => {
+  const openDetailModal = (challenge: (ActiveChallengeType)) => {
     setSelectedChallenge(challenge);
     setIsOpen(true);
   };

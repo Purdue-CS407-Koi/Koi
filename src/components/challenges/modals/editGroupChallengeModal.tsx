@@ -39,7 +39,7 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
   const [challengeName, setChallengeName] = useState(challenge.name);
   const [challengeDescription, setChallengeDescription] = useState(challenge.description || "");
   const [challengeDollars, setChallengeDollars] = useState(Math.floor(challenge.amount).toString());
-  const [challengeCents, setChallengeCents] = useState((challenge.amount * 100).toString().padEnd(2, '0'));
+  const [challengeCents, setChallengeCents] = useState((challenge.amount * 100).toFixed(2));
   const [start, setStart] = useState<Date | null>(new Date(challenge.start));
   const [end, setEnd] = useState<Date | null>(challenge.end ? new Date(challenge.end) : new Date());
 
@@ -53,7 +53,7 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
     setChallengeName(challenge.name);
     setChallengeDescription(challenge.description || "");
     setChallengeDollars(Math.floor(challenge.amount).toString());
-    setChallengeCents(((challenge.amount * 100) % 100).toString().padEnd(2, '0'));
+    setChallengeCents(((challenge.amount * 100) % 100).toFixed(2));
     setStart(new Date(challenge.start));
     setEnd(challenge.end ? new Date(challenge.end) : new Date());
   };
@@ -172,7 +172,7 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
             "
           >
             <DatePicker
-              label="End date"
+              label="End date *"
               value={end}
               onChange={(newValue) => setEnd(newValue)}
               slotProps={{ 
@@ -256,8 +256,8 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
                 setError("Challenge name is required.");
                 return;
               }
-              if (!start) {
-                setError("Start date is required.");
+              if (!start || !end) {
+                setError("Start/end date is required.");
                 return;
               }
               if (end && start > end) {

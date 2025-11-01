@@ -163,7 +163,7 @@ export const CreateGroupChallengeModal: React.FC<CreateGroupChallengeModalProps>
             "
           >
             <DatePicker
-              label="End date"
+              label="End date *"
               value={end}
               onChange={(newValue) => setEnd(newValue)}
               slotProps={{ 
@@ -247,8 +247,8 @@ export const CreateGroupChallengeModal: React.FC<CreateGroupChallengeModalProps>
                 setError("Challenge name is required.");
                 return;
               }
-              if (!start) {
-                setError("Start date is required.");
+              if (!start || !end) {
+                setError("Start/end date is required.");
                 return;
               }
               if (end && start > end) {

@@ -57,7 +57,7 @@ export const getGroupChallenges = async (): Promise<
 
 // gets all group challenges created by the current user
 export const getActiveChallenges = async (): Promise<
-  (Tables<"Challenges"> & { amount_used: number, joined: string })[]
+  (Tables<"Challenges"> & { amount_used: number, joined: string, owner_name?: string | null, is_owner: boolean })[]
 > => {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Failed to fetch current user!");
@@ -67,6 +67,7 @@ export const getActiveChallenges = async (): Promise<
   .select(`
     *,
     ChallengeMemberships!inner(user_id, created_at),
+    Users!left(name),
     Expenses!left(amount)
   `)
   .eq('ChallengeMemberships.user_id', user.id)
@@ -77,7 +78,9 @@ export const getActiveChallenges = async (): Promise<
   const challengesWithSums = (data ?? []).map(ch => ({
     ...ch,
     amount_used: (ch.Expenses ?? []).reduce((s, e) => s + Number(e?.amount ?? 0), 0),
-    joined: ch.ChallengeMemberships?.[0]?.created_at ?? ""
+    joined: ch.ChallengeMemberships?.[0]?.created_at ?? "",
+    owner_name: ch.Users?.name,
+    is_owner: ch.owner === user.id,
   }));
 
   if (error) throw error;

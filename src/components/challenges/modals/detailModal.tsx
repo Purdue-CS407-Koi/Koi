@@ -5,7 +5,7 @@ import type { Tables } from "@/helpers/supabase.types";
 type DetailModalProps = {
   isOpen: boolean;
   closeModal: () => void;
-  challenge?: (Tables<"Challenges"> & { amount_used: number, joined: string }) | null;
+  challenge?: (Tables<"Challenges"> & { amount_used: number, joined: string, owner_name?: string | null , is_owner: boolean }) | null;
 }
 
 export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, challenge }) => {
@@ -33,6 +33,11 @@ export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, ch
           <div className="text-2xl">
             ${challenge.amount_used}/${challenge.amount}
           </div>
+          {challenge.owner_name && 
+            <div className="text-sm text-gray-400">
+              Group owner: {challenge.owner_name} {challenge.is_owner && "(You)"}
+            </div>
+          }
           <div className="text-sm text-gray-400">
             Joined: {new Date(challenge.joined ?? "").toLocaleDateString()}
           </div>
@@ -54,12 +59,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, ch
           >
             Close
           </Button>
-          <Button
-            className="!text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !pl-3 
-              hover:!bg-[var(--color-button-hover)] hover:!text-white"
-          >
-            Okay
-          </Button>
+          {challenge.is_owner ||
+            <Button
+              className="!text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !px-3 
+                hover:!bg-[var(--color-button-hover)] hover:!text-white"
+            >
+              Leave
+            </Button>
+          }
         </DialogActions>
       </DialogContent>
     </Dialog>

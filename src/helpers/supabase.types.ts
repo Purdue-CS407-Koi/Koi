@@ -200,7 +200,15 @@ export type Database = {
           owner?: string | null;
           start?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "Challenges_owner_fkey";
+            columns: ["owner"];
+            isOneToOne: false;
+            referencedRelation: "Users";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       Expenses: {
         Row: {

@@ -68,7 +68,7 @@ export const MyChallenges: React.FC<ChallengeListProps> = ({groupChallengeData, 
       {groupChallengeData?.map((challenge) => (
         <div key={challenge.id} className="p-2 flex leading-normal">
           <div className="flex-1 flex justify-center items-center"> 
-            <AccessTimeIcon className="text-3xl mr-4 text-button-hover cursor-pointer" />
+            <AccessTimeIcon className="text-3xl mr-4 text-button-hover" />
           </div>
           <div className="flex-5">
             <div className="text-m">{challenge.name}</div>
