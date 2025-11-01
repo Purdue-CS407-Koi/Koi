@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig, type AliasOptions } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
@@ -20,5 +21,8 @@ export default defineConfig({
     alias: {
       "@": root,
     } as AliasOptions,
+  },
+  test: {
+    exclude: ["e2e/", "**/node_modules/**"],
   },
 });
