@@ -303,32 +303,30 @@ export const inviteFriendToGroup = async (groupId: string, friendEmail: string) 
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("User is undefined");
-
-// Get friend's user ID from Supabase Auth
-// TODO: Find the user whose email matches
-// const { data: { users }, error: friendError } = await supabase.auth.admin.listUsers();
-// if (friendError) throw friendError;
-// const friend = users.find(
-//   (u) => u.email?.toLowerCase() === friendEmail.toLowerCase()
-// );
-// if (!friend) throw new Error("No user found with that email");
-// const friendId = friend.id;
-
-// const { data, error } = await supabase.rpc("get_user_id_by_email", {
-//   email: friendEmail,
-// });
-
-// if (error) throw error;
-// if (!data?.length) throw new Error("No user found with that email");
-
-// const friendId = data[0].id;
 const { data, error } = await supabase.rpc("get_user_id_by_email", { email_input: friendEmail });
 
 if (error) throw error;
 if (!data || data.length === 0) throw new Error("No user found with that email");
 
-const friendId = data[0].id;
+const friendId = data[0].user_id;
 
+// Check if invite already exists (pending or accepted)
+  const { data: existingInvite, error: checkError } = await supabase
+    .from("GroupInvites")
+    .select("id, type")
+    .eq("group_id", groupId)
+    .eq("invite_to", friendId)
+    .maybeSingle();
+
+  if (checkError) throw checkError;
+
+  if (existingInvite) {
+    if (existingInvite.type === 0) {
+      throw new Error("An invite is already pending for this user.");
+    } else if (existingInvite.type === 1) {
+      throw new Error("This user has already joined the group.");
+    }
+  }
 
 const { data: invite, error: insertError } = await supabase
   .from("GroupInvites")
@@ -345,24 +343,6 @@ const { data: invite, error: insertError } = await supabase
 
 if (insertError) throw insertError;
 return invite;
-
-  // type: 0 = pending, 1 = accepted
-  // Insert a pending invite
-  // const { data, error } = await supabase
-  //   .from("GroupInvites")
-  //   .insert([
-  //     {
-  //       group_id: groupId,
-  //       invite_from: user.id,
-  //       invite_to: friendId,
-  //       type: 0,
-  //     },
-  //   ])
-  //   .select()
-  //   .single();
-
-  // if (error) throw error;
-  // return data;
 };
 
 // Fetch invites for the current user (as invitee)

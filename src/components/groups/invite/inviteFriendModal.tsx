@@ -39,13 +39,15 @@ export const InviteFriendModal = ({
       setError("No group selected.");
       return;
     }
-    try {
-      inviteFriend(groupId, email.trim());
-      setSuccessMsg("Invite sent successfully!");
+   try {
+      await inviteFriend(groupId, email.trim());
+    //   setSuccessMsg("Invite sent successfully!");
       setEmail("");
     } catch (err: any) {
+      console.error(err);
       setError(err?.message || "Failed to send invite.");
-    }
+      setSuccessMsg("");
+    } 
   };
 
   const handleClose = () => {
