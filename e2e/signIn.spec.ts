@@ -7,6 +7,5 @@ test('check for sign-in form if not logged in', async ({ page }) => {
   await page.waitForURL("/signIn");
   
   // Check if we can see the sign in message
-  // Increase timeout as it could fail on cloud with one runner
-  await expect(page.getByRole('heading', { name: 'Log in to your account' })).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole('heading', { name: 'Log in to your account' })).toBeVisible();
 });
