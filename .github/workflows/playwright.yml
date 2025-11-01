@@ -8,6 +8,9 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_TEST_VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_TEST_VITE_SUPABASE_ANON_KEY }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
