@@ -36,7 +36,7 @@ export async function getRecurringExpenses(bucket_metadata_id: string) {
     .from("RecurringExpenses")
     .select("*")
     .eq("bucket_metadata_id", bucket_metadata_id)
-    .order("created_at", { ascending: false });
+    .order("amount", { ascending: false });
 
   if (error) throw error;
   return data;
