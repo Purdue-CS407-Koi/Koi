@@ -391,7 +391,7 @@ export const acceptInvite = async (inviteId: string) => {
   // Update invite status
   const { error: updateError } = await supabase
     .from("GroupInvites")
-    .update({ type: 1 })
+    .delete()
     .eq("id", inviteId);
   if (updateError) throw updateError;
 
