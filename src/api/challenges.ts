@@ -298,3 +298,16 @@ export const declineChallengeInvite = async (inviteId: string) => {
   if (error) throw error;
   return true;
 };
+
+export const getPendingChallengeInvites = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("User not authenticated");
+
+  const { data, error } = await supabase
+    .from("ChallengeInvites")
+    .select("*, Challenges(name)")
+    .eq("invite_to", user.id);
+
+  if (error) throw error;
+  return data;
+};

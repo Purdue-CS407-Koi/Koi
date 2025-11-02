@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, inviteFriendToChallenge, deleteChallengeMembership } from "@/api/challenges";
+import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, inviteFriendToChallenge, deleteChallengeMembership, acceptChallengeInvite, declineChallengeInvite, getPendingChallengeInvites } from "@/api/challenges";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 
 const useChallenges = () => {
@@ -31,6 +31,16 @@ const useChallenges = () => {
   } = useQuery({
     queryKey: ["challenges", "activeChallenges"],
     queryFn: () => getActiveChallenges(),
+  });
+
+  const {
+    data: pendingChallengeInvites,
+    isLoading: isInvitesLoading,
+    error: invitesError,
+    refetch: refetchPendingChallengeInvites,
+  } = useQuery({
+    queryKey: ["challenges", "pendingChallengeInvites"],
+    queryFn: () => getPendingChallengeInvites(),
   });
 
   const createChallengeMembershipMutation = useMutation({
@@ -114,6 +124,34 @@ const useChallenges = () => {
   const inviteFriend = async (challengeId: string, friendEmail: string) => {
     return inviteFriendMutation.mutateAsync({ challengeId, friendEmail });
   };
+const acceptChallengeInviteMutation = useMutation({
+    mutationFn: acceptChallengeInvite,
+    onError: (err) => {
+      console.log("error accepting challenge invite: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchPendingChallengeInvites();
+      refetchActiveChallenges();
+    },
+  });
+
+  const declineChallengeInviteMutation = useMutation({
+    mutationFn: declineChallengeInvite,
+    onError: (err) => {
+      console.log("error declining challenge invite: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchPendingChallengeInvites();
+    },
+  });
+
+  const acceptChallengeInviteHandler = (inviteId: string) => {
+    acceptChallengeInviteMutation.mutate(inviteId);
+  };
+
+  const declineChallengeInviteHandler = (inviteId: string) => {
+    declineChallengeInviteMutation.mutate(inviteId);
+  };
   return { 
     appChallengeData, 
     groupChallengeData, 
@@ -128,7 +166,13 @@ const useChallenges = () => {
     insertNewChallenge,
     updateChallenge,
     leaveChallenge,
-    inviteFriend
+    inviteFriend,
+    pendingChallengeInvites,
+    isInvitesLoading,
+    invitesError,
+    acceptChallengeInvite: acceptChallengeInviteHandler,
+    declineChallengeInvite: declineChallengeInviteHandler,
+    refetchPendingChallengeInvites,
   };
 };
 
