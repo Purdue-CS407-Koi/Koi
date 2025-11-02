@@ -68,20 +68,28 @@ export const getActiveChallenges = async (): Promise<
     *,
     ChallengeMemberships!inner(user_id, created_at),
     Users!left(name),
-    Expenses!left(amount)
+    Expenses!left(amount, user_id)
   `)
-  .eq('ChallengeMemberships.user_id', user.id)
-  .eq("Expenses.user_id", user.id);
+  .eq('ChallengeMemberships.user_id', user.id);
 
   if (error) throw error;
 
-  const challengesWithSums = (data ?? []).map(ch => ({
-    ...ch,
-    amount_used: (ch.Expenses ?? []).reduce((s, e) => s + Number(e?.amount ?? 0), 0),
-    joined: ch.ChallengeMemberships?.[0]?.created_at ?? "",
-    owner_name: ch.Users?.name,
-    is_owner: ch.owner === user.id,
-  }));
+  const challengesWithSums = (data ?? []).map((ch) => {
+    const isOwner = ch.owner === user.id; 
+    const ownerIsNull = ch.owner == null;
+
+    const amount_used = (ch.Expenses ?? [])
+      .filter((e: any) => (ownerIsNull ? e?.user_id === user.id : true))
+      .reduce((s: number, e: any) => s + Number(e?.amount ?? 0), 0);
+
+    return {
+      ...ch,
+      amount_used,
+      joined: ch.ChallengeMemberships?.[0]?.created_at ?? "",
+      owner_name: ch.Users?.name ?? null,
+      is_owner: isOwner,
+    };
+  });
 
   if (error) throw error;
 
@@ -178,4 +186,21 @@ export const editChallenge = async (
   if (error) throw error;
 
   return data;
-}
+};
+
+export const deleteChallengeMembership = async (
+  challenge_id: string
+): Promise<void> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("Failed to fetch current user!");
+  }
+  const { error } = await supabase
+    .from("ChallengeMemberships")
+    .delete()
+    .eq("challenge_id", challenge_id)
+    .eq("user_id", user.id);
+
+  if (error) throw error;
+  return;
+};

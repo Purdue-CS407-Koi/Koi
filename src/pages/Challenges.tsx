@@ -12,7 +12,8 @@ const Challenges = () => {
     activeChallengeData,
     insertNewChallengeMembership, 
     insertNewChallenge, 
-    updateChallenge 
+    updateChallenge,
+    leaveChallenge,
   } = useChallenges();
 
   return (
@@ -20,7 +21,7 @@ const Challenges = () => {
       <Content>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-6 mx-10 h-full">
           <div>
-            <ActiveChallenges activeChallengeData={activeChallengeData} />
+            <ActiveChallenges activeChallengeData={activeChallengeData} leaveChallenge={leaveChallenge} updateChallenge={updateChallenge} />
           </div>
           <div className="flex flex-col gap-8">
             <MyChallenges groupChallengeData={groupChallengeData} insertNewChallenge={insertNewChallenge} updateChallenge={updateChallenge} />

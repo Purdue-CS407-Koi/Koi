@@ -13,7 +13,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps>  = ({isOpen, cl
       open={isOpen}
       onClose={closeModal}
     >
-      <DialogTitle className="text-lg font-bold">
+      <DialogTitle className="text-xl ">
         {children}
       </DialogTitle>
       <DialogActions className="!p-6 !pt-0">

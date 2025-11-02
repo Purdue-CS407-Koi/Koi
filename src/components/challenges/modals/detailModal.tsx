@@ -6,9 +6,11 @@ type DetailModalProps = {
   isOpen: boolean;
   closeModal: () => void;
   challenge?: (Tables<"Challenges"> & { amount_used: number, joined: string, owner_name?: string | null , is_owner: boolean }) | null;
+  onLeave: () => void;
+  onEdit: () => void;
 }
 
-export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, challenge }) => {
+export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, challenge, onLeave, onEdit }) => {
   if (!challenge) return null;
   return (
     <Dialog 
@@ -27,14 +29,26 @@ export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, ch
       {/* Input */}
       <DialogContent>
         <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)]">
-          <div className="text-lg">
+          <div className="text-xl">
             {challenge.name}
           </div>
+          {challenge.description && 
+            <div className="text-md text-gray-500">
+              {challenge.description}
+            </div>
+          }
           <div className="text-2xl">
-            ${challenge.amount_used}/${challenge.amount}
+            ${challenge.amount_used % 1 == 0 
+              ? challenge.amount_used 
+              : challenge.amount_used.toFixed(2)
+            }
+            /${challenge.amount % 1 == 0 
+              ? challenge.amount 
+              : challenge.amount.toFixed(2)
+            }
           </div>
           {challenge.owner_name && 
-            <div className="text-sm text-gray-400">
+            <div className="text-md text-gray-500">
               Group owner: {challenge.owner_name} {challenge.is_owner && "(You)"}
             </div>
           }
@@ -46,7 +60,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, ch
           </div>
           {challenge.end && 
             <div className="text-sm text-gray-400">
-              Ends on {new Date(challenge.end).toLocaleDateString()}
+              Challenge {new Date() > new Date(challenge.end) ? "ended" : "ends"}: {new Date(challenge.end).toLocaleDateString()}
             </div>
           }
         </div>          
@@ -59,10 +73,19 @@ export const DetailModal: React.FC<DetailModalProps> = ({ isOpen, closeModal, ch
           >
             Close
           </Button>
-          {challenge.is_owner ||
+          {challenge.is_owner ?
             <Button
               className="!text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !px-3 
                 hover:!bg-[var(--color-button-hover)] hover:!text-white"
+              onClick={onEdit}
+            >
+              Edit
+            </Button>
+            :
+            <Button
+              className="!text-[var(--color-text-primary)] !bg-[var(--color-primary-container)] !px-3 
+                hover:!bg-[var(--color-button-hover)] hover:!text-white"
+              onClick={onLeave}
             >
               Leave
             </Button>

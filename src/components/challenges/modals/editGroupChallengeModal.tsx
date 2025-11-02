@@ -39,7 +39,7 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
   const [challengeName, setChallengeName] = useState(challenge.name);
   const [challengeDescription, setChallengeDescription] = useState(challenge.description || "");
   const [challengeDollars, setChallengeDollars] = useState(Math.floor(challenge.amount).toString());
-  const [challengeCents, setChallengeCents] = useState((challenge.amount * 100).toFixed(2));
+  const [challengeCents, setChallengeCents] = useState((challenge.amount * 100).toString().padEnd(2, '0'));
   const [start, setStart] = useState<Date | null>(new Date(challenge.start));
   const [end, setEnd] = useState<Date | null>(challenge.end ? new Date(challenge.end) : new Date());
 
@@ -53,7 +53,7 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
     setChallengeName(challenge.name);
     setChallengeDescription(challenge.description || "");
     setChallengeDollars(Math.floor(challenge.amount).toString());
-    setChallengeCents(((challenge.amount * 100) % 100).toFixed(2));
+    setChallengeCents(((challenge.amount * 100) % 100).toString().padStart(2, '0'));
     setStart(new Date(challenge.start));
     setEnd(challenge.end ? new Date(challenge.end) : new Date());
   };
@@ -251,7 +251,8 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
             className="!text-[var(--color-text-primary)] !bg-[var(--color-primary-container)]
               hover:!bg-[var(--color-button-hover)] hover:!text-white"
             onClick={() => {
-              const totalAmount = parseInt(challengeDollars || "0") * 100 + parseInt(challengeCents || "0");
+              const totalAmount = parseInt(challengeDollars || "0") * 100 + parseInt(challengeCents.padEnd(2, '0') || "0");
+              
               if (!challengeName.trim()) {
                 setError("Challenge name is required.");
                 return;
@@ -265,13 +266,14 @@ export const EditGroupChallengeModal: React.FC<EditGroupChallengeModalProps> = (
                 return;
               }
               onSubmit({
+                id: challenge.id,
                 name: challengeName.trim(),
                 description: challengeDescription.trim() ?? null,
                 amount: totalAmount / 100,
                 start: start.toISOString(),
                 end: end ? end.toISOString() : null,
               });
-              handleClose();
+              closeModal();
             }}
           >
             Save Challenge

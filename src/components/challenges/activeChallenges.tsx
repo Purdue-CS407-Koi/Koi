@@ -3,18 +3,28 @@ import { DetailModal } from './modals/detailModal';
 
 import type {
   Tables,
+  TablesUpdate,
 } from "@/helpers/supabase.types";
 import { useState } from 'react';
+import { ConfirmationModal } from './modals/confirmationModal';
+import { EditGroupChallengeModal } from './modals/editGroupChallengeModal';
 
 type ActiveChallengeType = Tables<"Challenges"> & { amount_used: number, joined: string, owner_name?: string | null, is_owner: boolean };
 
 type ChallengeListProps = {
   activeChallengeData?: ActiveChallengeType[];
+  leaveChallenge: (challengeId: string) => void;
+  updateChallenge: (challenge: TablesUpdate<"Challenges">) => void;
 };
 
-export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeData}) => {
+export const ActiveChallenges: React.FC<ChallengeListProps> = ({ activeChallengeData, leaveChallenge, updateChallenge }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<(ActiveChallengeType) | null>(null);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const submitEditChallenge = (challenge: TablesUpdate<"Challenges">) => updateChallenge(challenge);
 
   const openDetailModal = (challenge: (ActiveChallengeType)) => {
     setSelectedChallenge(challenge);
@@ -57,11 +67,45 @@ export const ActiveChallenges: React.FC<ChallengeListProps> = ({activeChallengeD
             </div>
           </div>
           <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">
-            <div>${challenge.amount_used}/${challenge.amount}</div>
+            <div>
+              ${challenge.amount_used % 1 == 0 
+                ? challenge.amount_used 
+                : challenge.amount_used.toFixed(2)
+              }
+              /${challenge.amount % 1 == 0 
+                ? challenge.amount 
+                : challenge.amount.toFixed(2)
+              }
+            </div>
           </div>
         </div>
       ))}
-      <DetailModal isOpen={isOpen} closeModal={() => {setIsOpen(false)}} challenge={selectedChallenge} />
+      <DetailModal 
+        isOpen={isOpen} 
+        closeModal={() => {setIsOpen(false)}} 
+        challenge={selectedChallenge} 
+        onLeave={() => {
+          setIsOpen(false);
+          setIsConfirmOpen(true);
+        }} 
+        onEdit={() => {
+          setIsOpen(false);
+          setIsEditOpen(true);
+        }}
+      />
+      <ConfirmationModal 
+        isOpen={isConfirmOpen} 
+        closeModal={() => {
+          setIsConfirmOpen(false);
+        }} 
+        onSubmit={() => {
+          leaveChallenge(selectedChallenge?.id || ""); 
+          setIsConfirmOpen(false);
+        }}
+      >
+        <div>Are you sure you want to leave {selectedChallenge?.name}?</div>
+      </ConfirmationModal>
+      <EditGroupChallengeModal isOpen={isEditOpen} closeModal={() => setIsEditOpen(false)} onSubmit={submitEditChallenge} challenge={selectedChallenge}/>
     </div>
   );
 }

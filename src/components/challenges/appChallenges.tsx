@@ -60,7 +60,9 @@ export const AppChallenges: React.FC<ChallengeListProps> = ({appChallengeData, i
               </div>
             </div>
             <div className="flex-5 flex leading-normal text-xl font-bold items-center justify-end mr-2">
-              <div>${challenge.amount}</div>
+              <div>${challenge.amount % 1 == 0 
+                ? challenge.amount 
+                : challenge.amount.toFixed(2)}</div>
             </div>
           </div>
         ))}

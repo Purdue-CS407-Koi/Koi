@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge } from "@/api/challenges";
+import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, deleteChallengeMembership } from "@/api/challenges";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 
 const useChallenges = () => {
@@ -67,7 +67,7 @@ const useChallenges = () => {
   const editChallengeMutation = useMutation({
     mutationFn: editChallenge,
     onError: (err) => {
-      console.log("error inserting new challenge: " + JSON.stringify(err));
+      console.log("error editing challenge: " + JSON.stringify(err));
     },
     onSuccess: () => {
       refetchActiveChallenges();
@@ -78,6 +78,21 @@ const useChallenges = () => {
 
   const updateChallenge = (challenge: TablesUpdate<"Challenges">) => {
     editChallengeMutation.mutate(challenge);
+  }
+
+  const deleteChallengeMembershipMutation = useMutation({
+    mutationFn: deleteChallengeMembership,
+    onError: (err) => {
+      console.log("error leaving challenge: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchAppChallenges();
+      refetchActiveChallenges();
+    },
+  });
+
+  const leaveChallenge = (challenge_id: string) => {
+    deleteChallengeMembershipMutation.mutate(challenge_id);
   }
 
   return { 
@@ -93,6 +108,7 @@ const useChallenges = () => {
     insertNewChallengeMembership,
     insertNewChallenge,
     updateChallenge,
+    leaveChallenge,
   };
 };
 
