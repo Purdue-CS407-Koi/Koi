@@ -1,11 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { UpdateExpenseProps } from "@/interfaces/Expense";
+import type {
+  UpdateExpenseProps,
+  UpdateRecurringExpenseProps,
+} from "@/interfaces/Expense";
 import {
   insertNewExpense as insertNewExpenseApi,
   insertNewRecurringExpense as insertNewRecurringExpenseApi,
   getExpensesFromBucket,
   getRecurringExpenses,
   updateExpense as updateExpenseApi,
+  updateRecurringExpense as updateRecurringExpenseApi,
   deleteExpense as deleteExpenseApi,
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
@@ -53,10 +57,20 @@ const useExpenses = () => {
   const updateExpenseMutation = useMutation({
     mutationFn: updateExpenseApi,
     onError: (err) => {
-      console.log("error updating new expense: " + JSON.stringify(err));
+      console.log("error updating expense: " + JSON.stringify(err));
     },
     onSuccess: () => {
       refetchExpenses();
+    },
+  });
+
+  const updateRecurringExpenseMutation = useMutation({
+    mutationFn: updateRecurringExpenseApi,
+    onError: (err) => {
+      console.log("error updating recurring expense: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchRecurringExpenses();
     },
   });
 
@@ -128,6 +142,10 @@ const useExpenses = () => {
     updateExpenseMutation.mutate(expense);
   };
 
+  const updateRecurringExpense = (expense: UpdateRecurringExpenseProps) => {
+    updateRecurringExpenseMutation.mutate(expense);
+  };
+
   const deleteExpense = (id: string) => {
     deleteExpenseMutation.mutate(id);
   };
@@ -142,6 +160,7 @@ const useExpenses = () => {
     insertNewRecurringExpense,
     insertNewExpenseAndReturn,
     updateExpense,
+    updateRecurringExpense,
     deleteExpense,
   };
 };

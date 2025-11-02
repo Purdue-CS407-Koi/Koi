@@ -15,3 +15,19 @@ export interface UpdateExpenseProps {
   id: string;
   challenge_id: string | null;
 }
+
+export interface RecurringExpense {
+  created_at: string;
+  amount: number | null;
+  bucket_metadata_id: string | null;
+  description: string | null;
+  id: number;
+  name: string | null;
+}
+
+export interface UpdateRecurringExpenseProps {
+  amount: number;
+  description: string;
+  name: string;
+  id: number;
+}
