@@ -147,6 +147,9 @@ export const useBuckets = () => {
             recurrence_period_type: RecurrencePeriodType.Monthly,
             spending_limit: null,
           });
+
+          // Trigger a refetch now we have a "Main" bucket
+          refetchBucketMetadata();
         }
       }
 
@@ -193,6 +196,9 @@ export const useBuckets = () => {
               currentBucket?.recurrence_period_type as RecurrencePeriodType
             ).toISOString(),
           });
+
+          // Trigger a refetch now we have a bucket instance
+          refetchBucketInstance();
         }
       }
 
