@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, deleteChallengeMembership } from "@/api/challenges";
+import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, inviteFriendToChallenge, deleteChallengeMembership } from "@/api/challenges";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 
 const useChallenges = () => {
@@ -94,7 +94,26 @@ const useChallenges = () => {
   const leaveChallenge = (challenge_id: string) => {
     deleteChallengeMembershipMutation.mutate(challenge_id);
   }
+  const inviteFriendMutation = useMutation({
+    mutationFn: async ({
+      challengeId,
+      friendEmail,
+    }: {
+      challengeId: string;
+      friendEmail: string;
+    }) => inviteFriendToChallenge(challengeId, friendEmail),
+    onError: (err) => {
+      console.error("Error inviting friend to challenge:", err);
+    },
+    onSuccess: () => {
+      refetchActiveChallenges();
+      refetchGroupChallenges();
+      refetchAppChallenges();    },
+  });
 
+  const inviteFriend = async (challengeId: string, friendEmail: string) => {
+    return inviteFriendMutation.mutateAsync({ challengeId, friendEmail });
+  };
   return { 
     appChallengeData, 
     groupChallengeData, 
@@ -109,6 +128,7 @@ const useChallenges = () => {
     insertNewChallenge,
     updateChallenge,
     leaveChallenge,
+    inviteFriend
   };
 };
 

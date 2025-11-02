@@ -12,6 +12,7 @@ import { CreateGroupChallengeModal } from './modals/createGroupChallengeModal';
 import { useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { EditGroupChallengeModal } from './modals/editGroupChallengeModal';
+import { InviteFriendToChallengeModal } from './modals/inviteFriendToChallengeModal';
 
 type ChallengeListProps = {
   groupChallengeData?: Tables<"Challenges">[];
@@ -22,6 +23,7 @@ type ChallengeListProps = {
 export const MyChallenges: React.FC<ChallengeListProps> = ({groupChallengeData, insertNewChallenge, updateChallenge}) => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [challengeToEdit, setChallengeToEdit] = useState<Tables<"Challenges"> | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -109,11 +111,22 @@ export const MyChallenges: React.FC<ChallengeListProps> = ({groupChallengeData, 
             >
               Edit
             </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setIsInviteOpen(true);
+                setChallengeToEdit(challenge);
+                handleClose();
+              }}
+              className="hover:!bg-[var(--color-primary-container)] hover:!text-[var(--color-on-primary-container)]"
+            >
+              Invite Friend
+            </MenuItem>
           </Menu>
         </div>
       ))}
       <CreateGroupChallengeModal isOpen={isCreateOpen} closeModal={() => setIsCreateOpen(false)} onSubmit={submitAddChallenge} />
       <EditGroupChallengeModal isOpen={isEditOpen} closeModal={() => setIsEditOpen(false)} onSubmit={submitEditChallenge} challenge={challengeToEdit}/>
+      <InviteFriendToChallengeModal open={isInviteOpen} onClose={() => setIsInviteOpen(false)} challengeId={challengeToEdit?.id}/>
     </div>
   );
 }

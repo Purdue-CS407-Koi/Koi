@@ -204,3 +204,97 @@ export const deleteChallengeMembership = async (
   if (error) throw error;
   return;
 };
+
+export const inviteFriendToChallenge = async (challengeId: string, friendEmail: string) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("User is undefined");
+
+  // Get friend's user ID
+  const { data, error } = await supabase.rpc("get_user_id_by_email", { email_input: friendEmail });
+  if (error) throw error;
+  if (!data || data.length === 0) throw new Error("No user found with that email");
+
+  const friendId = data[0].user_id;
+
+  // Prevent duplicate invites
+  const { data: existingInvite, error: checkError } = await supabase
+    .from("ChallengeInvites")
+    .select("id, type")
+    .eq("challenge_id", challengeId)
+    .eq("invite_to", friendId)
+    .maybeSingle();
+
+  if (checkError) throw checkError;
+
+  if (existingInvite) {
+    if (existingInvite.type === 0) throw new Error("An invite is already pending for this user.");
+    if (existingInvite.type === 1) throw new Error("This user has already joined this challenge.");
+  }
+
+  // Create invite
+  const { data: invite, error: insertError } = await supabase
+    .from("ChallengeInvites")
+    .insert([
+      {
+        challenge_id: challengeId,
+        invite_from: user.id,
+        invite_to: friendId,
+        type: 0,
+      },
+    ])
+    .select()
+    .single();
+
+  if (insertError) throw insertError;
+  return invite;
+};
+
+
+// Accept an invite → adds the user to the group and updates status
+export const acceptChallengeInvite = async (inviteId: string) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("User is undefined");
+
+  // Get invite info
+  const { data: invite, error: inviteError } = await supabase
+    .from("ChallengeInvites")
+    .select("challenge_id, invite_to, type")
+    .eq("id", inviteId)
+    .single();
+  if (inviteError) throw inviteError;
+
+  if (invite.type !== 0) throw new Error("Invite already handled");
+
+  // Add the user to the group
+  if (!invite || !invite.challenge_id) {
+    throw new Error("Invite is missing");
+  }
+  const { error: membershipError } = await supabase
+    .from("ChallengeMemberships")
+    .insert([{ challenge_id: invite.challenge_id, user_id: user.id }]);
+  if (membershipError) throw membershipError;
+
+  // Update invite status
+  const { error: updateError } = await supabase
+    .from("ChallengeInvites")
+    .delete()
+    .eq("id", inviteId);
+  if (updateError) throw updateError;
+
+  return true;
+};
+
+// Decline an invite
+export const declineChallengeInvite = async (inviteId: string) => {
+  const { error } = await supabase
+    .from("ChallengeInvites")
+    .delete()
+    .eq("id", inviteId);
+
+  if (error) throw error;
+  return true;
+};
