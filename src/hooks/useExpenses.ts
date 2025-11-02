@@ -11,6 +11,7 @@ import {
   updateExpense as updateExpenseApi,
   updateRecurringExpense as updateRecurringExpenseApi,
   deleteExpense as deleteExpenseApi,
+  deleteRecurringExpense as deleteRecurringExpenseApi,
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import type { TablesInsert } from "@/helpers/supabase.types";
@@ -77,10 +78,20 @@ const useExpenses = () => {
   const deleteExpenseMutation = useMutation({
     mutationFn: deleteExpenseApi,
     onError: (err) => {
-      console.log("error deleting new expense: " + JSON.stringify(err));
+      console.log("error deleting expense: " + JSON.stringify(err));
     },
     onSuccess: () => {
       refetchExpenses();
+    },
+  });
+
+  const deleteRecurringExpenseMutation = useMutation({
+    mutationFn: deleteRecurringExpenseApi,
+    onError: (err) => {
+      console.log("error deleting recurring expense: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchRecurringExpenses();
     },
   });
 
@@ -150,6 +161,10 @@ const useExpenses = () => {
     deleteExpenseMutation.mutate(id);
   };
 
+  const deleteRecurringExpense = (id: string) => {
+    deleteRecurringExpenseMutation.mutate(id);
+  };
+
   return {
     expenseData,
     recurringExpenseData,
@@ -162,6 +177,7 @@ const useExpenses = () => {
     updateExpense,
     updateRecurringExpense,
     deleteExpense,
+    deleteRecurringExpense,
   };
 };
 
