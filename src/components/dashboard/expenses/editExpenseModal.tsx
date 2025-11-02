@@ -7,10 +7,15 @@ import {
   DialogTitle,
   TextField,
   DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { type FormEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import useChallenges from "@/hooks/useChallenges";
 
 interface EditExpenseModalProps {
   cellProps: CustomCellRendererProps;
@@ -24,6 +29,7 @@ export const EditExpenseModal = ({
   setOpen,
 }: EditExpenseModalProps) => {
   const { updateExpense } = useExpenses();
+  const { activeChallengeData } = useChallenges();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -42,6 +48,7 @@ export const EditExpenseModal = ({
       description: formJson.description,
       name: formJson.name,
       id: cellProps.data.id,
+      challenge_id: formJson.challenge.trim() || null,
     };
     updateExpense(updatedExpense);
     handleClose();
@@ -86,6 +93,23 @@ export const EditExpenseModal = ({
               defaultValue={cellProps.data.description}
               fullWidth
             />
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="challenge-label">Challenge</InputLabel>
+              <Select
+                labelId="challenge-label"
+                id="challenge"
+                name="challenge"
+                label="Challenge"
+                defaultValue={cellProps.data.challenge_id || ""}
+              >
+                <MenuItem value="" className="text-gray-500">(No Challenge)</MenuItem>
+                {activeChallengeData?.map((challenge) => (
+                  <MenuItem key={challenge.id} value={challenge.id}>
+                    {challenge.name}
+                  </MenuItem>
+                )) || <MenuItem value="">No Active Challenge</MenuItem>}
+              </Select>
+            </FormControl>
           </form>
         </DialogContent>
         <DialogActions className="!p-6 !pt-0">

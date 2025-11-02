@@ -94,10 +94,11 @@ export async function updateExpense({
   description,
   name,
   id,
+  challenge_id
 }: UpdateExpenseProps) {
   const { data, error } = await supabase
     .from("Expenses")
-    .update({ amount, description, name })
+    .update({ amount, description, name, challenge_id })
     .eq("id", id)
     .select();
 

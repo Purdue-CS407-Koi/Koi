@@ -13,4 +13,5 @@ export interface UpdateExpenseProps {
   description: string;
   name: string;
   id: string;
+  challenge_id: string | null;
 }

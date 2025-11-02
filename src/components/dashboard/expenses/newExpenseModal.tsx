@@ -1,3 +1,4 @@
+import useChallenges from "@/hooks/useChallenges";
 import useExpenses from "@/hooks/useExpenses";
 import type { NewExpense } from "@/interfaces/Expense";
 import { useBucketsStore } from "@/stores/useBucketsStore";
@@ -8,6 +9,10 @@ import {
   DialogTitle,
   TextField,
   DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useState, type FormEvent } from "react";
 
@@ -15,6 +20,7 @@ export const NewExpenseModal = () => {
   const [open, setOpen] = useState(false);
   const { currentBucketInstanceId } = useBucketsStore();
   const { insertNewExpense } = useExpenses();
+  const { activeChallengeData } = useChallenges();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,6 +46,7 @@ export const NewExpenseModal = () => {
       description: formJson.description,
       name: formJson.name,
       bucket_instance_id: currentBucketInstanceId,
+      challenge_id: formJson.challenge.trim() || null,
     };
     insertNewExpense(newExpense);
     handleClose();
@@ -81,6 +88,23 @@ export const NewExpenseModal = () => {
               label="Description"
               fullWidth
             />
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="challenge-label">Challenge</InputLabel>
+              <Select
+                labelId="challenge-label"
+                id="challenge"
+                name="challenge"
+                label="Challenge"
+                defaultValue=""
+              >
+                <MenuItem value="" className="text-gray-500">(No Challenge)</MenuItem>
+                {activeChallengeData?.map((challenge) => (
+                  <MenuItem key={challenge.id} value={challenge.id}>
+                    {challenge.name}
+                  </MenuItem>
+                )) || <MenuItem value="">No Active Challenge</MenuItem>}
+              </Select>
+            </FormControl>
           </form>
         </DialogContent>
         <DialogActions className="!p-6 !pt-0">
