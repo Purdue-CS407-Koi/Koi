@@ -30,6 +30,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import useChallenges from "@/hooks/useChallenges";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
@@ -51,11 +52,13 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   const { groupsData: groups } = useGroups();
   const { bucketMetadataData, refetchBucketInstance } = useBuckets();
   const { userData } = useUsers();
+  const { activeChallengeData } = useChallenges();
   
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState("00");
   const [expenseCents, setExpenseCents] = useState("00");
   const [selectedBucket, setSelectedBucket] = useState("");
+  const [selectedChallenge, setSelectedChallenge] = useState("");
 
   const { setCurrentBucketMetadataId } =
     useBucketsStore();
@@ -68,6 +71,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     setExpenseCents("00");
     setSelectedGroup("");
     setSelectedBucket("");
+    setSelectedChallenge("");
   };
 
   const handleSplitEvenly = async () => {
@@ -87,6 +91,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       name,
       user_id,
       bucket_instance_id: refreshedInstances && (refreshedInstances[refreshedInstances.length - 1].id || undefined),
+      challenge_id: selectedChallenge || null,
     });
 
     onNext(2);
@@ -109,6 +114,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
       name,
       user_id,
       bucket_instance_id: refreshedInstances && (refreshedInstances[refreshedInstances.length - 1].id || undefined),
+      challenge_id: selectedChallenge || null,
     });
 
     onNext(3);
@@ -182,7 +188,8 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             [&_.MuiSelect-select]:!text-gray-800
             [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
             !mb-4
-          "     
+          "
+          required
         >
           <InputLabel id="group-label">
             Select Group
@@ -206,6 +213,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
         </FormControl>
 
         <FormControl fullWidth 
+          required
           className="
             [&_.MuiInputLabel-root]:!text-gray-500
             [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
@@ -237,6 +245,42 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             })?.map((bucket) => (              
               <MenuItem key={bucket.id} value={bucket.id}>
                 {bucket.name}
+              </MenuItem>
+              )
+            )
+          }
+          </Select>
+        </FormControl>
+        <FormControl fullWidth 
+          className="
+            [&_.MuiInputLabel-root]:!text-gray-500
+            [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+            [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
+            [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+            [&_.MuiSelect-select]:!text-gray-800
+            [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
+            !mb-4
+          "     
+        >
+          <InputLabel id="challenge-label">
+            Select Challenge
+          </InputLabel>
+          <Select
+            margin="dense"
+            labelId="challenge-label"
+            label="Select Challenge"
+            value={selectedChallenge}
+            onChange={(e) => {
+              setSelectedChallenge(e.target.value);
+            }}
+            fullWidth
+            required
+          >
+          <MenuItem value="" className="text-gray-500">(No Challenge)</MenuItem>
+          {activeChallengeData
+            ?.map((ch) => (              
+              <MenuItem key={ch.id} value={ch.id}>
+                {ch.name}
               </MenuItem>
               )
             )

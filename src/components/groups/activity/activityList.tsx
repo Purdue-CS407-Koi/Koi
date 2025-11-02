@@ -1,4 +1,5 @@
 import { useBuckets } from "@/hooks/useBuckets";
+import useChallenges from "@/hooks/useChallenges";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
@@ -29,9 +30,12 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   const [split, setSplit] = useState<Activity>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBucket, setSelectedBucket] = useState("");
+  const [selectedChallenge, setSelectedChallenge] = useState("");
   const { bucketMetadataData, refetchBucketInstance } = useBuckets();
   const { setCurrentBucketMetadataId } =
     useBucketsStore();
+  
+  const { activeChallengeData } = useChallenges();
 
   const handleModal = (activity: Activity) => {
     setSplit(activity);
@@ -194,44 +198,84 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                 You owe ${split?.amount_remaining?.toFixed(2)}
               </div>
               {split?.amount_remaining == 0 ||
-                <FormControl fullWidth 
-                  className="
-                    [&_.MuiInputLabel-root]:!text-gray-500
-                    [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
-                    [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
-                    [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
-                    [&_.MuiSelect-select]:!text-gray-800
-                    [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
-                    !mb-4
-                  "     
-                >
-                  <InputLabel id="bucket-label">
-                    Select Bucket
-                  </InputLabel>
-                  <Select
-                    margin="dense"
-                    labelId="bucket-label"
-                    label="Select Bucket"
-                    value={selectedBucket}
-                    onChange={(e) => {
-                      setSelectedBucket(e.target.value);
-                      setCurrentBucketMetadataId(e.target.value);
-                    }}
-                    fullWidth
+                <div>
+                  <FormControl fullWidth 
                     required
+                    className="
+                      [&_.MuiInputLabel-root]:!text-gray-500
+                      [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+                      [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
+                      [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                      [&_.MuiSelect-select]:!text-gray-800
+                      [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
+                      !mb-4
+                    "     
                   >
-                  {bucketMetadataData
-                    ?.filter((bucket) => {
-                      return bucket.hidden_at === null;
-                    })?.map((bucket) => (              
-                      <MenuItem key={bucket.id} value={bucket.id}>
-                        {bucket.name}
-                      </MenuItem>
-                    ))
-                  }
-                  </Select>
-                </FormControl>
+                    <InputLabel id="bucket-label">
+                      Select Bucket
+                    </InputLabel>
+                    <Select
+                      margin="dense"
+                      labelId="bucket-label"
+                      label="Select Bucket"
+                      value={selectedBucket}
+                      onChange={(e) => {
+                        setSelectedBucket(e.target.value);
+                        setCurrentBucketMetadataId(e.target.value);
+                      }}
+                      fullWidth
+                      required
+                    >
+                    {bucketMetadataData
+                      ?.filter((bucket) => {
+                        return bucket.hidden_at === null;
+                      })?.map((bucket) => (              
+                        <MenuItem key={bucket.id} value={bucket.id}>
+                          {bucket.name}
+                        </MenuItem>
+                      ))
+                    }
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth 
+                    className="
+                      [&_.MuiInputLabel-root]:!text-gray-500
+                      [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
+                      [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
+                      [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
+                      [&_.MuiSelect-select]:!text-gray-800
+                      [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
+                      !mb-4
+                    "     
+                  >
+                    <InputLabel id="challenge-label">
+                      Select Challenge
+                    </InputLabel>
+                    <Select
+                      margin="dense"
+                      labelId="challenge-label"
+                      label="Select Challenge"
+                      value={selectedChallenge}
+                      onChange={(e) => {
+                        setSelectedChallenge(e.target.value);
+                      }}
+                      fullWidth
+                      required
+                    >
+                    <MenuItem value="" className="text-gray-500">(No Challenge)</MenuItem>
+                    {activeChallengeData
+                      ?.map((ch) => (              
+                        <MenuItem key={ch.id} value={ch.id}>
+                          {ch.name}
+                        </MenuItem>
+                        )
+                      )
+                    }
+                    </Select>
+                  </FormControl>
+                </div>
               }
+              
               <DialogActions>
                 <Button
                   onClick={() => {
