@@ -1,5 +1,8 @@
 import supabase from "@/helpers/supabase";
-import type { UpdateExpenseProps } from "@/interfaces/Expense";
+import type {
+  UpdateExpenseProps,
+  UpdateRecurringExpenseProps,
+} from "@/interfaces/Expense";
 import type { TablesInsert } from "@/helpers/supabase.types";
 
 export async function getExpensesFromBucket(bucket_instance_id: string) {
@@ -94,11 +97,27 @@ export async function updateExpense({
   description,
   name,
   id,
-  challenge_id
+  challenge_id,
 }: UpdateExpenseProps) {
   const { data, error } = await supabase
     .from("Expenses")
     .update({ amount, description, name, challenge_id })
+    .eq("id", id)
+    .select();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateRecurringExpense({
+  amount,
+  description,
+  name,
+  id,
+}: UpdateRecurringExpenseProps) {
+  const { data, error } = await supabase
+    .from("RecurringExpenses")
+    .update({ amount, description, name })
     .eq("id", id)
     .select();
 
