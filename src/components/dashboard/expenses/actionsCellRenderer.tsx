@@ -3,8 +3,8 @@ import type { CustomCellRendererProps } from "ag-grid-react";
 import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import { DeleteExpenseModal } from "./deleteExpenseModal";
-import { EditExpenseModal } from "./editExpenseModal";
+import { DeleteExpenseModal } from "./modals/deleteExpenseModal";
+import { EditExpenseModal } from "./modals/editExpenseModal";
 
 export const ActionsCellRenderer = (props: CustomCellRendererProps) => {
   const [deleteOpen, setDeleteOpen] = useState(false);

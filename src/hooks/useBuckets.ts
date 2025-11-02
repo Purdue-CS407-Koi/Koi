@@ -51,6 +51,9 @@ export const useBuckets = () => {
     mutationFn: createBucketInstanceApi,
     onSuccess: (data) => {
       console.log("Created bucket instance entry, data returned:", data);
+      // create recurring expenses
+      // fetch from recurring expenses (querying by bucket metadata)
+      // pass in bucket instance id from "data" variable
       refetchBucketInstance();
     },
     onError: (err) => {

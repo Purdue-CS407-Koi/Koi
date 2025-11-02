@@ -1,5 +1,5 @@
 import { ExpenseTable } from "./expenseTable";
-import { NewExpenseModal } from "./newExpenseModal";
+import { NewExpenseModal } from "./modals/newExpenseModal";
 
 export const ExpensePanel = () => {
   return (

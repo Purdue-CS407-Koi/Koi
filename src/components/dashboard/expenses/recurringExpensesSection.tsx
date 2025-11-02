@@ -1,6 +1,7 @@
 import useExpenses from "@/hooks/useExpenses";
-import { NewRecurringExpenseModal } from "./newRecurringExpenseModal";
+import { NewRecurringExpenseModal } from "./modals/newRecurringExpenseModal";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { EditRecurringExpenseModal } from "./modals/editRecurringExpenseModal";
 
 export const RecurringExpensesSection = () => {
   const { recurringExpenseData } = useExpenses();
@@ -20,6 +21,9 @@ export const RecurringExpensesSection = () => {
               <p className="self-center">{expense.name}</p>
             </div>
             <p className="self-center">${expense.amount}</p>
+            <div>
+              <EditRecurringExpenseModal expenseData={expense} />
+            </div>
           </div>
         );
       })}
