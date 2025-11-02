@@ -246,7 +246,6 @@ export const useBuckets = () => {
       if (date.getTime() < new Date(bucketInstances[0].start).getTime()) {
         // Walk backwards
         let lastDate = new Date(bucketInstances[0].start);
-        let lastBucketId = null;
 
         while (date < lastDate) {
           const endDate = subMilliseconds(lastDate, 1);
@@ -260,16 +259,17 @@ export const useBuckets = () => {
             start: startDate.toISOString(),
             end: endDate.toISOString(),
           });
-          lastBucketId = newBucket.id;
           lastDate = startDate;
+
+          if (lastDate <= date) {
+            return newBucket.id;
+          }
         }
-        return lastBucketId!;
       } else {
         // Walk forwards
         let lastDate = new Date(
           bucketInstances[bucketInstances.length - 1].end,
         );
-        let lastBucketId = null;
 
         while (date > lastDate) {
           const startDate = addMilliseconds(lastDate, 1);
@@ -283,12 +283,16 @@ export const useBuckets = () => {
             start: startDate.toISOString(),
             end: endDate.toISOString(),
           });
-          lastBucketId = newBucket.id;
           lastDate = endDate;
+
+          if (lastDate >= date) {
+            return newBucket.id;
+          }
         }
-        return lastBucketId!;
       }
     }
+
+    throw new Error("Failed to get instance ID for date, iteration failed");
   };
 
   return {
