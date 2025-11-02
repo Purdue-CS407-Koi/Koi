@@ -18,19 +18,19 @@ import { addMilliseconds, subMilliseconds } from "date-fns";
 
 export const useBuckets = () => {
   const currentBucketInstanceId = useBucketsStore(
-    (state) => state.currentBucketInstanceId
+    (state) => state.currentBucketInstanceId,
   );
 
   const setCurrentBucketInstanceId = useBucketsStore(
-    (state) => state.setCurrentBucketInstanceId
+    (state) => state.setCurrentBucketInstanceId,
   );
 
   const currentBucketMetadataId = useBucketsStore(
-    (state) => state.currentBucketMetadataId
+    (state) => state.currentBucketMetadataId,
   );
 
   const setCurrentBucketMetadataId = useBucketsStore(
-    (state) => state.setCurrentBucketMetadataId
+    (state) => state.setCurrentBucketMetadataId,
   );
 
   const createMetadataMutation = useMutation({
@@ -42,7 +42,7 @@ export const useBuckets = () => {
     },
     onError: (err) => {
       console.log(
-        "Error creating new bucket metadata entry: " + JSON.stringify(err)
+        "Error creating new bucket metadata entry: " + JSON.stringify(err),
       );
     },
   });
@@ -58,7 +58,7 @@ export const useBuckets = () => {
     },
     onError: (err) => {
       console.log(
-        "Error creating new bucket instance entry: " + JSON.stringify(err)
+        "Error creating new bucket instance entry: " + JSON.stringify(err),
       );
     },
   });
@@ -86,25 +86,25 @@ export const useBuckets = () => {
   });
 
   const createBucketMetadata = async (
-    bucketMetadata: TablesInsert<"BucketMetadata">
+    bucketMetadata: TablesInsert<"BucketMetadata">,
   ) => {
     return createMetadataMutation.mutate(bucketMetadata);
   };
 
   const createBucketMetadataAsync = async (
-    bucketMetadata: TablesInsert<"BucketMetadata">
+    bucketMetadata: TablesInsert<"BucketMetadata">,
   ) => {
     return createMetadataMutation.mutateAsync(bucketMetadata);
   };
 
   const createBucketInstance = async (
-    bucketInstance: TablesInsert<"BucketInstances">
+    bucketInstance: TablesInsert<"BucketInstances">,
   ) => {
     return createInstanceMutation.mutate(bucketInstance);
   };
 
   const createBucketInstanceAsync = async (
-    bucketInstance: TablesInsert<"BucketInstances">
+    bucketInstance: TablesInsert<"BucketInstances">,
   ) => {
     return createInstanceMutation.mutateAsync(bucketInstance);
   };
@@ -115,7 +115,7 @@ export const useBuckets = () => {
 
   const editBucketMetadata = async (
     bucketMetadataId: string,
-    updatedData: TablesUpdate<"BucketMetadata">
+    updatedData: TablesUpdate<"BucketMetadata">,
   ) => {
     return editMetadataMutation.mutate({ id: bucketMetadataId, updatedData });
   };
@@ -135,7 +135,7 @@ export const useBuckets = () => {
         !bucketMetadata.some(
           (instance) =>
             instance.id === currentBucketMetadataId &&
-            instance.hidden_at === null
+            instance.hidden_at === null,
         )
       ) {
         if (bucketMetadata.length > 0) {
@@ -169,22 +169,22 @@ export const useBuckets = () => {
       }
 
       const currentBucket = bucketMetadataData?.find(
-        (x) => x.id === currentBucketMetadataId
+        (x) => x.id === currentBucketMetadataId,
       );
 
       const bucketInstances = await getAllBucketInstances(
-        currentBucketMetadataId
+        currentBucketMetadataId,
       );
 
       if (
         !currentBucketInstanceId ||
         !bucketInstances.some(
-          (instance) => instance.id === currentBucketInstanceId
+          (instance) => instance.id === currentBucketInstanceId,
         )
       ) {
         if (bucketInstances.length > 0) {
           // Set the bucket instance to the one for today's date
-          setCurrentBucketInstanceId((await getInstanceIdForDate(new Date())));
+          setCurrentBucketInstanceId(await getInstanceIdForDate(new Date()));
         } else {
           console.warn("No bucket instance found, automatically creating one!");
           const startDate = new Date();
@@ -193,7 +193,7 @@ export const useBuckets = () => {
             start: startDate.toISOString(),
             end: getEndDate(
               startDate,
-              currentBucket?.recurrence_period_type as RecurrencePeriodType
+              currentBucket?.recurrence_period_type as RecurrencePeriodType,
             ).toISOString(),
           });
 
@@ -214,16 +214,16 @@ export const useBuckets = () => {
     }
 
     const currentBucket = bucketMetadataData?.find(
-      (x) => x.id === currentBucketMetadataId
+      (x) => x.id === currentBucketMetadataId,
     );
 
     const bucketInstances = await getAllBucketInstances(
-      currentBucketMetadataId
+      currentBucketMetadataId,
     );
 
     // Sort bucket by start date
     bucketInstances.sort(
-      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
     );
 
     // Depending on whether the given date is in the range or not...
@@ -252,7 +252,7 @@ export const useBuckets = () => {
           const endDate = subMilliseconds(lastDate, 1);
           const startDate = getStartDate(
             endDate,
-            currentBucket?.recurrence_period_type as RecurrencePeriodType
+            currentBucket?.recurrence_period_type as RecurrencePeriodType,
           );
 
           const newBucket = await createBucketInstanceAsync({
@@ -267,7 +267,7 @@ export const useBuckets = () => {
       } else {
         // Walk forwards
         let lastDate = new Date(
-          bucketInstances[bucketInstances.length - 1].end
+          bucketInstances[bucketInstances.length - 1].end,
         );
         let lastBucketId = null;
 
@@ -275,7 +275,7 @@ export const useBuckets = () => {
           const startDate = addMilliseconds(lastDate, 1);
           const endDate = getEndDate(
             startDate,
-            currentBucket?.recurrence_period_type as RecurrencePeriodType
+            currentBucket?.recurrence_period_type as RecurrencePeriodType,
           );
 
           const newBucket = await createBucketInstanceAsync({
