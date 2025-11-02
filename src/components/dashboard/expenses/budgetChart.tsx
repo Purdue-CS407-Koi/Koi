@@ -62,7 +62,7 @@ export const BudgetChart = () => {
           <p className="font-medium">Limit</p>
         </div>
         <div className="flex flex-col">
-          {remaining > 0 ? (
+          {remaining >= 0 ? (
             <p className="font-bold text-xl">${remaining}</p>
           ) : (
             <p className="font-bold text-xl text-[var(--color-error)]">
