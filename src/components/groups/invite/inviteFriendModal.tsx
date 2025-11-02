@@ -41,7 +41,7 @@ export const InviteFriendModal = ({
     }
    try {
       await inviteFriend(groupId, email.trim());
-    //   setSuccessMsg("Invite sent successfully!");
+      setSuccessMsg("Invite sent successfully!");
       setEmail("");
     } catch (err: any) {
       console.error(err);

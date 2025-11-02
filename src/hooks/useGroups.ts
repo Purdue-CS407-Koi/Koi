@@ -130,8 +130,14 @@ const inviteFriendMutation = useMutation({
     },
   });
 
-  const inviteFriend = (groupId: string, friendEmail: string) =>
-    inviteFriendMutation.mutate({ groupId, friendEmail });
+  const inviteFriend = async (groupId: string, friendEmail: string) => {
+  try {
+    return await inviteFriendMutation.mutateAsync({ groupId, friendEmail });
+  } catch (err) {
+    console.error("inviteFriend error:", err);
+    throw err;
+  }
+};
   const acceptGroupInvite = (inviteId: string) => acceptInviteMutation.mutate(inviteId);
   const declineGroupInvite = (inviteId: string) => declineInviteMutation.mutate(inviteId);
 
