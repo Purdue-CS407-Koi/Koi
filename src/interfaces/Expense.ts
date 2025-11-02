@@ -21,7 +21,7 @@ export interface RecurringExpense {
   amount: number | null;
   bucket_metadata_id: string | null;
   description: string | null;
-  id: number;
+  id: string;
   name: string | null;
 }
 
@@ -29,5 +29,5 @@ export interface UpdateRecurringExpenseProps {
   amount: number;
   description: string;
   name: string;
-  id: number;
+  id: string;
 }
