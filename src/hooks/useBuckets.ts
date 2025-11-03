@@ -15,6 +15,7 @@ import {
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addMilliseconds, subMilliseconds } from "date-fns";
+import useExpenses from "./useExpenses";
 
 export const useBuckets = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -32,6 +33,8 @@ export const useBuckets = () => {
   const setCurrentBucketMetadataId = useBucketsStore(
     (state) => state.setCurrentBucketMetadataId,
   );
+
+  const { createRecurringExpensesForNewBucketInstance } = useExpenses();
 
   const createMetadataMutation = useMutation({
     mutationFn: createBucketMetadataApi,
@@ -51,9 +54,7 @@ export const useBuckets = () => {
     mutationFn: createBucketInstanceApi,
     onSuccess: (data) => {
       console.log("Created bucket instance entry, data returned:", data);
-      // create recurring expenses
-      // fetch from recurring expenses (querying by bucket metadata)
-      // pass in bucket instance id from "data" variable
+      createRecurringExpensesForNewBucketInstance(data.id);
       refetchBucketInstance();
     },
     onError: (err) => {

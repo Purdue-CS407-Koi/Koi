@@ -165,6 +165,19 @@ const useExpenses = () => {
     deleteRecurringExpenseMutation.mutate(id);
   };
 
+  const createRecurringExpensesForNewBucketInstance = (
+    bucket_instance_id: string
+  ) => {
+    recurringExpenseData?.map((expense) => {
+      insertNewExpense({
+        amount: expense.amount!,
+        name: expense.name!,
+        description: expense.description,
+        bucket_instance_id,
+      });
+    });
+  };
+
   return {
     expenseData,
     recurringExpenseData,
@@ -178,6 +191,7 @@ const useExpenses = () => {
     updateRecurringExpense,
     deleteExpense,
     deleteRecurringExpense,
+    createRecurringExpensesForNewBucketInstance,
   };
 };
 
