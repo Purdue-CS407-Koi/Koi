@@ -15,6 +15,7 @@ import {
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import type { TablesInsert } from "@/helpers/supabase.types";
+import { convertToLocalTime } from "@/helpers/utilities";
 
 const useExpenses = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -109,7 +110,7 @@ const useExpenses = () => {
       const rawData = await getExpensesFromBucket(currentBucketInstanceId);
       return rawData?.map((item) => ({
         ...item,
-        created_at: item.created_at.split("T")[0],
+        created_at: convertToLocalTime(item.created_at),
       }));
     },
   });
@@ -128,7 +129,7 @@ const useExpenses = () => {
       const rawData = await getRecurringExpenses(currentBucketMetadataId);
       return rawData?.map((item) => ({
         ...item,
-        created_at: item.created_at.split("T")[0],
+        created_at: convertToLocalTime(item.created_at),
       }));
     },
   });

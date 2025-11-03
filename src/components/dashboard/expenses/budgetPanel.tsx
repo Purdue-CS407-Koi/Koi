@@ -3,6 +3,7 @@ import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { BudgetChart } from "./budgetChart";
 import { RecurringExpensesSection } from "./recurringExpensesSection";
+import { convertToLocalTime } from "@/helpers/utilities";
 
 export const BudgetPanel = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -35,7 +36,8 @@ export const BudgetPanel = () => {
                   value={data.id}
                   sx={{ fontSize: "14px" }}
                 >
-                  {data.start.split("T")[0]} to {data.end.split("T")[0]}
+                  {convertToLocalTime(data.start)} to{" "}
+                  {convertToLocalTime(data.end)}
                 </MenuItem>
               ))}
             </Select>
