@@ -14,23 +14,25 @@ export const RecurringExpensesSection = () => {
         </p>
         <NewRecurringExpenseModal />
       </div>
-      {recurringExpenseData?.map((expense) => {
-        return (
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-row gap-1 self-center w-1/2">
-              <ChevronRightIcon />
-              <p className="self-center">{expense.name}</p>
-            </div>
-            <div className="flex flex-row justify-between w-1/2">
-              <p className="self-center">${expense.amount}</p>
-              <div className="flex flex-row">
-                <EditRecurringExpenseModal expenseData={expense} />
-                <DeleteRecurringExpenseModal expenseData={expense} />
+      <div className="h-[160px] overflow-auto">
+        {recurringExpenseData?.map((expense) => {
+          return (
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-row gap-1 self-center w-1/2">
+                <ChevronRightIcon />
+                <p className="self-center">{expense.name}</p>
+              </div>
+              <div className="flex flex-row justify-between w-1/2">
+                <p className="self-center">${expense.amount}</p>
+                <div className="flex flex-row">
+                  <EditRecurringExpenseModal expenseData={expense} />
+                  <DeleteRecurringExpenseModal expenseData={expense} />
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
