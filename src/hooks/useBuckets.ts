@@ -188,14 +188,18 @@ export const useBuckets = () => {
           setCurrentBucketInstanceId(await getInstanceIdForDate(new Date()));
         } else {
           console.warn("No bucket instance found, automatically creating one!");
-          const startDate = new Date();
+          const startDate = getStartDate(
+            new Date(),
+            currentBucket?.recurrence_period_type as RecurrencePeriodType,
+          );
+          const endDate = getEndDate(
+            startDate,
+            currentBucket?.recurrence_period_type as RecurrencePeriodType,
+          );
           createBucketInstance({
             bucket_metadata_id: currentBucketMetadataId,
             start: startDate.toISOString(),
-            end: getEndDate(
-              startDate,
-              currentBucket?.recurrence_period_type as RecurrencePeriodType,
-            ).toISOString(),
+            end: endDate.toISOString(),
           });
 
           // Trigger a refetch now we have a bucket instance
@@ -249,7 +253,10 @@ export const useBuckets = () => {
         let lastDate = new Date(bucketInstances[0].start);
 
         while (date < lastDate) {
-          const endDate = subMilliseconds(lastDate, 1);
+          const endDate = getEndDate(
+            subMilliseconds(lastDate, 1),
+            currentBucket?.recurrence_period_type as RecurrencePeriodType,
+          );
           const startDate = getStartDate(
             endDate,
             currentBucket?.recurrence_period_type as RecurrencePeriodType,
@@ -273,7 +280,10 @@ export const useBuckets = () => {
         );
 
         while (date > lastDate) {
-          const startDate = addMilliseconds(lastDate, 1);
+          const startDate = getStartDate(
+            addMilliseconds(lastDate, 1),
+            currentBucket?.recurrence_period_type as RecurrencePeriodType,
+          );
           const endDate = getEndDate(
             startDate,
             currentBucket?.recurrence_period_type as RecurrencePeriodType,

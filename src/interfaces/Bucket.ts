@@ -1,14 +1,14 @@
 import {
-  addDays,
-  addMonths,
-  addQuarters,
-  addWeeks,
-  addYears,
-  subDays,
-  subMonths,
-  subQuarters,
-  subWeeks,
-  subYears,
+  startOfMonth,
+  startOfWeek,
+  startOfDay,
+  startOfYear,
+  startOfQuarter,
+  endOfMonth,
+  endOfWeek,
+  endOfDay,
+  endOfYear,
+  endOfQuarter,
 } from "date-fns";
 
 export const RecurrencePeriodType = {
@@ -21,7 +21,7 @@ export const RecurrencePeriodType = {
 } as const;
 
 export const getRecurrencePeriodDisplayName = (
-  type: RecurrencePeriodType
+  type: RecurrencePeriodType,
 ): string => {
   switch (type) {
     case RecurrencePeriodType.Monthly:
@@ -44,42 +44,48 @@ export const getRecurrencePeriodDisplayName = (
 export type RecurrencePeriodType =
   (typeof RecurrencePeriodType)[keyof typeof RecurrencePeriodType];
 
-export const getEndDate = (
-  startDate: Date,
-  period: RecurrencePeriodType
+// Get the start date of the recurrence period based on the current/end date
+export const getStartDate = (
+  date: Date,
+  period: RecurrencePeriodType,
 ): Date => {
   switch (period) {
     case RecurrencePeriodType.Monthly:
-      return addMonths(startDate, 1);
+      return startOfMonth(date);
     case RecurrencePeriodType.Weekly:
-      return addWeeks(startDate, 1);
+      return startOfWeek(date);
     case RecurrencePeriodType.Daily:
-      return addDays(startDate, 1);
+      return startOfDay(date);
     case RecurrencePeriodType.Yearly:
-      return addYears(startDate, 1);
+      return startOfYear(date);
     case RecurrencePeriodType.Quarterly:
-      return addQuarters(startDate, 1);
-    case RecurrencePeriodType.SemiAnually:
-      return addYears(startDate, 0.5);
+      return startOfQuarter(date);
+    case RecurrencePeriodType.SemiAnually: {
+      // Find month based on year half
+      const month = date.getMonth() < 6 ? 0 : 6;
+      return new Date(date.getFullYear(), month, 1, 0, 0, 0, 0);
+    }
   }
 };
 
-export const getStartDate = (
-  endDate: Date,
-  period: RecurrencePeriodType
-): Date => {
+// Get the end date of the recurrence period based on the current/start date
+export const getEndDate = (date: Date, period: RecurrencePeriodType): Date => {
   switch (period) {
     case RecurrencePeriodType.Monthly:
-      return subMonths(endDate, 1);
+      return endOfMonth(date);
     case RecurrencePeriodType.Weekly:
-      return subWeeks(endDate, 1);
+      return endOfWeek(date);
     case RecurrencePeriodType.Daily:
-      return subDays(endDate, 1);
+      return endOfDay(date);
     case RecurrencePeriodType.Yearly:
-      return subYears(endDate, 1);
+      return endOfYear(date);
     case RecurrencePeriodType.Quarterly:
-      return subQuarters(endDate, 1);
-    case RecurrencePeriodType.SemiAnually:
-      return subYears(endDate, 0.5);
+      return endOfQuarter(date);
+    case RecurrencePeriodType.SemiAnually: {
+      if (date.getMonth() < 6) {
+        return new Date(date.getFullYear(), 5, 30, 23, 59, 59, 999);
+      }
+      return new Date(date.getFullYear(), 11, 31, 23, 59, 59, 999);
+    }
   }
 };
