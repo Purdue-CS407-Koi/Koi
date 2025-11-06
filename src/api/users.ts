@@ -6,6 +6,48 @@ export interface UserProfile {
   created_at?: string;
 }
 
+export async function createAccountWithProfile(
+  email: string,
+  password: string,
+  full_name: string,
+) {
+  const data = await createAccount(email, password, full_name);
+
+  if (data.user) {
+    await insertUserProfile(data.user.id, full_name);
+  }
+
+  return data;
+};
+
+export async function createAccount(
+  email: string,
+  password: string,
+  full_name: string,
+) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: full_name,
+        display_name: full_name,
+      },
+    },
+  });
+
+  if (error) throw error;
+
+  return data;
+}
+
+export class ProfileError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ProfileError";
+  }
+}
+
 export async function insertUserProfile(userId: string, name: string) {
   const { data, error } = await supabase
     .from("Users")
@@ -16,8 +58,8 @@ export async function insertUserProfile(userId: string, name: string) {
       },
     ])
     .select();
-  
-  if (error) throw error;
+
+  if (error) throw new ProfileError(error.message);
 
   return data;
 }

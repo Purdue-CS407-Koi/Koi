@@ -3,8 +3,8 @@ import { Link, useNavigate } from "@tanstack/react-router";
 
 import { AuthInput } from "@/components/sign_in/authInput";
 import logo from "@/assets/logo.png";
-import { insertUserProfile } from "@/api/users";
-import supabase from "@/helpers/supabase";
+import { createAccountWithProfile, ProfileError } from "@/api/users";
+import { AuthError } from "@supabase/supabase-js";
 
 export const SignUpPage = () => {
   const [fullName, setFullName] = useState("");
@@ -40,24 +40,19 @@ export const SignUpPage = () => {
     setIsLoading(true);
 
     try {
-      const { data, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            display_name: fullName,
-          },
-        },
-      });
+      await createAccountWithProfile(email, password, fullName);
+      alert("Sign up successful! You can now sign in.");
+      navigate({ to: "/signIn" });
+    } catch (error) {
+      if (error instanceof AuthError) {
+        const authError = error as AuthError;
 
-      if (authError) {
         if (
           authError.message.includes("already registered") ||
           authError.message.includes("User already registered")
         ) {
           setError(
-            "This email is already registered. Please use a different email or try signing in instead."
+            "This email is already registered. Please use a different email or try signing in instead.",
           );
         } else if (authError.message.includes("Invalid email")) {
           setError("Please enter a valid email address");
@@ -68,23 +63,16 @@ export const SignUpPage = () => {
         }
         setIsLoading(false);
         return;
+      } else if (error instanceof ProfileError) {
+        const profileError = error as ProfileError;
+        console.error("Error creating user profile:", profileError);
+        setError(
+          "Account created but profile setup failed. Please try signing in.",
+        );
+      } else {
+        console.error("Unexpected error:", error);
+        setError("An unexpected error occurred. Please try again.");
       }
-
-      if (data.user) {
-        try {
-          await insertUserProfile(data.user.id, fullName);
-          alert("Sign up successful! You can now sign in.");
-          navigate({ to: "/signIn" });
-        } catch (profileError: any) {
-          console.error("Error creating user profile:", profileError);
-          setError(
-            "Account created but profile setup failed. Please try signing in."
-          );
-        }
-      }
-    } catch (unexpectedError: any) {
-      console.error("Unexpected error:", unexpectedError);
-      setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
