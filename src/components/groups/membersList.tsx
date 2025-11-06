@@ -107,6 +107,8 @@ export const MembersList: React.FC<MembersListProps> = ({
           onClose={() => setSelectedMember(null)}
           onConfirm={() => {
             if (groupId && selectedMember.id) {
+              // console.log("uuid")
+              // console.log(selectedMember.id)
               removeMember(groupId, selectedMember.id);
             }
             setSelectedMember(null);

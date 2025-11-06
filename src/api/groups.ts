@@ -96,12 +96,15 @@ export const updateGroupName = async (groupId: string, newName: string) => {
 };
 
 export const getGroupMembers = async (groupId: string) => {
+  if (!groupId) return [];
   const { data, error } = await supabase
     .from("GroupMemberships")
     .select("user_id, Users(id, name)")
     .eq("group_id", groupId);
-
-  if (error) throw error;
+   if (error) {
+      console.error("Error removing member:", error.message);
+      throw error;
+    }
 
   return (data ?? []).map((item) => ({
     id: item.user_id,
@@ -135,7 +138,12 @@ export const removeGroupMember = async (group_id: string, user_id: string) => {
     .delete()
     .eq("group_id", group_id)
     .eq("user_id", user_id);
-  if (error) throw error;
+  
+    if (error) {
+      console.error("Error removing member:", error.message);
+      throw error;
+    }
+
   return true;
 };
 

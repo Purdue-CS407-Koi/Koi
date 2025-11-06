@@ -52,8 +52,11 @@ const useGroups = () => {
     onError: (err) => {
       console.error("Error leaving group:", err);
     },
-    onSuccess: async () => {
+    onSuccess: async (_, groupId) => {
       refetchGroups();
+      queryClient.invalidateQueries({ queryKey: ["groupMembers", groupId] }); 
+      queryClient.invalidateQueries({ queryKey: ["expenses", groupId] });
+
     },
   });
   
