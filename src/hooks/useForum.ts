@@ -4,6 +4,7 @@ import {
   insertForumPost,
   updateLikeCount,
   deleteForumPost,
+  editForumPost
 } from "@/api/forum";
 
 const useForum = () => {
@@ -95,6 +96,17 @@ const likeMutation = useMutation({
     },
   });
 
+  const editPostMutation = useMutation({
+  mutationFn: ({ postId, desc, privacy }: { postId: string; desc: string; privacy: number }) =>
+    editForumPost(postId, desc, privacy),
+  onSuccess: () => queryClient.invalidateQueries({ queryKey: ["forumPosts"] }),
+  onError: (err) => console.error("Error editing post:", err),
+});
+
+const editPost = (postId: string, desc: string, privacy: number) =>
+  editPostMutation.mutate({ postId, desc, privacy });
+
+
   const createPost = (desc: string, privacy: number) => {
     insertMutation.mutate({ desc, privacy });
   };
@@ -114,6 +126,7 @@ const likeMutation = useMutation({
     createPost,
     toggleLike,
     removePost,
+    editPost
   };
 };
 
