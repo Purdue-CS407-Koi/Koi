@@ -268,6 +268,41 @@ export type Database = {
           },
         ]
       }
+      Forum: {
+        Row: {
+          created_at: string
+          desc: string | null
+          id: string
+          likes: number | null
+          privacy: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          desc?: string | null
+          id?: string
+          likes?: number | null
+          privacy?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          desc?: string | null
+          id?: string
+          likes?: number | null
+          privacy?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Forum_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       GroupInvites: {
         Row: {
           created_at: string
@@ -486,6 +521,10 @@ export type Database = {
         Returns: {
           user_id: string
         }[]
+      }
+      update_like_count: {
+        Args: { delta: number; post_id_input: string }
+        Returns: undefined
       }
     }
     Enums: {
