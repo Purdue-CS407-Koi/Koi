@@ -49,7 +49,7 @@ export const ExpenseTable = () => {
     type: "fitGridWidth",
     defaultMinWidth: 100,
     columnLimits: [
-      { colId: "actions", maxWidth: 120 },
+      { colId: "actions", maxWidth: 150 },
       { colId: "created_at", maxWidth: 120, minWidth: 120 },
       { colId: "amount", maxWidth: 120 },
       { colId: "name", maxWidth: 150 },
