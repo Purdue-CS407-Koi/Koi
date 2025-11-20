@@ -161,3 +161,11 @@ export async function deleteRecurringExpense(id: string) {
     .eq("id", id);
   if (error) throw error;
 }
+
+export async function deleteExpenseComment(id: string) {
+  const { error } = await supabase
+    .from("ExpenseComments")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
+}
