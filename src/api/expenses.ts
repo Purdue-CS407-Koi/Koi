@@ -92,6 +92,30 @@ export async function insertNewRecurringExpense({
   return data;
 }
 
+export async function insertNewExpenseComment({
+  content,
+  expense_id,
+}: TablesInsert<"ExpenseComments">) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+  const { data, error } = await supabase
+    .from("ExpenseComments")
+    .insert([
+      {
+        user_id: user!.id,
+        content,
+        expense_id,
+      },
+    ])
+    .select();
+  if (error) throw error;
+  return data;
+}
+
 export async function updateExpense({
   amount,
   description,

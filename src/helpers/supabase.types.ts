@@ -210,6 +210,45 @@ export type Database = {
           },
         ]
       }
+      ExpenseComments: {
+        Row: {
+          content: string | null
+          created_at: string
+          expense_id: string | null
+          id: number
+          user_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          expense_id?: string | null
+          id?: number
+          user_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          expense_id?: string | null
+          id?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ExpenseComments_expense_id_fkey"
+            columns: ["expense_id"]
+            isOneToOne: false
+            referencedRelation: "Expenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ExpenseComments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Expenses: {
         Row: {
           amount: number
