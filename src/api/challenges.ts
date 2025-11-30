@@ -6,6 +6,15 @@ import type {
   TablesUpdate,
 } from "@/helpers/supabase.types";
 
+// Fetches all the app-wide challenges
+export const getAppChallenges = async (): Promise<Tables<"Challenges">[]> => {
+  const { data, error } = await supabase.from("Challenges").select("*");
+
+  if (error) throw error;
+
+  return data ?? [];
+};
+
 // Fetches all the app-wide challenges and sort into accepted/not accepted for the current user
 export const getAppChallengesForUser = async (): Promise<{
   accepted: Tables<"Challenges">[];
@@ -107,6 +116,20 @@ export const getActiveChallenges = async (): Promise<
   if (error) throw error;
 
   return challengesWithSums;
+};
+
+// Get the number of users for the given challenge ID
+export const getChallengeUserCount = async (
+  challenge_id: string,
+): Promise<number> => {
+  const { data, error } = await supabase
+    .from("ChallengeMemberships")
+    .select("id")
+    .eq("challenge_id", challenge_id);
+
+  if (error) throw error;
+
+  return data.length;
 };
 
 // Creates a new ChallengeMemberships entry for the current user and supplied challenge ID
