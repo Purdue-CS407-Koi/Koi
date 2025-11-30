@@ -8,39 +8,45 @@ import type {
 
 // Fetches all the app-wide challenges and sort into accepted/not accepted for the current user
 export const getAppChallengesForUser = async (): Promise<{
-  accepted: Tables<"Challenges">[],
-  notAccepted: Tables<"Challenges">[],
+  accepted: Tables<"Challenges">[];
+  notAccepted: Tables<"Challenges">[];
 }> => {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) throw new Error("Failed to fetch current user!");
 
   const { data, error } = await supabase
     .from("Challenges")
-    .select(`
+    .select(
+      `
       *,
       ChallengeMemberships!left (
         user_id,
         challenge_id
       )
-    `)
+    `,
+    )
     .is("owner", null)
     .eq("ChallengeMemberships.user_id", user.id);
 
   if (error) throw error;
 
-  const rows = (data ?? []);
+  const rows = data ?? [];
 
-  const accepted = rows.filter(r => r.ChallengeMemberships?.length > 0);
-  const notAccepted = rows.filter(r => !r.ChallengeMemberships || r.ChallengeMemberships.length === 0);
+  const accepted = rows.filter((r) => r.ChallengeMemberships?.length > 0);
+  const notAccepted = rows.filter(
+    (r) => !r.ChallengeMemberships || r.ChallengeMemberships.length === 0,
+  );
 
   return { accepted, notAccepted };
 };
 
 // gets all group challenges created by the current user
-export const getGroupChallenges = async (): Promise<
-  Tables<"Challenges">[]
-> => {
-  const { data: { user } } = await supabase.auth.getUser();
+export const getGroupChallenges = async (): Promise<Tables<"Challenges">[]> => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) throw new Error("Failed to fetch current user!");
 
   const { data, error } = await supabase
@@ -55,25 +61,34 @@ export const getGroupChallenges = async (): Promise<
 
 // gets all group challenges created by the current user
 export const getActiveChallenges = async (): Promise<
-  (Tables<"Challenges"> & { amount_used: number, joined: string, owner_name?: string | null, is_owner: boolean })[]
+  (Tables<"Challenges"> & {
+    amount_used: number;
+    joined: string;
+    owner_name?: string | null;
+    is_owner: boolean;
+  })[]
 > => {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) throw new Error("Failed to fetch current user!");
 
   const { data, error } = await supabase
-  .from('Challenges')
-  .select(`
+    .from("Challenges")
+    .select(
+      `
     *,
     ChallengeMemberships!inner(user_id, created_at),
     Users!left(name),
     Expenses!left(amount, user_id)
-  `)
-  .eq('ChallengeMemberships.user_id', user.id);
+  `,
+    )
+    .eq("ChallengeMemberships.user_id", user.id);
 
   if (error) throw error;
 
   const challengesWithSums = (data ?? []).map((ch) => {
-    const isOwner = ch.owner === user.id; 
+    const isOwner = ch.owner === user.id;
     const ownerIsNull = ch.owner == null;
 
     const amount_used = (ch.Expenses ?? [])
@@ -96,7 +111,7 @@ export const getActiveChallenges = async (): Promise<
 
 // Creates a new ChallengeMemberships entry for the current user and supplied challenge ID
 export const insertChallengeMembership = async (
-  challenge_id: string
+  challenge_id: string,
 ): Promise<Tables<"ChallengeMemberships">> => {
   const {
     data: { user },
@@ -114,7 +129,7 @@ export const insertChallengeMembership = async (
       },
     ])
     .select();
-    
+
   if (error) throw error;
   if (data.length !== 1)
     throw new Error("Failed to create new bucket metadata entry!");
@@ -123,7 +138,7 @@ export const insertChallengeMembership = async (
 };
 
 export const insertChallenge = async (
-  challenge: TablesInsert<"Challenges">
+  challenge: TablesInsert<"Challenges">,
 ): Promise<Tables<"Challenges">> => {
   const {
     data: { user },
@@ -141,7 +156,7 @@ export const insertChallenge = async (
       },
     ])
     .select();
-  
+
   if (error) throw error;
   if (data.length !== 1)
     throw new Error("Failed to create new bucket metadata entry!");
@@ -160,7 +175,7 @@ export const insertChallenge = async (
 };
 
 export const editChallenge = async (
-  challenge: TablesUpdate<"Challenges">
+  challenge: TablesUpdate<"Challenges">,
 ): Promise<Tables<"Challenges">> => {
   const {
     data: { user },
@@ -187,9 +202,11 @@ export const editChallenge = async (
 };
 
 export const deleteChallengeMembership = async (
-  challenge_id: string
+  challenge_id: string,
 ): Promise<void> => {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     throw new Error("Failed to fetch current user!");
   }
@@ -203,16 +220,22 @@ export const deleteChallengeMembership = async (
   return;
 };
 
-export const inviteFriendToChallenge = async (challengeId: string, friendEmail: string) => {
+export const inviteFriendToChallenge = async (
+  challengeId: string,
+  friendEmail: string,
+) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("User is undefined");
 
   // Get friend's user ID
-  const { data, error } = await supabase.rpc("get_user_id_by_email", { email_input: friendEmail });
+  const { data, error } = await supabase.rpc("get_user_id_by_email", {
+    email_input: friendEmail,
+  });
   if (error) throw error;
-  if (!data || data.length === 0) throw new Error("No user found with that email");
+  if (!data || data.length === 0)
+    throw new Error("No user found with that email");
 
   const friendId = data[0].user_id;
 
@@ -227,8 +250,10 @@ export const inviteFriendToChallenge = async (challengeId: string, friendEmail: 
   if (checkError) throw checkError;
 
   if (existingInvite) {
-    if (existingInvite.type === 0) throw new Error("An invite is already pending for this user.");
-    if (existingInvite.type === 1) throw new Error("This user has already joined this challenge.");
+    if (existingInvite.type === 0)
+      throw new Error("An invite is already pending for this user.");
+    if (existingInvite.type === 1)
+      throw new Error("This user has already joined this challenge.");
   }
 
   // Create invite
@@ -248,7 +273,6 @@ export const inviteFriendToChallenge = async (challengeId: string, friendEmail: 
   if (insertError) throw insertError;
   return invite;
 };
-
 
 // Accept an invite → adds the user to the group and updates status
 export const acceptChallengeInvite = async (inviteId: string) => {
@@ -298,7 +322,9 @@ export const declineChallengeInvite = async (inviteId: string) => {
 };
 
 export const getPendingChallengeInvites = async () => {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) throw new Error("User not authenticated");
 
   const { data, error } = await supabase
