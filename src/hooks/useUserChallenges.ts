@@ -21,7 +21,7 @@ const useUserChallenges = () => {
     error: appError,
     refetch: refetchAppChallenges,
   } = useQuery({
-    queryKey: ["challenges", "appChallenges"],
+    queryKey: ["challenges", "appChallengesForUser"],
     queryFn: () => getAppChallengesForUser(),
   });
 
