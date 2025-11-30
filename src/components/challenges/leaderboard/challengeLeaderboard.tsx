@@ -21,7 +21,7 @@ const ChallengeLeaderboard = () => {
           return challenge.end === null || new Date(challenge.end) > new Date();
         });
 
-        const processed = Promise.all(
+        const processed = await Promise.all(
           filtered.map(async (challenge) => {
             const participants = await getChallengeUserCount(challenge.id);
             return {
@@ -31,7 +31,9 @@ const ChallengeLeaderboard = () => {
           }),
         );
 
-        setProcessedChallenges(await processed);
+        setProcessedChallenges(
+          processed.sort((a, b) => b.participants - a.participants),
+        );
       }
     })();
   }, [appChallengeData]);
