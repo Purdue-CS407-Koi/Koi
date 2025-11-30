@@ -15,7 +15,7 @@ import {
 import { type FormEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import useChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useChallenges";
 
 interface EditExpenseModalProps {
   cellProps: CustomCellRendererProps;
@@ -29,7 +29,7 @@ export const EditExpenseModal = ({
   setOpen,
 }: EditExpenseModalProps) => {
   const { updateExpense } = useExpenses();
-  const { activeChallengeData } = useChallenges();
+  const { activeChallengeData } = useUserChallenges();
 
   const handleClickOpen = () => {
     setOpen(true);

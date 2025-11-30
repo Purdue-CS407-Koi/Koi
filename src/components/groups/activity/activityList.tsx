@@ -1,5 +1,5 @@
 import { useBuckets } from "@/hooks/useBuckets";
-import useChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useChallenges";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
@@ -35,7 +35,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   const { setCurrentBucketMetadataId } =
     useBucketsStore();
   
-  const { activeChallengeData } = useChallenges();
+  const { activeChallengeData } = useUserChallenges();
 
   const handleModal = (activity: Activity) => {
     setSplit(activity);

@@ -129,7 +129,7 @@ import {
   Divider,
 } from "@mui/material";
 import useGroups from "@/hooks/useGroups";
-import useChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useChallenges";
 
 export const InvitesModal = ({
   open,
@@ -150,7 +150,7 @@ export const InvitesModal = ({
     acceptChallengeInvite,
     declineChallengeInvite,
     refetchPendingChallengeInvites,
-  } = useChallenges();
+  } = useUserChallenges();
 
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 

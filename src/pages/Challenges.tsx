@@ -3,7 +3,7 @@ import { AppChallenges } from "@/components/challenges/appChallenges";
 import { ActiveChallenges } from "@/components/challenges/activeChallenges";
 import { MyChallenges } from "@/components/challenges/myChallenges";
 import { Leaderboard } from "@/components/challenges/leaderboard";
-import useChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useUserChallenges";
 
 const Challenges = () => {
   const { 
@@ -14,7 +14,7 @@ const Challenges = () => {
     insertNewChallenge, 
     updateChallenge,
     leaveChallenge,
-  } = useChallenges();
+  } = useUserChallenges();
 
   return (
     <Template>

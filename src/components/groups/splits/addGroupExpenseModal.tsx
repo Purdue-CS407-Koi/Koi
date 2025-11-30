@@ -30,7 +30,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import useChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useChallenges";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
@@ -52,7 +52,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   const { groupsData: groups } = useGroups();
   const { bucketMetadataData, refetchBucketInstance } = useBuckets();
   const { userData } = useUsers();
-  const { activeChallengeData } = useChallenges();
+  const { activeChallengeData } = useUserChallenges();
   
   const [expenseName, setExpenseName] = useState("");
   const [expenseDollars, setExpenseDollars] = useState("00");

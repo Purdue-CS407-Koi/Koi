@@ -1,4 +1,4 @@
-import useChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useChallenges";
 import useExpenses from "@/hooks/useExpenses";
 import type { NewExpense } from "@/interfaces/Expense";
 import { useBucketsStore } from "@/stores/useBucketsStore";
@@ -20,7 +20,7 @@ export const NewExpenseModal = () => {
   const [open, setOpen] = useState(false);
   const { currentBucketInstanceId } = useBucketsStore();
   const { insertNewExpense } = useExpenses();
-  const { activeChallengeData } = useChallenges();
+  const { activeChallengeData } = useUserChallenges();
 
   const handleClickOpen = () => {
     setOpen(true);

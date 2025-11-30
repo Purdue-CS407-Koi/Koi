@@ -14,7 +14,7 @@ import {
 } from "@/api/challenges";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 
-const useChallenges = () => {
+const useUserChallenges = () => {
   const {
     data: appChallengeData,
     isLoading: isAppLoading,
@@ -189,4 +189,4 @@ const useChallenges = () => {
   };
 };
 
-export default useChallenges;
+export default useUserChallenges;
