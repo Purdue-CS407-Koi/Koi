@@ -132,6 +132,20 @@ export const getChallengeUserCount = async (
   return data.length;
 };
 
+// Get the number of challenges the user with the given ID has
+export const getUserChallengeCount = async (
+  user_id: string,
+): Promise<number> => {
+  const { data, error } = await supabase
+    .from("ChallengeMemberships")
+    .select("id")
+    .eq("user_id", user_id);
+
+  if (error) throw error;
+
+  return data.length;
+};
+
 // Creates a new ChallengeMemberships entry for the current user and supplied challenge ID
 export const insertChallengeMembership = async (
   challenge_id: string,

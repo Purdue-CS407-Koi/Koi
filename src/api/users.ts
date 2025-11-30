@@ -18,7 +18,7 @@ export async function createAccountWithProfile(
   }
 
   return data;
-};
+}
 
 export async function createAccount(
   email: string,
@@ -87,3 +87,13 @@ export async function getCurrentUser() {
 
   return data[0];
 }
+
+export const getUsers = async () => {
+  const { data, error } = await supabase.from("Users").select();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
