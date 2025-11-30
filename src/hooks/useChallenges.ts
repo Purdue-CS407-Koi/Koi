@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAppChallenges, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, inviteFriendToChallenge, deleteChallengeMembership, acceptChallengeInvite, declineChallengeInvite, getPendingChallengeInvites } from "@/api/challenges";
+import { getAppChallengesForUser, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, inviteFriendToChallenge, deleteChallengeMembership, acceptChallengeInvite, declineChallengeInvite, getPendingChallengeInvites } from "@/api/challenges";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 
 const useChallenges = () => {
@@ -10,7 +10,7 @@ const useChallenges = () => {
     refetch: refetchAppChallenges
   } = useQuery({
     queryKey: ["challenges", "appChallenges"],
-    queryFn: () => getAppChallenges(),
+    queryFn: () => getAppChallengesForUser(),
   });
 
   const {

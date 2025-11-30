@@ -6,8 +6,8 @@ import type {
   TablesUpdate,
 } from "@/helpers/supabase.types";
 
-// Fetches all the app-wide challenges
-export const getAppChallenges = async (): Promise<{
+// Fetches all the app-wide challenges and sort into accepted/not accepted for the current user
+export const getAppChallengesForUser = async (): Promise<{
   accepted: Tables<"Challenges">[],
   notAccepted: Tables<"Challenges">[],
 }> => {
