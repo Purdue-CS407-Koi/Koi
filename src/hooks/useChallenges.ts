@@ -1,5 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAppChallengesForUser, getGroupChallenges, insertChallengeMembership, getActiveChallenges, insertChallenge, editChallenge, inviteFriendToChallenge, deleteChallengeMembership, acceptChallengeInvite, declineChallengeInvite, getPendingChallengeInvites } from "@/api/challenges";
+import {
+  getAppChallengesForUser,
+  getGroupChallenges,
+  insertChallengeMembership,
+  getActiveChallenges,
+  insertChallenge,
+  editChallenge,
+  inviteFriendToChallenge,
+  deleteChallengeMembership,
+  acceptChallengeInvite,
+  declineChallengeInvite,
+  getPendingChallengeInvites,
+} from "@/api/challenges";
 import type { TablesInsert, TablesUpdate } from "@/helpers/supabase.types";
 
 const useChallenges = () => {
@@ -7,7 +19,7 @@ const useChallenges = () => {
     data: appChallengeData,
     isLoading: isAppLoading,
     error: appError,
-    refetch: refetchAppChallenges
+    refetch: refetchAppChallenges,
   } = useQuery({
     queryKey: ["challenges", "appChallenges"],
     queryFn: () => getAppChallengesForUser(),
@@ -27,7 +39,7 @@ const useChallenges = () => {
     data: activeChallengeData,
     isLoading: isActiveLoading,
     error: activeError,
-    refetch: refetchActiveChallenges
+    refetch: refetchActiveChallenges,
   } = useQuery({
     queryKey: ["challenges", "activeChallenges"],
     queryFn: () => getActiveChallenges(),
@@ -72,7 +84,7 @@ const useChallenges = () => {
 
   const insertNewChallenge = (challenge: TablesInsert<"Challenges">) => {
     createChallengeMutation.mutate(challenge);
-  }
+  };
 
   const editChallengeMutation = useMutation({
     mutationFn: editChallenge,
@@ -84,11 +96,11 @@ const useChallenges = () => {
       refetchGroupChallenges();
       refetchAppChallenges();
     },
-  }); 
+  });
 
   const updateChallenge = (challenge: TablesUpdate<"Challenges">) => {
     editChallengeMutation.mutate(challenge);
-  }
+  };
 
   const deleteChallengeMembershipMutation = useMutation({
     mutationFn: deleteChallengeMembership,
@@ -103,7 +115,7 @@ const useChallenges = () => {
 
   const leaveChallenge = (challenge_id: string) => {
     deleteChallengeMembershipMutation.mutate(challenge_id);
-  }
+  };
   const inviteFriendMutation = useMutation({
     mutationFn: async ({
       challengeId,
@@ -118,13 +130,14 @@ const useChallenges = () => {
     onSuccess: () => {
       refetchActiveChallenges();
       refetchGroupChallenges();
-      refetchAppChallenges();    },
+      refetchAppChallenges();
+    },
   });
 
   const inviteFriend = async (challengeId: string, friendEmail: string) => {
     return inviteFriendMutation.mutateAsync({ challengeId, friendEmail });
   };
-const acceptChallengeInviteMutation = useMutation({
+  const acceptChallengeInviteMutation = useMutation({
     mutationFn: acceptChallengeInvite,
     onError: (err) => {
       console.log("error accepting challenge invite: " + JSON.stringify(err));
@@ -152,14 +165,14 @@ const acceptChallengeInviteMutation = useMutation({
   const declineChallengeInviteHandler = (inviteId: string) => {
     declineChallengeInviteMutation.mutate(inviteId);
   };
-  return { 
-    appChallengeData, 
-    groupChallengeData, 
-    activeChallengeData, 
-    isAppLoading, 
-    isGroupLoading, 
+  return {
+    appChallengeData,
+    groupChallengeData,
+    activeChallengeData,
+    isAppLoading,
+    isGroupLoading,
     isActiveLoading,
-    appError, 
+    appError,
     groupError,
     activeError,
     insertNewChallengeMembership,
