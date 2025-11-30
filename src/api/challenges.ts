@@ -4,8 +4,6 @@ import type {
   Tables,
   TablesInsert,
   TablesUpdate,
-// TablesInsert,
-//   TablesUpdate,
 } from "@/helpers/supabase.types";
 
 // Fetches all the app-wide challenges
