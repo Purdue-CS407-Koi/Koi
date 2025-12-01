@@ -5,6 +5,7 @@ import Profile from "./Profile";
 const Navbar = () => {
   const navLinks = [
     { target: "/", title: "Overview" },
+    { target: "/calendar", title: "Calendar" },
     { target: "/groups", title: "Groups" },
     { target: "/challenges", title: "Challenges" },
     { target: "/forum", title: "Forum" },

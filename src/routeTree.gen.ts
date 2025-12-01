@@ -14,6 +14,7 @@ import { Route as SignInRouteImport } from './routes/signIn'
 import { Route as GroupsRouteImport } from './routes/groups'
 import { Route as ForumRouteImport } from './routes/forum'
 import { Route as ChallengesRouteImport } from './routes/challenges'
+import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SignUpRoute = SignUpRouteImport.update({
@@ -41,6 +42,11 @@ const ChallengesRoute = ChallengesRouteImport.update({
   path: '/challenges',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,6 +55,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
   '/challenges': typeof ChallengesRoute
   '/forum': typeof ForumRoute
   '/groups': typeof GroupsRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
   '/challenges': typeof ChallengesRoute
   '/forum': typeof ForumRoute
   '/groups': typeof GroupsRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
   '/challenges': typeof ChallengesRoute
   '/forum': typeof ForumRoute
   '/groups': typeof GroupsRoute
@@ -74,12 +83,27 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/challenges' | '/forum' | '/groups' | '/signIn' | '/signUp'
+  fullPaths:
+    | '/'
+    | '/calendar'
+    | '/challenges'
+    | '/forum'
+    | '/groups'
+    | '/signIn'
+    | '/signUp'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/challenges' | '/forum' | '/groups' | '/signIn' | '/signUp'
+  to:
+    | '/'
+    | '/calendar'
+    | '/challenges'
+    | '/forum'
+    | '/groups'
+    | '/signIn'
+    | '/signUp'
   id:
     | '__root__'
     | '/'
+    | '/calendar'
     | '/challenges'
     | '/forum'
     | '/groups'
@@ -89,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CalendarRoute: typeof CalendarRoute
   ChallengesRoute: typeof ChallengesRoute
   ForumRoute: typeof ForumRoute
   GroupsRoute: typeof GroupsRoute
@@ -133,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChallengesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -145,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CalendarRoute: CalendarRoute,
   ChallengesRoute: ChallengesRoute,
   ForumRoute: ForumRoute,
   GroupsRoute: GroupsRoute,
