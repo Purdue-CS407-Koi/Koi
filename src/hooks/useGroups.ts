@@ -103,13 +103,13 @@ const removeMember = (group_id: string, user_id: string) => {
 
 
 const inviteFriendMutation = useMutation({
-    mutationFn: async ({ groupId, friendEmail }: { groupId: string; friendEmail: string }) =>
-      inviteFriendToGroup(groupId, friendEmail),
-    onError: (err) => console.error("Error inviting friend:", err),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pendingInvites"] });
-    },
-  });
+  mutationFn: async ({ groupId, friendEmail }: { groupId: string; friendEmail: string }) =>
+    inviteFriendToGroup(groupId, friendEmail),
+  onError: (err) => console.error("Error inviting friend:", err),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["pendingInvites"] });
+  },
+});
 
   const { data: pendingInvites, refetch: refetchPendingInvites } = useQuery({
     queryKey: ["pendingInvites"],
@@ -171,6 +171,7 @@ const inviteFriendMutation = useMutation({
   };
 
   const currentGroupId = useGroupStore((state) => state.currentGroupId);
+
   const {
     data: currentGroupData,
     isLoading,
@@ -193,7 +194,7 @@ const inviteFriendMutation = useMutation({
     return { groupMembersData, isLoading, error };
   };
 
-return {
+  return {
     groupsData,
     getGroupsError,
     refetchGroups,

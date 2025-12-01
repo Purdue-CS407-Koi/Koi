@@ -16,21 +16,20 @@ const Groups = () => {
   const [modalPage, setModalPage] = useState(0);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
-  const [groupExpenseSelectedGroup, setGroupExpenseSelectedGroup] =
-    useState<string>("");
+
   const { groupMembersData } = useGroupMembers(selectedGroupId ?? "");
-  const { groupMembersData: groupExpenseMembersData } = useGroupMembers(
-    groupExpenseSelectedGroup ?? ""
-  );
+
   const [page1Reset, setPage1Reset] = useState(0);
 
   const [expense, setExpense] = useState<TablesInsert<"Expenses"> | null>(null);
   const [, setIsEditModalOpen] = useState(false);
+  
   const {
     data: activityData,
     isLoading: activityLoading,
     refetch,
   } = useActivity(selectedGroupId ?? undefined);
+
   const { insertNewExpenseAndReturn } = useExpenses();
   const selectedGroupName =
     groupsData?.find((g) => g.id === selectedGroupId)?.name || "";
@@ -63,15 +62,18 @@ const Groups = () => {
                   <h2 className="text-2xl font-bold m-0 text-sidebar-title">
                     {selectedGroupName || "Select a Group"}
                   </h2>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => setModalPage(1)}
-                      className="flex items-center gap-1.5 py-2 px-4 text-white text-sm cursor-pointer rounded-md border-none bg-expense-add-btn"
-                    >
-                      <span className="text-base">+</span>
-                      Add Expense
-                    </button>
-                  </div>
+                  {
+                    selectedGroupId &&
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setModalPage(1)}
+                        className="flex items-center gap-1.5 py-2 px-4 text-white text-sm cursor-pointer rounded-md border-none bg-expense-add-btn"
+                      >
+                        <span className="text-base">+</span>
+                        Add Expense
+                      </button>
+                    </div>
+                  }
                 </div>
                 <ActivityList
                   activityData={activityData}
@@ -96,12 +98,10 @@ const Groups = () => {
                 onClose={() => {
                   setModalPage(0);
                   setPage1Reset((k) => k + 1);
-                  setGroupExpenseSelectedGroup("");
                 }}
                 onNext={setModalPage}
                 setExpense={setExpense}
-                selectedGroup={groupExpenseSelectedGroup}
-                setSelectedGroup={setGroupExpenseSelectedGroup}
+                selectedGroup={selectedGroupId || ""}
                 key={page1Reset}
               />
               <SplitEvenlyModal
@@ -109,13 +109,12 @@ const Groups = () => {
                 onClose={() => {
                   setModalPage(0);
                   setPage1Reset((k) => k + 1);
-                  setGroupExpenseSelectedGroup("");
                 }}
                 onSave={handleAddGroupExpense}
                 setPage={setModalPage}
                 expense={expense}
-                selectedGroup={groupExpenseSelectedGroup}
-                members={groupExpenseMembersData}
+                selectedGroup={selectedGroupId || ""}
+                members={groupMembersData}
                 refetch={refetch}
               />
               <SplitCustomModal
@@ -123,13 +122,12 @@ const Groups = () => {
                 onClose={() => {
                   setModalPage(0);
                   setPage1Reset((k) => k + 1);
-                  setGroupExpenseSelectedGroup("");
                 }}
                 onSave={handleAddGroupExpense}
                 setPage={setModalPage}
                 expense={expense}
-                selectedGroup={groupExpenseSelectedGroup}
-                members={groupExpenseMembersData}
+                selectedGroup={selectedGroupId || ""}
+                members={groupMembersData}
                 refetch={refetch}
               />
             </div>

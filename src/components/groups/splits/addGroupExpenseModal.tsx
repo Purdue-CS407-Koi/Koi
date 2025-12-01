@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { TEXT_EDITING } from "@/config/keyboardEvents";
 
 // hooks
-import useGroups from "@/hooks/useGroups";
 import useUsers from "@/hooks/useUsers";
 import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
@@ -30,7 +29,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import useUserChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useUserChallenges";
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
@@ -38,7 +37,6 @@ interface AddGroupExpenseModalProps {
   onNext: (page: number) => void; 
   setExpense: (expense: TablesInsert<"Expenses">) => void;
   selectedGroup: string;
-  setSelectedGroup: (group: string) => void;
 }
 
 export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
@@ -47,9 +45,7 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   onNext,
   setExpense,
   selectedGroup,
-  setSelectedGroup,
 }) => {
-  const { groupsData: groups } = useGroups();
   const { bucketMetadataData, refetchBucketInstance } = useBuckets();
   const { userData } = useUsers();
   const { activeChallengeData } = useUserChallenges();
@@ -69,7 +65,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
     setExpenseName("");
     setExpenseDollars("00");
     setExpenseCents("00");
-    setSelectedGroup("");
     setSelectedBucket("");
     setSelectedChallenge("");
   };
@@ -127,16 +122,15 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
   };
 
   const handleKeyPressText = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
+    if (e.key === "Escape") { 
       handleClose();
     }
   };
 
   // Don't allow non-numeric input
   const handleKeyPressNumber = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
-      handleClose();
-    }
+    if (e.key === "Escape") handleClose();
+
     if (e.ctrlKey || e.metaKey) return;
 
     if (!/[0-9]/.test(e.key) && !TEXT_EDITING.includes(e.key))
@@ -178,39 +172,6 @@ export const AddGroupExpenseModal: React.FC<AddGroupExpenseModalProps> = ({
             !mb-4
           "
         />
-
-        <FormControl fullWidth 
-          className="
-            [&_.MuiInputLabel-root]:!text-gray-500
-            [&_.MuiInputLabel-root.Mui-focused]:!text-[var(--color-button-hover)]
-            [&_.MuiOutlinedInput-notchedOutline]:!border-gray-300
-            [&_.MuiOutlinedInput-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:!border-[var(--color-button-hover)]
-            [&_.MuiSelect-select]:!text-gray-800
-            [&_.MuiSvgIcon-root]:!text-[var(--color-button-hover)]]
-            !mb-4
-          "
-          required
-        >
-          <InputLabel id="group-label">
-            Select Group
-          </InputLabel>
-          <Select
-            margin="dense"
-            labelId="group-label"
-            label="Select Group"
-            value={selectedGroup}
-            onChange={(e) => setSelectedGroup(e.target.value) }
-            fullWidth
-            required
-          >
-            {groups?.map((group: { id: string; name: string; created_at: string }) => (
-              <MenuItem value={group.id}>
-                {group.name}
-              </MenuItem>
-            ))}
-          </Select>
-          
-        </FormControl>
 
         <FormControl fullWidth 
           required
