@@ -16,12 +16,14 @@ const UserLeaderboard = () => {
     (async () => {
       const users = await getUsers();
 
-      const processed = await Promise.all(
-        users.map(async (user) => {
-          const challengeCount = await getUserChallengeCount(user.id);
-          return { ...user, challengeCount };
-        }),
-      );
+      const processed = (
+        await Promise.all(
+          users.map(async (user) => {
+            const challengeCount = await getUserChallengeCount(user.id);
+            return { ...user, challengeCount };
+          }),
+        )
+      ).filter((user) => user.challengeCount > 0);
 
       setProcessedUsers(
         processed.sort((a, b) => b.challengeCount - a.challengeCount),
