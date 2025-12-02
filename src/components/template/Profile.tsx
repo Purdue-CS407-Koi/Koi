@@ -132,6 +132,7 @@ import { Menu, MenuItem, Snackbar, Alert } from "@mui/material";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { ProfileModal } from "./ProfileModal";
 import { InvitesModal } from "../groups/invite/invitesModal";
+import { NotificationsModal } from "../groups/notification/notificationsModal";
 import supabase from "@/helpers/supabase";
 
 const Profile = () => {
@@ -140,11 +141,13 @@ const Profile = () => {
   const [user, setUser] = useState<{
     name: string | null;
     email: string | null;
+    notification: boolean;
   } | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [invitesOpen, setInvitesOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -162,11 +165,25 @@ const Profile = () => {
       }
 
       const fetchedUser = data.user;
+
       if (fetchedUser) {
-        setUser({
-          name: fetchedUser.user_metadata?.display_name ?? null,
-          email: fetchedUser.email ?? null,
-        });
+        const { data: userData, error: userError } = await supabase
+          .from("Users")
+          .select()
+          .eq("id", fetchedUser?.id);
+
+        if (userError) {
+          console.error("Error fetching user:", userError.message);
+          return;
+        }
+
+        if (userData && userData.length > 0) {
+          setUser({
+            name: fetchedUser.user_metadata?.display_name ?? null,
+            email: fetchedUser.email ?? null,
+            notification: userData[0]?.notifications ?? true,
+          });
+        }
       }
     };
 
@@ -199,7 +216,23 @@ const Profile = () => {
     setInvitesOpen(true);
   };
 
-  const handleSaveProfile = async (updatedEmail: string) => {
+  const handleViewNotifications = () => {
+    handleClose();
+    setNotificationsOpen(true);
+  }
+
+  const handleSaveProfile = async (updatedEmail: string, notifications: boolean) => {
+    const { data } = await supabase.auth.getUser();
+
+    const { error: notifError } = await supabase
+      .from("Users")
+      .update({ notifications: notifications })
+      .eq("id", data?.user?.id || "");
+    
+    if (notifError) {
+      console.error("Error updating notifications:", notifError.message);
+    }
+    
     if (!updatedEmail) return;
 
     const { error } = await supabase.auth.updateUser({ email: updatedEmail });
@@ -219,11 +252,22 @@ const Profile = () => {
         severity: "success",
       });
 
-      const { data } = await supabase.auth.getUser();
       if (data?.user) {
+
+        const { data: userData, error: userError } = await supabase
+          .from("Users")
+          .select()
+          .eq("id", data.user.id);
+
+        if (userError) {
+          console.error("Error fetching user:", userError.message);
+          return;
+        }
+
         setUser({
           name: data.user.user_metadata?.display_name ?? null,
           email: data.user.email ?? null,
+          notification: userData[0]?.notifications ?? true,
         });
       }
     }
@@ -260,6 +304,7 @@ const Profile = () => {
       >
         <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
         <MenuItem onClick={handleViewInvites}>Invites</MenuItem>
+        <MenuItem onClick={handleViewNotifications}>Notifications</MenuItem>
         <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
       </Menu>
 
@@ -271,6 +316,10 @@ const Profile = () => {
         onSave={handleSaveProfile}
       />
       <InvitesModal open={invitesOpen} onClose={() => setInvitesOpen(false)} />
+      <NotificationsModal
+        open={notificationsOpen}
+        onClose={() => setNotificationsOpen(false)}
+      />
 
       {/* Snackbar for feedback */}
       <Snackbar

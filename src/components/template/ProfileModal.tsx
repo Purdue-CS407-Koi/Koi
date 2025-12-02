@@ -5,6 +5,7 @@ import {
   DialogActions,
   Button,
   TextField,
+  Switch
 } from "@mui/material";
 import { useState, useEffect } from "react";
 
@@ -14,8 +15,9 @@ interface ProfileModalProps {
   user: {
     name: string | null;
     email: string | null;
+    notification: boolean;
   } | null;
-  onSave: (updatedEmail: string) => void;
+  onSave: (updatedEmail: string, notifications: boolean) => void;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -25,13 +27,16 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onSave,
 }) => {
   const [email, setEmail] = useState(user?.email || "");
+  const [notifications, setNotifications] = useState<boolean>(user?.notification || true);
+
 
   useEffect(() => {
     if (user?.email) setEmail(user.email);
+    if (user?.notification) setNotifications(user.notification);
   }, [user]);
 
   const handleSave = () => {
-    onSave(email.trim());
+    onSave(email.trim(), notifications);
     onClose();
   };
 
@@ -56,6 +61,14 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             size="small"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Notifications</p>
+          <Switch
+            checked={notifications}
+            onChange={() => setNotifications(!notifications)}
           />
         </div>
       </DialogContent>

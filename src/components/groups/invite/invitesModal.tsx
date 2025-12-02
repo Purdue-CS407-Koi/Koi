@@ -129,7 +129,7 @@ import {
   Divider,
 } from "@mui/material";
 import useGroups from "@/hooks/useGroups";
-import useUserChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useUserChallenges";
 
 export const InvitesModal = ({
   open,
