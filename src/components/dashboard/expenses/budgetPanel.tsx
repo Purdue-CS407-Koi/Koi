@@ -1,9 +1,9 @@
 import { Select, MenuItem, FormControl } from "@mui/material";
 import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
-import { BudgetChart } from "./budgetChart";
 import { RecurringExpensesSection } from "./recurringExpensesSection";
 import { convertToLocalTime } from "@/helpers/utilities";
+import { ChartCarousel } from "./chartCarousel";
 
 export const BudgetPanel = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -43,7 +43,7 @@ export const BudgetPanel = () => {
             </Select>
           </FormControl>
         </div>
-        <BudgetChart />
+        <ChartCarousel />
         <RecurringExpensesSection />
       </div>
     </div>
