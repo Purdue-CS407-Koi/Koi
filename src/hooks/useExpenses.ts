@@ -5,6 +5,7 @@ import type {
 } from "@/interfaces/Expense";
 import {
   insertNewExpense as insertNewExpenseApi,
+  insertNewExpenseComment as insertNewExpenseCommentApi,
   insertNewRecurringExpense as insertNewRecurringExpenseApi,
   getExpensesFromBucket,
   getRecurringExpenses,
@@ -12,6 +13,7 @@ import {
   updateRecurringExpense as updateRecurringExpenseApi,
   deleteExpense as deleteExpenseApi,
   deleteRecurringExpense as deleteRecurringExpenseApi,
+  deleteExpenseComment as deleteExpenseCommentApi,
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import type { TablesInsert } from "@/helpers/supabase.types";
@@ -30,6 +32,18 @@ const useExpenses = () => {
     mutationFn: insertNewExpenseApi,
     onError: (err) => {
       console.log("error inserting new expense: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchExpenses();
+    },
+  });
+
+  const createExpenseCommentMutation = useMutation({
+    mutationFn: insertNewExpenseCommentApi,
+    onError: (err) => {
+      console.log(
+        "error inserting new expense comment: " + JSON.stringify(err)
+      );
     },
     onSuccess: () => {
       refetchExpenses();
@@ -138,6 +152,12 @@ const useExpenses = () => {
     createExpenseMutation.mutate(expense);
   };
 
+  const insertNewExpenseComment = (
+    expense: TablesInsert<"ExpenseComments">
+  ) => {
+    createExpenseCommentMutation.mutate(expense);
+  };
+
   const insertNewRecurringExpense = (
     expense: TablesInsert<"RecurringExpenses">
   ) => {
@@ -186,6 +206,7 @@ const useExpenses = () => {
     getRecurringExpensesError,
     refetchExpenses,
     insertNewExpense,
+    insertNewExpenseComment,
     insertNewRecurringExpense,
     insertNewExpenseAndReturn,
     updateExpense,
