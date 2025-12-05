@@ -52,7 +52,7 @@ export const CommentsModal = ({
     <div>
       <Dialog open={open}>
         <DialogTitle className="!text-center !pb-0">Comments</DialogTitle>
-        <DialogContent sx={{ width: "500px" }}>
+        <DialogContent className="w-[500px] flex flex-col gap-4">
           <div className="flex flex-col">
             <form onSubmit={handleSubmit} id="new-expense-comment-form">
               <TextField
@@ -75,12 +75,16 @@ export const CommentsModal = ({
               Comment
             </Button>
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             {expenseComments?.map((comment) => {
               return (
-                <div>
-                  <p className="py-2">{comment.created_at}</p>
-                  <p className="py-2">{comment.content}</p>
+                <div className="border-solid border-[0.5px] border-gray-400 rounded-lg flex flex-row justify-between p-2">
+                  <div className="flex flex-col">
+                    <p className="text-sm text-gray-500">
+                      {comment.created_at}
+                    </p>
+                    <p className="py-2">{comment.content}</p>
+                  </div>
                   <IconButton
                     onClick={() => handleDeleteExpenseComment(comment.id)}
                     aria-label="delete"
