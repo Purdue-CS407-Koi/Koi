@@ -26,3 +26,23 @@ export const convertToLocalTimeFull = (date: string) => {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
 };
+
+export const getDateRange = (start: string, end: string) => {
+  const dates: string[] = [];
+
+  const [startYear, startMonth, startDay] = start.split("-").map(Number);
+  const [endYear, endMonth, endDay] = end.split("-").map(Number);
+
+  let current = new Date(startYear, startMonth - 1, startDay);
+  const endD = new Date(endYear, endMonth - 1, endDay);
+
+  while (current <= endD) {
+    const yyyy = current.getFullYear();
+    const mm = String(current.getMonth() + 1).padStart(2, "0");
+    const dd = String(current.getDate()).padStart(2, "0");
+    dates.push(`${yyyy}-${mm}-${dd}`);
+    current.setDate(current.getDate() + 1);
+  }
+
+  return dates;
+};

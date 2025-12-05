@@ -3,6 +3,7 @@ import { IconButton } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { BudgetChart } from "./budgetChart";
 import { ExpenseSizesChart } from "./sizeDistributionChart";
+import { SpendingOverTimeChart } from "./spendingOverTimeChart";
 
 export const ChartCarousel = () => {
   const [index, setIndex] = useState(0);
@@ -20,6 +21,7 @@ export const ChartCarousel = () => {
         <div className="w-[300px] h-[300px]">
           {index === 0 && <BudgetChart />}
           {index === 1 && <ExpenseSizesChart />}
+          {index === 2 && <SpendingOverTimeChart />}
         </div>
 
         <IconButton onClick={nextChart}>

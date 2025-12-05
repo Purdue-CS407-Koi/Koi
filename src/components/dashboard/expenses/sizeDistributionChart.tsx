@@ -74,8 +74,8 @@ export const ExpenseSizesChart = () => {
 
   return (
     <div className="flex flex-col h-full justify-center gap-4">
-      <p className="font-bold text-xl text-center">Expense Size Distribution</p>
       <Bar data={data} options={options} />
+      <p className="font-bold text-xl text-center">Expense Size Distribution</p>
     </div>
   );
 };
