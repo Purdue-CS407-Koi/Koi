@@ -6,10 +6,12 @@ import {
   DialogActions,
   DialogContent,
   TextField,
+  IconButton,
 } from "@mui/material";
-import { useState, type FormEvent, type MouseEvent } from "react";
+import { useState, type FormEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import type { TablesInsert } from "@/helpers/supabase.types";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface CommentsModalProps {
   cellProps: CustomCellRendererProps;
@@ -22,7 +24,8 @@ export const CommentsModal = ({
   open,
   setOpen,
 }: CommentsModalProps) => {
-  const { expenseComments, insertNewExpenseComment } = useExpenses();
+  const { expenseComments, insertNewExpenseComment, deleteExpenseComment } =
+    useExpenses();
 
   const [content, setContent] = useState("");
 
@@ -39,6 +42,10 @@ export const CommentsModal = ({
     };
     insertNewExpenseComment(newExpenseComment);
     setContent("");
+  };
+
+  const handleDeleteExpenseComment = (id: string) => {
+    deleteExpenseComment(id);
   };
 
   return (
@@ -74,6 +81,12 @@ export const CommentsModal = ({
                 <div>
                   <p className="py-2">{comment.created_at}</p>
                   <p className="py-2">{comment.content}</p>
+                  <IconButton
+                    onClick={() => handleDeleteExpenseComment(comment.id)}
+                    aria-label="delete"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </div>
               );
             })}
