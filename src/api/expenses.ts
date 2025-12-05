@@ -42,6 +42,25 @@ export async function getRecurringExpenses(bucket_metadata_id: string) {
   return data;
 }
 
+export async function getExpenseComments(expense_id: string) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+
+  const { data, error } = await supabase
+    .from("ExpenseComments")
+    .select("*")
+    .eq("user_id", user!.id)
+    .eq("expense_id", expense_id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
 export async function insertNewExpense({
   amount,
   description,
