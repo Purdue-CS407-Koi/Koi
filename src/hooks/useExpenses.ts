@@ -9,6 +9,7 @@ import {
   insertNewRecurringExpense as insertNewRecurringExpenseApi,
   getExpensesFromBucket,
   getRecurringExpenses,
+  getExpenseComments,
   updateExpense as updateExpenseApi,
   updateRecurringExpense as updateRecurringExpenseApi,
   deleteExpense as deleteExpenseApi,
@@ -16,6 +17,7 @@ import {
   deleteExpenseComment as deleteExpenseCommentApi,
 } from "@/api/expenses";
 import { useBucketsStore } from "@/stores/useBucketsStore";
+import { useExpenseStore } from "@/stores/useExpenseStore";
 import type { TablesInsert } from "@/helpers/supabase.types";
 import { convertToLocalTime } from "@/helpers/utilities";
 
@@ -27,6 +29,8 @@ const useExpenses = () => {
   const currentBucketMetadataId = useBucketsStore(
     (state) => state.currentBucketMetadataId
   );
+
+  const currentExpenseId = useExpenseStore((state) => state.currentExpenseId);
 
   const createExpenseMutation = useMutation({
     mutationFn: insertNewExpenseApi,
@@ -46,7 +50,7 @@ const useExpenses = () => {
       );
     },
     onSuccess: () => {
-      refetchExpenses();
+      refetchExpenseComments();
     },
   });
 
@@ -103,10 +107,10 @@ const useExpenses = () => {
   const deleteExpenseCommentMutation = useMutation({
     mutationFn: deleteExpenseCommentApi,
     onError: (err) => {
-      console.log("error deleting expense: " + JSON.stringify(err));
+      console.log("error deleting expense comment: " + JSON.stringify(err));
     },
     onSuccess: () => {
-      refetchExpenses();
+      refetchExpenseComments();
     },
   });
 
@@ -151,6 +155,25 @@ const useExpenses = () => {
       }
 
       const rawData = await getRecurringExpenses(currentBucketMetadataId);
+      return rawData?.map((item) => ({
+        ...item,
+        created_at: convertToLocalTime(item.created_at),
+      }));
+    },
+  });
+
+  const {
+    data: expenseComments,
+    error: getExpensesCommentsError,
+    refetch: refetchExpenseComments,
+  } = useQuery({
+    queryKey: ["expenseComments", currentExpenseId],
+    queryFn: async () => {
+      if (!currentExpenseId) {
+        return [];
+      }
+
+      const rawData = await getExpenseComments(currentExpenseId);
       return rawData?.map((item) => ({
         ...item,
         created_at: convertToLocalTime(item.created_at),
@@ -218,6 +241,8 @@ const useExpenses = () => {
     recurringExpenseData,
     getExpensesError,
     getRecurringExpensesError,
+    expenseComments,
+    getExpensesCommentsError,
     refetchExpenses,
     insertNewExpense,
     insertNewExpenseComment,
