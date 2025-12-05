@@ -19,7 +19,10 @@ import {
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { useExpenseStore } from "@/stores/useExpenseStore";
 import type { TablesInsert } from "@/helpers/supabase.types";
-import { convertToLocalTime } from "@/helpers/utilities";
+import {
+  convertToLocalTime,
+  convertToLocalTimeFull,
+} from "@/helpers/utilities";
 
 const useExpenses = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -176,7 +179,7 @@ const useExpenses = () => {
       const rawData = await getExpenseComments(currentExpenseId);
       return rawData?.map((item) => ({
         ...item,
-        created_at: convertToLocalTime(item.created_at),
+        created_at: convertToLocalTimeFull(item.created_at),
       }));
     },
   });
