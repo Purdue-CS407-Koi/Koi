@@ -12,6 +12,7 @@ import { useState, type FormEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import type { TablesInsert } from "@/helpers/supabase.types";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { DeleteExpenseCommentModal } from "./deleteExpenseCommentsModal";
 
 interface CommentsModalProps {
   cellProps: CustomCellRendererProps;
@@ -28,6 +29,8 @@ export const CommentsModal = ({
     useExpenses();
 
   const [content, setContent] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState("");
 
   const handleClose = () => {
     setOpen(false);
@@ -44,8 +47,8 @@ export const CommentsModal = ({
     setContent("");
   };
 
-  const handleDeleteExpenseComment = (id: string) => {
-    deleteExpenseComment(id);
+  const handleDeleteComment = (comment_id: string) => {
+    deleteExpenseComment(comment_id);
   };
 
   return (
@@ -86,7 +89,10 @@ export const CommentsModal = ({
                     <p className="py-2">{comment.content}</p>
                   </div>
                   <IconButton
-                    onClick={() => handleDeleteExpenseComment(comment.id)}
+                    onClick={() => {
+                      setDeleteOpen(true);
+                      setCommentToDelete(comment.id);
+                    }}
                     aria-label="delete"
                   >
                     <DeleteIcon />
@@ -94,6 +100,14 @@ export const CommentsModal = ({
                 </div>
               );
             })}
+            {expenseComments?.length == 0 && (
+              <p className="text-center">No comments yet!</p>
+            )}
+            <DeleteExpenseCommentModal
+              handleDelete={() => handleDeleteComment(commentToDelete)}
+              open={deleteOpen}
+              setOpen={setDeleteOpen}
+            />
           </div>
         </DialogContent>
         <DialogActions className="!p-6 !pt-0 !justify-center">
