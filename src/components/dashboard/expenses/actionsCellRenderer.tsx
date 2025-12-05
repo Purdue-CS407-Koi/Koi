@@ -7,11 +7,16 @@ import CommentIcon from "@mui/icons-material/Comment";
 import { DeleteExpenseModal } from "./modals/deleteExpenseModal";
 import { EditExpenseModal } from "./modals/editExpenseModal";
 import { CommentsModal } from "./modals/commentsModal";
+import { useExpenseStore } from "@/stores/useExpenseStore";
 
 export const ActionsCellRenderer = (props: CustomCellRendererProps) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
+
+  const setCurrentExpenseId = useExpenseStore(
+    (state) => state.setCurrentExpenseId
+  );
 
   const handleClickOpenDelete = () => {
     setDeleteOpen(true);
@@ -22,6 +27,7 @@ export const ActionsCellRenderer = (props: CustomCellRendererProps) => {
   };
 
   const handleClickOpenComments = () => {
+    setCurrentExpenseId(props.data.id);
     setCommentsOpen(true);
   };
 
