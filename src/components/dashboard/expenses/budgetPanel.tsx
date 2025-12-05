@@ -3,7 +3,7 @@ import { useBuckets } from "@/hooks/useBuckets";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { RecurringExpensesSection } from "./recurringExpensesSection";
 import { convertToLocalTime } from "@/helpers/utilities";
-import { ChartCarousel } from "./chartCarousel";
+import { ChartCarousel } from "./charts/chartCarousel";
 
 export const BudgetPanel = () => {
   const currentBucketInstanceId = useBucketsStore(
