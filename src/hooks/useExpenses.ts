@@ -100,6 +100,16 @@ const useExpenses = () => {
     },
   });
 
+  const deleteExpenseCommentMutation = useMutation({
+    mutationFn: deleteExpenseCommentApi,
+    onError: (err) => {
+      console.log("error deleting expense: " + JSON.stringify(err));
+    },
+    onSuccess: () => {
+      refetchExpenses();
+    },
+  });
+
   const deleteRecurringExpenseMutation = useMutation({
     mutationFn: deleteRecurringExpenseApi,
     onError: (err) => {
@@ -182,6 +192,10 @@ const useExpenses = () => {
     deleteExpenseMutation.mutate(id);
   };
 
+  const deleteExpenseComment = (id: string) => {
+    deleteExpenseCommentMutation.mutate(id);
+  };
+
   const deleteRecurringExpense = (id: string) => {
     deleteRecurringExpenseMutation.mutate(id);
   };
@@ -212,6 +226,7 @@ const useExpenses = () => {
     updateExpense,
     updateRecurringExpense,
     deleteExpense,
+    deleteExpenseComment,
     deleteRecurringExpense,
     createRecurringExpensesForNewBucketInstance,
   };
