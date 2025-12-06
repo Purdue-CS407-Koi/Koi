@@ -44,6 +44,8 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  
+  /* Settings for Full Calendar */
 
   @apply font-normal leading-1.5 antialiased text-black scheme-light-dark bg-content-background;
 }
@@ -75,4 +77,13 @@
       focus:outline-4
       focus-visible:outline-4;
   }
+}
+
+/* Overrides for Full Calendar */
+.fc-daygrid-block-event .fc-event-title {
+    @apply p-2;
+}
+
+tr.fc-event {
+    @apply leading-5;
 }
