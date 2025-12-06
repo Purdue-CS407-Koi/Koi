@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { Tables } from "@/helpers/supabase.types";
 import { getBucketMetadata } from "@/api/buckets";
 import { RecurrencePeriodType } from "@/interfaces/Bucket";
+import useUserChallenges from "@/hooks/useUserChallenges";
 
 export interface CalendarEvent {
   title: string;
@@ -18,6 +19,7 @@ const Calendar = () => {
   const [recurringExpenseData, setRecurringExpenseData] = useState<
     Tables<"RecurringExpenses">[]
   >([]);
+  const { activeChallengeData } = useUserChallenges();
 
   // Fetch recurring expenses
   useEffect(() => {
@@ -83,9 +85,34 @@ const Calendar = () => {
       );
       events.push(...mappedRecurringExpenses);
 
+      // Add active challenge start/end dates
+      if (activeChallengeData) {
+        events.push(
+          ...activeChallengeData.flatMap((challenge) => {
+            const startEvent = [
+              {
+                title: `Challenge ${challenge.name} starts`,
+                date: new Date(challenge.start),
+                allDay: true,
+              },
+            ];
+
+            if (!challenge.end) return startEvent;
+
+            return [
+              ...startEvent,
+              {
+                title: `Challenge ${challenge.name} ends`,
+                date: new Date(challenge.end),
+                allDay: true,
+              },
+            ];
+          }),
+        );
+      }
       setAggregatedEvents(events);
     })();
-  }, [recurringExpenseData]);
+  }, [recurringExpenseData, activeChallengeData]);
 
   return (
     <Template>
