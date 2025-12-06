@@ -142,6 +142,8 @@ const Profile = () => {
     name: string | null;
     email: string | null;
     notification: boolean;
+    aboutMe: string;
+    username: string;
   } | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -182,6 +184,8 @@ const Profile = () => {
             name: fetchedUser.user_metadata?.display_name ?? null,
             email: fetchedUser.email ?? null,
             notification: userData[0]?.notifications ?? true,
+            aboutMe: userData[0]?.about_me || "",
+            username: userData[0]?.name || "",
           });
         }
       }
@@ -221,18 +225,20 @@ const Profile = () => {
     setNotificationsOpen(true);
   }
 
-  const handleSaveProfile = async (updatedEmail: string, notifications: boolean) => {
+  const handleSaveProfile = async (updatedEmail: string, notifications: boolean, aboutMe: string, username: string) => {
     const { data } = await supabase.auth.getUser();
 
-    const { error: notifError } = await supabase
+    const user = {about_me: aboutMe, name: username, notifications: notifications};
+
+    const { error: userError } = await supabase
       .from("Users")
-      .update({ notifications: notifications })
+      .update(user)
       .eq("id", data?.user?.id || "");
     
-    if (notifError) {
-      console.error("Error updating notifications:", notifError.message);
+    if (userError) {
+      console.error("Error updating notifications:", userError.message);
     }
-    
+
     if (!updatedEmail) return;
 
     const { error } = await supabase.auth.updateUser({ email: updatedEmail });
@@ -268,6 +274,8 @@ const Profile = () => {
           name: data.user.user_metadata?.display_name ?? null,
           email: data.user.email ?? null,
           notification: userData[0]?.notifications ?? true,
+          aboutMe: userData[0]?.about_me || "",
+          username: userData[0]?.name || "",  
         });
       }
     }

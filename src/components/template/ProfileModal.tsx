@@ -16,8 +16,10 @@ interface ProfileModalProps {
     name: string | null;
     email: string | null;
     notification: boolean;
+    aboutMe: string;
+    username: string;
   } | null;
-  onSave: (updatedEmail: string, notifications: boolean) => void;
+  onSave: (updatedEmail: string, notifications: boolean, aboutMe: string, username: string) => void;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -26,6 +28,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   user,
   onSave,
 }) => {
+  const [username, setUsername] = useState(user?.username || "");
+  const [aboutMe, setAboutMe] = useState(user?.aboutMe || "");
+
   const [email, setEmail] = useState(user?.email || "");
   const [notifications, setNotifications] = useState<boolean>(user?.notification || true);
 
@@ -33,10 +38,13 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   useEffect(() => {
     if (user?.email) setEmail(user.email);
     if (user?.notification) setNotifications(user.notification);
+    if (user?.aboutMe) setAboutMe(user.aboutMe);
+    if (user?.username) setUsername(user.username);
+    console.log(user);
   }, [user]);
 
   const handleSave = () => {
-    onSave(email.trim(), notifications);
+    onSave(email.trim(), notifications, aboutMe, username);
     onClose();
   };
 
@@ -55,6 +63,17 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
         </div>
 
         <div>
+          <p className="text-sm text-gray-500 mb-1">Username</p>
+          <TextField
+            fullWidth
+            size="small"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Create a username"
+          />
+        </div>
+
+        <div>
           <p className="text-sm text-gray-500 mb-1">Email</p>
           <TextField
             fullWidth
@@ -69,6 +88,19 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           <Switch
             checked={notifications}
             onChange={() => setNotifications(!notifications)}
+          />
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500 mb-1">About Me</p>
+          <TextField
+            fullWidth
+            size="small"
+            multiline
+            rows={4}
+            value={aboutMe}
+            onChange={(e) => setAboutMe(e.target.value)}
+            placeholder="Tell us about yourself..."
           />
         </div>
       </DialogContent>
