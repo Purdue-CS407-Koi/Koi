@@ -137,7 +137,7 @@ const Calendar = () => {
   return (
     <Template>
       <Content>
-        <div className="m-8">
+        <div className="m-8 max-h-[80svh] overflow-y-auto">
           <CalendarComponent events={aggregatedEvents} />
         </div>
       </Content>
