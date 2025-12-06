@@ -135,7 +135,7 @@ import { InvitesModal } from "../groups/invite/invitesModal";
 import { NotificationsModal } from "../groups/notification/notificationsModal";
 import supabase from "@/helpers/supabase";
 
-const Profile = () => {
+const Profile = ({ className }: { className?: string }) => {
   const signOut = useAuthStore((state) => state.signOut);
   const supabaseUser = useAuthStore((state) => state.user);
   const [user, setUser] = useState<{
@@ -285,7 +285,7 @@ const Profile = () => {
     <>
       {/* Profile Avatar */}
       <div
-        className="cursor-pointer"
+        className={`cursor-pointer ${className}`}
         onClick={(e) => {
           e.stopPropagation();
           setAnchorEl(e.currentTarget);

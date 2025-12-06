@@ -22,7 +22,7 @@ const Navbar = () => {
             return <NavLink key={item.title} target={item.target} title={item.title} />;
           })}
         </div>
-        <Profile />
+        <Profile className="shrink-0" />
       </div>
     </div>
   );
