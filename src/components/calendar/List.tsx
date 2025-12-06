@@ -2,8 +2,9 @@ import FullCalendar from "@fullcalendar/react";
 import listPlugin from "@fullcalendar/list";
 import useCalendarStore from "@/stores/useCalendarStore";
 import { createRef, useEffect } from "react";
+import type { CalendarEvent } from "@/pages/Calendar";
 
-const List = () => {
+const List = ({ events }: { events: CalendarEvent[] }) => {
   const listRef = createRef<FullCalendar>();
   const { currentDate, isMultiDaySelected } = useCalendarStore();
 
@@ -28,6 +29,7 @@ const List = () => {
       plugins={[listPlugin]}
       initialView="listDay"
       headerToolbar={false}
+      events={events}
     />
   );
 };

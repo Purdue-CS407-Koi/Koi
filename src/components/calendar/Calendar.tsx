@@ -2,6 +2,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import useCalendarStore from "@/stores/useCalendarStore";
+import type { CalendarEvent } from "@/pages/Calendar";
 
 interface DateEvent {
   date: Date;
@@ -13,7 +14,7 @@ interface SelectEvent {
   end: Date;
 }
 
-const Calendar = () => {
+const Calendar = ({ events }: { events: CalendarEvent[] }) => {
   const { setCurrentDate, setIsMultiDaySelected } = useCalendarStore();
 
   const dateClicked = (event: DateEvent) => {
@@ -35,6 +36,7 @@ const Calendar = () => {
       selectable={true}
       dateClick={dateClicked}
       select={selected}
+      events={events}
     />
   );
 };

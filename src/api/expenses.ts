@@ -42,6 +42,20 @@ export async function getRecurringExpenses(bucket_metadata_id: string) {
   return data;
 }
 
+export async function getAllRecurringExpenses() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+
+  const { data, error } = await supabase.from("RecurringExpenses").select("*");
+
+  if (error) throw error;
+  return data;
+}
+
 export async function getExpenseComments(expense_id: string) {
   const {
     data: { user },
