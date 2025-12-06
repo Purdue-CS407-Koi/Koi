@@ -22,9 +22,7 @@ const Calendar = () => {
   // Fetch recurring expenses
   useEffect(() => {
     (async () => {
-      console.log("running....");
       const recurringExpenses = await getAllRecurringExpenses();
-      console.warn("Got new recurring expenses: ", recurringExpenses);
       setRecurringExpenseData(recurringExpenses);
     })();
   }, []);
@@ -83,10 +81,7 @@ const Calendar = () => {
           };
         }),
       );
-
       events.push(...mappedRecurringExpenses);
-
-      console.warn("Got new events: ", events);
 
       setAggregatedEvents(events);
     })();
