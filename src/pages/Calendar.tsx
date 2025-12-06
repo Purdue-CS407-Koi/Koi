@@ -1,7 +1,7 @@
 import Template, { Content, Sidebar } from "@/templates/template";
 import CalendarComponent from "@/components/calendar/Calendar";
 import List from "@/components/calendar/List";
-import { getAllRecurringExpenses } from "@/api/expenses";
+import { getAllRecurringExpenses, getExpenses } from "@/api/expenses";
 import { useEffect, useState } from "react";
 import type { Tables } from "@/helpers/supabase.types";
 import { getBucketMetadata } from "@/api/buckets";
@@ -12,20 +12,28 @@ export interface CalendarEvent {
   title: string;
   date: Date;
   allDay?: boolean;
+  expenseAmount?: number;
 }
 
 const Calendar = () => {
   const [aggregatedEvents, setAggregatedEvents] = useState<CalendarEvent[]>([]);
+  const [expenseData, setExpenseData] = useState<Tables<"Expenses">[]>([]);
   const [recurringExpenseData, setRecurringExpenseData] = useState<
     Tables<"RecurringExpenses">[]
   >([]);
   const { activeChallengeData } = useUserChallenges();
 
+  // Fetch expenses
+  useEffect(() => {
+    (async () => {
+      setExpenseData(await getExpenses());
+    })();
+  });
+
   // Fetch recurring expenses
   useEffect(() => {
     (async () => {
-      const recurringExpenses = await getAllRecurringExpenses();
-      setRecurringExpenseData(recurringExpenses);
+      setRecurringExpenseData(await getAllRecurringExpenses());
     })();
   }, []);
 
@@ -33,6 +41,18 @@ const Calendar = () => {
   useEffect(() => {
     (async () => {
       const events = [];
+
+      // Map expenses
+      events.push(
+        ...expenseData.map((expense) => {
+          return {
+            title: `${expense.name} - ${expense.amount}`,
+            date: new Date(expense.created_at),
+            allDay: true,
+            expenseAmount: expense.amount,
+          };
+        }),
+      );
 
       // Map recurring expenses
       const mappedRecurringExpenses = await Promise.all(
@@ -112,7 +132,7 @@ const Calendar = () => {
       }
       setAggregatedEvents(events);
     })();
-  }, [recurringExpenseData, activeChallengeData]);
+  }, [expenseData, recurringExpenseData, activeChallengeData]);
 
   return (
     <Template>

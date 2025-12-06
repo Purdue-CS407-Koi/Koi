@@ -5,6 +5,23 @@ import type {
 } from "@/interfaces/Expense";
 import type { TablesInsert } from "@/helpers/supabase.types";
 
+export async function getExpenses() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("user is undefined");
+  }
+
+  const { data, error } = await supabase
+    .from("Expenses")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (error) throw error;
+  return data;
+}
+
 export async function getExpensesFromBucket(bucket_instance_id: string) {
   const {
     data: { user },
