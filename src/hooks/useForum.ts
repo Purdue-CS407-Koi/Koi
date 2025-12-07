@@ -107,10 +107,9 @@ const editPost = (postId: string, desc: string, privacy: number) =>
   editPostMutation.mutate({ postId, desc, privacy });
 
 
-  const createPost = ({desc, privacy}: {desc: string, privacy: number}) => {
-    insertMutation.mutate({ desc, privacy });
-  };
-
+const createPost = ({ desc, privacy }: { desc: string; privacy: number }) => {
+  insertMutation.mutate({ desc, privacy });
+};
  const toggleLike = (postId: string, liked: boolean) => {
     likeMutation.mutate({ postId, delta: liked ? -1 : +1 });
   };
