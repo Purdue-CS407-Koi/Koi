@@ -47,6 +47,7 @@ export const NotificationsModal = ({
     markNotificationsAsRead();
     onClose();
   };
+  
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>

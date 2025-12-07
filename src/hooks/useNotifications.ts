@@ -42,6 +42,9 @@ const useNotifications = () => {
         onError: (err) => {
             console.log("error marking notification as read: " + JSON.stringify(err));
         },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+        }
     });
 
     const markNotificationsAsRead = () => {
