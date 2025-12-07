@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getCurrentUser } from "@/api/users";
+import { getCurrentUser, getUserById } from "@/api/users";
 
-const useUsers = () => {
+const useUsers = (userId?: string | null) => {
   const {
     data: userData,
     isLoading,
@@ -12,7 +12,21 @@ const useUsers = () => {
     queryFn: () => getCurrentUser(),
   });
 
-  return { userData, isLoading, error };
+  if (!userId) {
+    return { userData, isLoading, error };
+  }
+
+  const {
+    data: userProfileData,
+    isLoading: isProfileLoading,
+    error: profileError,
+  } = useQuery({
+    queryKey: ["userProfile", userId],
+    queryFn: () => getUserById(userId),
+  });
+  
+
+  return { userData, isLoading, error, userProfileData, isProfileLoading, profileError };
 };
 
 export default useUsers;

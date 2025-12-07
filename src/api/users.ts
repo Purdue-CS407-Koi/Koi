@@ -97,3 +97,21 @@ export const getUsers = async () => {
 
   return data;
 };
+
+export const getUserById = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("Users")
+    .select()
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (data.is_public) {
+    return data;
+  }
+
+  return null;
+}

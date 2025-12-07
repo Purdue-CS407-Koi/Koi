@@ -1,0 +1,53 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+
+import useUsers from "@/hooks/useUsers";
+
+export const NotificationDetailModal = ({
+  open,
+  onClose,
+  userId
+}: {
+  open: boolean;
+  onClose: () => void;
+  userId: string | null;
+}) => {
+
+  const handleClose = () => {
+	  onClose();
+  };
+
+  const { userProfileData, isProfileLoading } = useUsers(userId);
+
+  if (isProfileLoading) {
+    return (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Loading...</DialogTitle>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Notification Details</DialogTitle>
+      <DialogContent dividers>
+        <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)] mr-16">
+          <div className="text-2xl">
+            {userProfileData?.name}
+          </div>
+
+          <div className="text-lg">
+            Member since {new Date(userProfileData?.created_at ?? "").toLocaleDateString()}
+          </div>
+          
+          <div className="mt-4 text-xl">
+            {userProfileData?.about_me || "This user has not added an about me section yet."}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
