@@ -293,7 +293,32 @@ export const settleSplit = async (settle_split_id: string, bucket_instance_id: s
       },
     ]);
   if (paidExpenseError) throw paidExpenseError;
-  
+
+  const { data: userData, error: userError } = await supabase
+    .from("Users")
+    .select()
+    .eq("id", expense.user_id ?? "")
+    .single();
+  if (userError) throw userError;
+
+  if (userData?.notifications) {
+    const { error: notificationError } = await supabase
+      .from("Notifications")
+      .insert([
+        {
+          receiver_id: expense.user_id ?? "",
+          group_id: split.group_id ?? "",
+          expense_id: split.original_expense_id ?? "",
+          amount: split.amount_remaining ?? 0,
+          payer_id: split.user_id ?? "",
+          is_split: false,
+        }
+      ])
+      .select();
+
+    if (notificationError) throw notificationError;
+  }
+
   const { data, error } = await supabase
     .from("Splits")
     .update({ amount_remaining: 0 })

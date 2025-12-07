@@ -1,7 +1,7 @@
 import supabase from "@/helpers/supabase";
 
 export async function fetchNotificationsApi() {
-        const {
+    const {
         data: { user },
     } = await supabase.auth.getUser();
 
@@ -12,29 +12,53 @@ export async function fetchNotificationsApi() {
     const { data, error } = await supabase
         .from("Notifications")
         .select("*")
-        .eq("user_id", user!.id);
+        .eq("receiver_id", user!.id);
 
     if (error) throw new Error(error.message);
 
     return data;
 }
 
-export async function insertNewNotificationApi(notification: { userId: string; description: string; detailed_description: string }) {
+export async function insertNewNotificationApi({ receiverId, groupId, expenseId, amount, isSplit } : 
+    { receiverId: string; groupId: string; expenseId: string; amount: number; isSplit: boolean }) {
 
-  const { data, error } = await supabase
-    .from("Notifications")
-    .insert([
-      {
-        user_id: notification.userId,
-        description: notification.description,
-        detailed_description: notification.detailed_description,
-      },
-    ])
-    .select();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
-  if (error) throw new Error(error.message);
+    if (!user) {
+        throw new Error("Failed to fetch current user!");
+    }
 
-  return data;
+    const { data: userData, error: userError } = await supabase
+        .from("Users")
+        .select("*")
+        .eq("id", receiverId)
+        .single();
+
+    if (userError) throw new Error(userError.message);
+
+    if (userData?.notifications === false) {
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from("Notifications")
+        .insert([
+            {
+                receiver_id: receiverId,
+                group_id: groupId,
+                expense_id: expenseId,
+                amount: amount,
+                payer_id: user!.id,
+                is_split: isSplit,
+            },
+        ])
+        .select();
+
+    if (error) throw new Error(error.message);
+
+    return data;
 
 }
 
@@ -50,7 +74,7 @@ export async function deleteAllNotificationsApi() {
     const { data, error } = await supabase
         .from("Notifications")
         .delete()
-        .eq("user_id", user!.id);
+        .eq("receiver_id", user!.id);
 
     if (error) throw new Error(error.message);
 
@@ -69,9 +93,9 @@ export async function markNotificationAsReadApi() {
     const { data, error } = await supabase
         .from("Notifications")
         .update({ seen: true })
-        .eq("user_id", user!.id);
+        .eq("receiver_id", user!.id);
 
     if (error) throw new Error(error.message);
-    
+
     return data;
 }

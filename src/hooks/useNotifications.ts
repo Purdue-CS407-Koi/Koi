@@ -17,7 +17,7 @@ const useNotifications = () => {
         },
     });
 
-    const insertNewNotification = (notification: { userId: string; description: string; detailed_description: string }) => {
+    const insertNewNotification = (notification: { receiverId: string; groupId: string; expenseId: string; amount: number; isSplit: boolean }) => {
         insertMutation.mutate(notification);
     };
 

@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect } from "react";
 // hooks
 import useSplits from "@/hooks/useSplits";
 import useUsers from "@/hooks/useUsers";
+import useNotifications from "@/hooks/useNotifications";
 
 // components
 import AddIcon from '@mui/icons-material/Add';
@@ -34,6 +35,7 @@ export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
   refetch,
 }) => {
   const { insertNewSplit } = useSplits();
+  const { insertNewNotification } = useNotifications();
   const { userData } = useUsers();
 
   const [payers, setPayers] = useState<{ name: string; id: string }[]>(members ?? []);
@@ -73,6 +75,15 @@ export const SplitEvenlyModal: React.FC<SplitEvenlyModalProps> = ({
           };
 
           insertNewSplit(split);
+
+          insertNewNotification({
+            receiverId: id,
+            groupId: selectedGroup,
+            expenseId: expense_id,
+            amount: amount,
+            isSplit: true,
+          });
+
         } else {
           const split = {
             amount_owed: 0,

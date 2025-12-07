@@ -6,6 +6,7 @@ import { TEXT_EDITING } from "@/config/keyboardEvents";
 // hooks
 import useSplits from "@/hooks/useSplits";
 import useUsers from "@/hooks/useUsers";
+import useNotifications from "@/hooks/useNotifications";
 
 //types
 import type { TablesInsert } from "@/helpers/supabase.types";
@@ -34,6 +35,7 @@ export const SplitCustomModal: React.FC<SplitCustomModalProps> = ({
 }) => {
   const { insertNewSplit } = useSplits();
   const { userData } = useUsers();
+  const { insertNewNotification } = useNotifications();
 
   const [individualAmounts, setIndividualAmounts] = useState<
     Record<string, { dollars: string; cents: string }>
@@ -84,6 +86,14 @@ export const SplitCustomModal: React.FC<SplitCustomModalProps> = ({
           };
 
           insertNewSplit(split);
+
+          insertNewNotification({
+            receiverId: id,
+            groupId: selectedGroup,
+            expenseId: expense_id,
+            amount: amount,
+            isSplit: true,
+          });
         }
       });
       await refetch();
