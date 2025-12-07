@@ -9,18 +9,18 @@ import useUsers from "@/hooks/useUsers";
 export const ForumProfileModal = ({
   open,
   onClose,
-  userId
+  user
 }: {
   open: boolean;
   onClose: () => void;
-  userId: string | null;
+  user: {name: string, id: string} | null;
 }) => {
 
   const handleClose = () => {
 	  onClose();
   };
 
-  const { userProfileData, isProfileLoading } = useUsers(userId);
+  const { userProfileData, isProfileLoading } = useUsers(user?.id);
 
   if (isProfileLoading) {
     return (
@@ -33,11 +33,11 @@ export const ForumProfileModal = ({
   if (userProfileData === null) {
     return (
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>User Profile</DialogTitle>
+        <DialogTitle>{user?.name}'s Profile</DialogTitle>
         <DialogContent>
         <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)] mr-16">
           <div className="text-2xl">
-            This user's profile is not public.
+            {user?.name}'s profile is not public.
           </div>
         </div>
       </DialogContent>
@@ -47,7 +47,7 @@ export const ForumProfileModal = ({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>User Profile</DialogTitle>
+      <DialogTitle>{user?.name}'s Profile</DialogTitle>
       <DialogContent>
         <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)] mr-16">
           <div className="text-2xl">

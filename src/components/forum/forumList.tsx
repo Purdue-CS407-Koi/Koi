@@ -24,16 +24,16 @@ export const ForumList: React.FC<ForumListProps> = ({
   onToggleLike,
 }) => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<{name: string, id: string} | null>(null);
 
-  const openProfileModal = (userId: string) => {
-    setSelectedUserId(userId);
+  const openProfileModal = (name: string, userId: string) => {
+    setSelectedUser({name: name, id: userId});
     setProfileModalOpen(true);
   };
 
   const closeProfileModal = () => {
     setProfileModalOpen(false);
-    setSelectedUserId(null);
+    setSelectedUser(null);
   };
 
   console.log(posts);
@@ -62,7 +62,7 @@ export const ForumList: React.FC<ForumListProps> = ({
           {/* Header */}
           <div className="flex justify-between items-center mb-1">
             <h4 className="font-semibold text-gray-800 cursor-pointer hover:underline"
-              onClick={() => openProfileModal(post.user_id || "")}
+              onClick={() => openProfileModal(post.Users?.name || "Anonymous", post.user_id || "")}
             >
               {post.Users?.name ?? "Anonymous"}
             </h4>
@@ -90,7 +90,7 @@ export const ForumList: React.FC<ForumListProps> = ({
       ))}
       <ForumProfileModal 
         open={profileModalOpen}
-        userId={selectedUserId}
+        user={selectedUser}
         onClose={closeProfileModal}
       />
     </div>
