@@ -6,7 +6,7 @@ import {
 
 import useUsers from "@/hooks/useUsers";
 
-export const NotificationDetailModal = ({
+export const ForumProfileModal = ({
   open,
   onClose,
   userId
@@ -22,6 +22,21 @@ export const NotificationDetailModal = ({
 
   const { userProfileData, isProfileLoading } = useUsers(userId);
 
+  if (userProfileData === null) {
+    return (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>User Profile</DialogTitle>
+        <DialogContent>
+        <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)] mr-16">
+          <div className="text-2xl">
+            This user's profile is not public.
+          </div>
+        </div>
+      </DialogContent>
+      </Dialog>
+    );
+  }
+
   if (isProfileLoading) {
     return (
       <Dialog open={open} onClose={handleClose}>
@@ -32,8 +47,8 @@ export const NotificationDetailModal = ({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Notification Details</DialogTitle>
-      <DialogContent dividers>
+      <DialogTitle>User Profile</DialogTitle>
+      <DialogContent>
         <div className="leading-normal flex flex-col mb-5 text-[var(--color-text-primary)] mr-16">
           <div className="text-2xl">
             {userProfileData?.name}
