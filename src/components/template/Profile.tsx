@@ -145,6 +145,7 @@ const Profile = ({ className }: { className?: string }) => {
     notification: boolean;
     aboutMe: string;
     username: string;
+    isPublic: boolean;
   } | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -189,6 +190,7 @@ const Profile = ({ className }: { className?: string }) => {
             notification: userData[0]?.notifications ?? true,
             aboutMe: userData[0]?.about_me || "",
             username: userData[0]?.name || "",
+            isPublic: userData[0]?.is_public || false,
           });
         }
       }
@@ -228,10 +230,10 @@ const Profile = ({ className }: { className?: string }) => {
     setNotificationsOpen(true);
   }
 
-  const handleSaveProfile = async (updatedEmail: string, notifications: boolean, aboutMe: string, username: string) => {
+  const handleSaveProfile = async (updatedEmail: string, notifications: boolean, aboutMe: string, username: string, isPublic: boolean) => {
     const { data } = await supabase.auth.getUser();
 
-    const user = {about_me: aboutMe, name: username, notifications: notifications};
+    const user = {about_me: aboutMe, name: username, notifications: notifications, is_public: isPublic};
 
     const { error: userError } = await supabase
       .from("Users")
@@ -239,7 +241,7 @@ const Profile = ({ className }: { className?: string }) => {
       .eq("id", data?.user?.id || "");
     
     if (userError) {
-      console.error("Error updating notifications:", userError.message);
+      console.error("Error updating profile:", userError.message);
     }
 
     if (!updatedEmail) return;
@@ -279,6 +281,7 @@ const Profile = ({ className }: { className?: string }) => {
           notification: userData[0]?.notifications ?? true,
           aboutMe: userData[0]?.about_me || "",
           username: userData[0]?.name || "",  
+          isPublic: userData[0]?.is_public || false,
         });
       }
     }

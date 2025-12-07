@@ -18,8 +18,9 @@ interface ProfileModalProps {
     notification: boolean;
     aboutMe: string;
     username: string;
+    isPublic: boolean;
   } | null;
-  onSave: (updatedEmail: string, notifications: boolean, aboutMe: string, username: string) => void;
+  onSave: (updatedEmail: string, notifications: boolean, aboutMe: string, username: string, isPublic: boolean) => void;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -33,6 +34,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
   const [email, setEmail] = useState(user?.email || "");
   const [notifications, setNotifications] = useState<boolean>(user?.notification || true);
+  const [isPublic, setPublic] = useState<boolean>(user?.notification || true);
 
 
   useEffect(() => {
@@ -40,11 +42,11 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
     if (user?.notification) setNotifications(user.notification);
     if (user?.aboutMe) setAboutMe(user.aboutMe);
     if (user?.username) setUsername(user.username);
-    console.log(user);
+    if (user?.isPublic) setPublic(user.isPublic);
   }, [user]);
 
   const handleSave = () => {
-    onSave(email.trim(), notifications, aboutMe, username);
+    onSave(email.trim(), notifications, aboutMe, username, isPublic);
     onClose();
   };
 
@@ -88,6 +90,14 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           <Switch
             checked={notifications}
             onChange={() => setNotifications(!notifications)}
+          />
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Allow profile to be seen by anyone?</p>
+          <Switch
+            checked={isPublic}
+            onChange={() => setPublic(!isPublic)}
           />
         </div>
 
