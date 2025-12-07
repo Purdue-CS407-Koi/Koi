@@ -4,6 +4,7 @@ import { useBucketsStore } from "@/stores/useBucketsStore";
 import { RecurringExpensesSection } from "./recurringExpensesSection";
 import { convertToLocalTime } from "@/helpers/utilities";
 import { ChartCarousel } from "./charts/chartCarousel";
+import { SingleNumberMetrics } from "./singleNumberMetrics";
 
 export const BudgetPanel = () => {
   const currentBucketInstanceId = useBucketsStore(
@@ -43,6 +44,7 @@ export const BudgetPanel = () => {
             </Select>
           </FormControl>
         </div>
+        <SingleNumberMetrics />
         <ChartCarousel />
         <RecurringExpensesSection />
       </div>

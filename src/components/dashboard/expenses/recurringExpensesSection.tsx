@@ -14,7 +14,7 @@ export const RecurringExpensesSection = () => {
         </p>
         <NewRecurringExpenseModal />
       </div>
-      <div className="h-[160px] overflow-auto">
+      <div className="h-[140px] overflow-auto">
         {recurringExpenseData?.map((expense) => {
           return (
             <div className="flex flex-row justify-between">

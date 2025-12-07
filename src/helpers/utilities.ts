@@ -1,3 +1,5 @@
+import type { Expense } from "@/interfaces/Expense";
+
 export const capitalizeFirstLetter = (val: string) => {
   return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 };
@@ -46,3 +48,38 @@ export const getDateRange = (start: string, end: string) => {
 
   return dates;
 };
+
+export function calculateExpenseStats(expenses: Expense[]) {
+  if (expenses.length === 0) {
+    return {
+      averageDailySpending: 0,
+      averageExpenseSize: 0,
+      largestExpense: null,
+    };
+  }
+
+  const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+  const averageExpenseSize = totalSpent / expenses.length;
+
+  const largestExpense = expenses.reduce((max, e) =>
+    e.amount > max.amount ? e : max
+  );
+
+  const spendingByDay: Record<string, number> = {};
+
+  for (const e of expenses) {
+    const d = new Date(e.created_at);
+    const key = d.toISOString().slice(0, 10);
+    spendingByDay[key] = (spendingByDay[key] || 0) + e.amount;
+  }
+
+  const numDays = Object.keys(spendingByDay).length;
+  const averageDailySpending = totalSpent / numDays;
+
+  return {
+    averageDailySpending,
+    averageExpenseSize,
+    largestExpense,
+  };
+}

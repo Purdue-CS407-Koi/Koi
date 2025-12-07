@@ -1,3 +1,15 @@
+export interface Expense {
+  created_at: string;
+  amount: number;
+  bucket_instance_id: string | null;
+  challenge_id: string | null;
+  description: string | null;
+  id: string;
+  name: string;
+  settle_split_id: string | null;
+  user_id: string | null;
+}
+
 export interface NewExpense {
   amount: number;
   description?: string;
