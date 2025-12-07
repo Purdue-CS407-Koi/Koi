@@ -66,11 +66,10 @@ import { CreatePostModal } from "@/components/forum/createPostModal";
 import useUsers from "@/hooks/useUsers";
 
 const Forum = () => {
-  const { forumPosts, isLoading, createPost, toggleLike, removePost, editPost } = useForum();
-  const [modalOpen, setModalOpen] = useState(false);
   const user = useUsers();
-  // You'll need to get the current user ID - adjust this based on your auth setup
-  const currentUserId = user?.userData?.id; // Replace with actual user ID from your auth context/hook
+  const currentUserId = user?.userData?.id; 
+  const { forumPosts, isLoading, createPost, handleToggleLike, removePost, editPost } = useForum();
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <Template>
@@ -95,7 +94,7 @@ const Forum = () => {
                 posts={forumPosts ?? []}
                 loading={isLoading}
                 currentUserId={currentUserId}
-                onToggleLike={toggleLike}
+                onToggleLike={handleToggleLike}
                 onDelete={removePost}
                 onEdit={editPost}
               />
@@ -118,6 +117,7 @@ const Forum = () => {
       <Sidebar>
         <div>
           <h3 className="text-lg font-semibold mb-4 text-sidebar-title">Forum</h3>
+        <p className="text-sm text-gray-600">Chat with users!</p>
         </div>
       </Sidebar>
     </Template>
