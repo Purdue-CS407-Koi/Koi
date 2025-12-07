@@ -12,16 +12,19 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import useUserChallenges from "@/hooks/useChallenges";
+import { EditExpenseDate } from "../editExpenseDate";
 
 interface EditExpenseModalProps {
   cellProps: CustomCellRendererProps;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
+
+type Value = Date | null;
 
 export const EditExpenseModal = ({
   cellProps,
@@ -30,6 +33,10 @@ export const EditExpenseModal = ({
 }: EditExpenseModalProps) => {
   const { updateExpense } = useExpenses();
   const { activeChallengeData } = useUserChallenges();
+
+  const [value, setValue] = useState<Value>(
+    new Date(`${cellProps.data.created_at}T00:00`)
+  );
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -49,6 +56,7 @@ export const EditExpenseModal = ({
       name: formJson.name,
       id: cellProps.data.id,
       challenge_id: formJson.challenge.trim() || null,
+      created_at: value!.toISOString(),
     };
     updateExpense(updatedExpense);
     handleClose();
@@ -102,7 +110,9 @@ export const EditExpenseModal = ({
                 label="Challenge"
                 defaultValue={cellProps.data.challenge_id || ""}
               >
-                <MenuItem value="" className="text-gray-500">(No Challenge)</MenuItem>
+                <MenuItem value="" className="text-gray-500">
+                  (No Challenge)
+                </MenuItem>
                 {activeChallengeData?.map((challenge) => (
                   <MenuItem key={challenge.id} value={challenge.id}>
                     {challenge.name}
@@ -110,6 +120,7 @@ export const EditExpenseModal = ({
                 )) || <MenuItem value="">No Active Challenge</MenuItem>}
               </Select>
             </FormControl>
+            <EditExpenseDate value={value} setValue={setValue} />
           </form>
         </DialogContent>
         <DialogActions className="!p-6 !pt-0">

@@ -14,6 +14,7 @@ export interface UpdateExpenseProps {
   name: string;
   id: string;
   challenge_id: string | null;
+  created_at?: string;
 }
 
 export interface RecurringExpense {
