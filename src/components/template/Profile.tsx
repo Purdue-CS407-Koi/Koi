@@ -233,11 +233,11 @@ const Profile = ({ className }: { className?: string }) => {
   const handleSaveProfile = async (updatedEmail: string, notifications: boolean, aboutMe: string, username: string, isPublic: boolean) => {
     const { data } = await supabase.auth.getUser();
 
-    const user = {about_me: aboutMe, name: username, notifications: notifications, is_public: isPublic};
+    const newUser = {about_me: aboutMe, name: username, notifications: notifications, is_public: isPublic};
 
     const { error: userError } = await supabase
       .from("Users")
-      .update(user)
+      .update(newUser)
       .eq("id", data?.user?.id || "");
     
     if (userError) {
@@ -245,6 +245,8 @@ const Profile = ({ className }: { className?: string }) => {
     }
 
     if (!updatedEmail) return;
+
+    if (updatedEmail === user?.email) return;
 
     const { error } = await supabase.auth.updateUser({ email: updatedEmail });
 

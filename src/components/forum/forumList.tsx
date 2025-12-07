@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { ThumbUpAltOutlined, ThumbUpAlt } from "@mui/icons-material";
+import { ForumProfileModal } from "./forumProfileModal";
 
 export interface ForumPost {
   id: string;
-  desc: string;
-  likes: number;
+  desc: string | null;
+  likes: number | null;
   created_at: string;
-  Users?: { name?: string };
+  Users: { name: string | null} | null;
+  user_id: string | null;
   liked?: boolean; // optional client-side flag
 }
 
@@ -20,6 +23,21 @@ export const ForumList: React.FC<ForumListProps> = ({
   loading,
   onToggleLike,
 }) => {
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const openProfileModal = (userId: string) => {
+    setSelectedUserId(userId);
+    setProfileModalOpen(true);
+  };
+
+  const closeProfileModal = () => {
+    setProfileModalOpen(false);
+    setSelectedUserId(null);
+  };
+
+  console.log(posts);
+
   if (loading)
     return (
       <div className="flex justify-center mt-10 text-gray-500">
@@ -43,7 +61,9 @@ export const ForumList: React.FC<ForumListProps> = ({
         >
           {/* Header */}
           <div className="flex justify-between items-center mb-1">
-            <h4 className="font-semibold text-gray-800">
+            <h4 className="font-semibold text-gray-800 cursor-pointer hover:underline"
+              onClick={() => openProfileModal(post.user_id || "")}
+            >
               {post.Users?.name ?? "Anonymous"}
             </h4>
             <span className="text-xs text-gray-400">
@@ -68,6 +88,11 @@ export const ForumList: React.FC<ForumListProps> = ({
           </div>
         </div>
       ))}
+      <ForumProfileModal 
+        open={profileModalOpen}
+        userId={selectedUserId}
+        onClose={closeProfileModal}
+      />
     </div>
   );
 };

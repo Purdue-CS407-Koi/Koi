@@ -12,10 +12,6 @@ const useUsers = (userId?: string | null) => {
     queryFn: () => getCurrentUser(),
   });
 
-  if (!userId) {
-    return { userData, isLoading, error };
-  }
-
   const {
     data: userProfileData,
     isLoading: isProfileLoading,

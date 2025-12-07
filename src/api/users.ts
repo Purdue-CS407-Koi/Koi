@@ -98,7 +98,11 @@ export const getUsers = async () => {
   return data;
 };
 
-export const getUserById = async (userId: string) => {
+export const getUserById = async (userId?: string | null) => {
+  if (!userId) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("Users")
     .select()

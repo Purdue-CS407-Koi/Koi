@@ -42,7 +42,7 @@ export const getForumPosts = async () => {
 };
 
 // ✅ Insert a new post
-export const insertForumPost = async (desc: string, privacy: number) => {
+export const insertForumPost = async ({desc, privacy}: {desc: string, privacy: number}) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();

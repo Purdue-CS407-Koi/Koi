@@ -29,7 +29,7 @@ const useForum = () => {
     }: {
       desc: string;
       privacy: number;
-    }) => await insertForumPost(desc, privacy),
+    }) => await insertForumPost({desc, privacy}),
     onError: (err) => {
       console.error("Error creating post:", err);
     },
@@ -107,7 +107,7 @@ const editPost = (postId: string, desc: string, privacy: number) =>
   editPostMutation.mutate({ postId, desc, privacy });
 
 
-  const createPost = (desc: string, privacy: number) => {
+  const createPost = ({desc, privacy}: {desc: string, privacy: number}) => {
     insertMutation.mutate({ desc, privacy });
   };
 
