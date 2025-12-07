@@ -22,6 +22,14 @@ export const ForumProfileModal = ({
 
   const { userProfileData, isProfileLoading } = useUsers(userId);
 
+  if (isProfileLoading) {
+    return (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Loading...</DialogTitle>
+      </Dialog>
+    );
+  }
+
   if (userProfileData === null) {
     return (
       <Dialog open={open} onClose={handleClose}>
@@ -33,14 +41,6 @@ export const ForumProfileModal = ({
           </div>
         </div>
       </DialogContent>
-      </Dialog>
-    );
-  }
-
-  if (isProfileLoading) {
-    return (
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Loading...</DialogTitle>
       </Dialog>
     );
   }
