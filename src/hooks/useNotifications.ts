@@ -1,8 +1,10 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { fetchNotificationsApi, insertNewNotificationApi, deleteAllNotificationsApi, markNotificationAsReadApi } from "@/api/notifications";
 
 const useNotifications = () => {
+    const queryClient = useQueryClient();
+
     const {
         data: notificationsData, isLoading, error
     } = useQuery({
@@ -26,6 +28,9 @@ const useNotifications = () => {
         onError: (err) => {
             console.log("error deleting all notifications: " + JSON.stringify(err));
         },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+        }
     });
 
     const deleteAllNotifications = () => {

@@ -16,7 +16,43 @@ export async function fetchNotificationsApi() {
 
     if (error) throw new Error(error.message);
 
-    return data;
+    const notifications = await Promise.all(
+        data.map(async (notification) => {
+            const { data: expenseData, error: expenseError } = await supabase
+                .from("Expenses")
+                .select("*")
+                .eq("id", notification.expense_id)
+                .single();
+
+            if (expenseError) throw new Error(expenseError.message);
+            
+            const { data: payerData, error: payerError } = await supabase
+                .from("Users")
+                .select("*")
+                .eq("id", notification.payer_id)
+                .single();  
+            if (payerError) throw new Error(payerError.message);
+
+            const { data: groupData, error: groupError } = await supabase
+                .from("Groups")
+                .select("*")
+                .eq("id", notification.group_id)
+                .single();  
+            if (groupError) throw new Error(groupError.message);
+
+            return {
+                ...notification,
+                expenseName: expenseData.name,
+                expenseAmount: expenseData.amount,
+                payerName: payerData.name,
+                groupName: groupData.name,
+                created: expenseData.created_at,
+            };
+
+        })
+    );
+
+    return notifications;
 }
 
 export async function insertNewNotificationApi({ receiverId, groupId, expenseId, amount, isSplit } : 
@@ -93,7 +129,10 @@ export async function markNotificationAsReadApi() {
     const { data, error } = await supabase
         .from("Notifications")
         .update({ seen: true })
-        .eq("receiver_id", user!.id);
+        .eq("receiver_id", user!.id)
+        .eq("seen", false);
+
+    console.log(user!.id, data, error, "adfhalksdfkasdfasdfasjfhkashfjjsadfkdfha marking as read");
 
     if (error) throw new Error(error.message);
 

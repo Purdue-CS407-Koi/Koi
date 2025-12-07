@@ -128,12 +128,13 @@
 // export default Profile;
 import { useEffect, useState } from "react";
 import logo from "@/assets/logo.png";
-import { Menu, MenuItem, Snackbar, Alert } from "@mui/material";
+import { Menu, MenuItem, Snackbar, Alert, Badge } from "@mui/material";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { ProfileModal } from "./ProfileModal";
 import { InvitesModal } from "../groups/invite/invitesModal";
 import { NotificationsModal } from "../groups/notification/notificationsModal";
 import supabase from "@/helpers/supabase";
+import useNotifications from "@/hooks/useNotifications";
 
 const Profile = ({ className }: { className?: string }) => {
   const signOut = useAuthStore((state) => state.signOut);
@@ -156,6 +157,8 @@ const Profile = ({ className }: { className?: string }) => {
     severity: "success" as "success" | "error",
   });
   const open = Boolean(anchorEl);
+
+  const { notificationsData } = useNotifications();
 
   // ✅ Fetch the latest Supabase user directly (to keep email up to date)
   useEffect(() => {
@@ -312,7 +315,12 @@ const Profile = ({ className }: { className?: string }) => {
       >
         <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
         <MenuItem onClick={handleViewInvites}>Invites</MenuItem>
-        <MenuItem onClick={handleViewNotifications}>Notifications</MenuItem>
+        <MenuItem onClick={handleViewNotifications}>
+          Notifications
+          {notificationsData?.some(notification => !notification.seen) && (
+            <Badge color="error" variant="dot" sx={{ ml: 1 }} />
+          )}
+        </MenuItem>
         <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
       </Menu>
 
