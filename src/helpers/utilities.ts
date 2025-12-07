@@ -49,8 +49,12 @@ export const getDateRange = (start: string, end: string) => {
   return dates;
 };
 
+function truncate(n: number) {
+  return Math.floor(n * 100) / 100;
+}
+
 export function calculateExpenseStats(expenses: Expense[]) {
-  if (expenses.length === 0) {
+  if (expenses == null || expenses.length === 0) {
     return {
       averageDailySpending: 0,
       averageExpenseSize: 0,
@@ -60,7 +64,7 @@ export function calculateExpenseStats(expenses: Expense[]) {
 
   const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
 
-  const averageExpenseSize = totalSpent / expenses.length;
+  const averageExpenseSize = truncate(totalSpent / expenses.length);
 
   const largestExpense = expenses.reduce((max, e) =>
     e.amount > max.amount ? e : max
@@ -75,7 +79,7 @@ export function calculateExpenseStats(expenses: Expense[]) {
   }
 
   const numDays = Object.keys(spendingByDay).length;
-  const averageDailySpending = totalSpent / numDays;
+  const averageDailySpending = truncate(totalSpent / numDays);
 
   return {
     averageDailySpending,

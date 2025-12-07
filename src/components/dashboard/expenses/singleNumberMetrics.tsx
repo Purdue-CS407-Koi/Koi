@@ -9,7 +9,7 @@ export const SingleNumberMetrics = () => {
   return (
     <div className="flex flex-col gap-3">
       <p>
-        <strong>Average Daily Spending:</strong> ${averageDailySpending}{" "}
+        <strong>Average Daily Spending:</strong> ${averageDailySpending}
       </p>
       <p>
         <strong>Average Expense Size:</strong> ${averageExpenseSize}
