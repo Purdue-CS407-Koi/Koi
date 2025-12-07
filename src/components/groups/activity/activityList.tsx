@@ -1,5 +1,5 @@
 import { useBuckets } from "@/hooks/useBuckets";
-import useUserChallenges from "@/hooks/useChallenges";
+import useUserChallenges from "@/hooks/useUserChallenges";
 import { useBucketsStore } from "@/stores/useBucketsStore";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
