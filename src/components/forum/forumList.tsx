@@ -380,6 +380,7 @@ import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { EditPostModal } from "./editPostModal";
 import { DeletePostModal } from "./deletePostModal";
+import { ForumProfileModal } from "./forumProfileModal";
 
 export interface ForumPost {
   id: string;
@@ -492,6 +493,19 @@ export const ForumList: React.FC<ForumListProps> = ({
   onDelete,
   onEdit,
 }) => {
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<{name: string, id: string} | null>(null);
+
+  const openProfileModal = (name: string, userId: string) => {
+    setSelectedUser({name: name, id: userId});
+    setProfileModalOpen(true);
+  };
+
+  const closeProfileModal = () => {
+    setProfileModalOpen(false);
+    setSelectedUser(null);
+  };
+
   if (loading)
     return (
       <div className="flex justify-center mt-10 text-gray-500">
@@ -518,7 +532,9 @@ export const ForumList: React.FC<ForumListProps> = ({
           >
             {/* Header */}
             <div className="flex justify-between items-center mb-1">
-              <h4 className="font-semibold text-gray-800">
+              <h4 className="font-semibold text-gray-800 hover:underline cursor-pointer" 
+                onClick={() => openProfileModal(post.Users?.name ?? "Anonymous", post.user_id ?? "")}
+              >
                 {post.Users?.name ?? "Anonymous"}
               </h4>
               <div className="flex items-center gap-2">
@@ -555,6 +571,11 @@ export const ForumList: React.FC<ForumListProps> = ({
           </div>
         );
       })}
+      <ForumProfileModal
+        open={profileModalOpen}
+        onClose={closeProfileModal}
+        user={selectedUser}
+      />
     </div>
   );
 };
