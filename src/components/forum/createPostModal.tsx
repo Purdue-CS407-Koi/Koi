@@ -38,6 +38,9 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         <TextField
           label="Post Description"
           fullWidth
+          autoFocus
+          required
+          margin="dense"
           multiline
           rows={3}
           value={desc}

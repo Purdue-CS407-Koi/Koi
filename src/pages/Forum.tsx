@@ -117,7 +117,7 @@ const Forum = () => {
       <Sidebar>
         <div>
           <h3 className="text-lg font-semibold mb-4 text-sidebar-title">Forum</h3>
-        <p className="text-sm text-gray-600">Chat with users!</p>
+        <p className="text-sm text-gray-600">Connect with users!</p>
         </div>
       </Sidebar>
     </Template>
