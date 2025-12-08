@@ -33,9 +33,16 @@ export const SpendingOverTimeChart = () => {
   const currentBucketInstanceData = bucketInstanceData?.find(
     (instance: any) => instance.id == currentBucketInstanceId
   );
+  
+  if (!currentBucketInstanceData) {
+    return (
+      <p>Loading...</p>
+    );
+  }
 
   const instanceStart = convertToLocalTime(currentBucketInstanceData!.start);
   const instanceEnd = convertToLocalTime(currentBucketInstanceData!.end);
+  
 
   const allDates = getDateRange(instanceStart, instanceEnd);
 
