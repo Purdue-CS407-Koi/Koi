@@ -50,20 +50,23 @@ const List = ({ events }: { events: CalendarEvent[] }) => {
   }
 
   return (
-    <>
+    <div className="flex flex-col h-[80%]">
+      <div className="flex-1">
       <FullCalendar
         ref={listRef}
         plugins={[listPlugin]}
         initialView="listDay"
         headerToolbar={false}
         events={events}
+        height={"100%"}
       />
+      </div>
       {totalExpenseAmount !== null && (
         <h4 className="text-center mt-4">
           Total Expenses: $ {totalExpenseAmount}
         </h4>
       )}
-    </>
+    </div>
   );
 };
 
