@@ -50,6 +50,7 @@ const Calendar = () => {
             date: new Date(expense.created_at),
             allDay: true,
             expenseAmount: expense.amount,
+            backgroundColor: "#940000",
           };
         }),
       );
@@ -114,6 +115,7 @@ const Calendar = () => {
                 title: `Challenge ${challenge.name} starts`,
                 date: new Date(challenge.start),
                 allDay: true,
+                backgroundColor: "#112234",
               },
             ];
 
@@ -125,6 +127,7 @@ const Calendar = () => {
                 title: `Challenge ${challenge.name} ends`,
                 date: new Date(challenge.end),
                 allDay: true,
+                backgroundColor: "#112234",
               },
             ];
           }),
