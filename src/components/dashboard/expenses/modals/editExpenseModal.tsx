@@ -40,7 +40,7 @@ export const EditExpenseModal = ({
   const { currentBucketMetadataId } = useBucketsStore();
 
   const [value, setValue] = useState<Value>(
-    new Date(`${cellProps.data.created_at}T00:00`)
+    new Date(`${cellProps.data.created_at}T00:00`),
   );
 
   const currentBucket = bucketMetadataData?.find(
