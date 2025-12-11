@@ -17,6 +17,9 @@ import type { CustomCellRendererProps } from "ag-grid-react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import useUserChallenges from "@/hooks/useChallenges";
 import { EditExpenseDate } from "../editExpenseDate";
+import { useBucketsStore } from "@/stores/useBucketsStore";
+import { useBuckets } from "@/hooks/useBuckets";
+import { RecurrencePeriodType } from "@/interfaces/Bucket";
 
 interface EditExpenseModalProps {
   cellProps: CustomCellRendererProps;
@@ -33,9 +36,15 @@ export const EditExpenseModal = ({
 }: EditExpenseModalProps) => {
   const { updateExpense } = useExpenses();
   const { activeChallengeData } = useUserChallenges();
+  const { bucketMetadataData } = useBuckets();
+  const { currentBucketMetadataId } = useBucketsStore();
 
   const [value, setValue] = useState<Value>(
     new Date(`${cellProps.data.created_at}T00:00`)
+  );
+
+  const currentBucket = bucketMetadataData?.find(
+    (x) => x.id === currentBucketMetadataId,
   );
 
   const handleClickOpen = () => {
@@ -119,7 +128,14 @@ export const EditExpenseModal = ({
                 )) || <MenuItem value="">No Active Challenge</MenuItem>}
               </Select>
             </FormControl>
-            <EditExpenseDate value={value} setValue={setValue} />
+            {(currentBucket?.recurrence_period_type as RecurrencePeriodType) ===
+            RecurrencePeriodType.Daily ? (
+              <p className="text-gray-500 mt-8 mb-4">
+                Dates of expenses in daily buckets cannot be changed.
+              </p>
+            ) : (
+              <EditExpenseDate value={value} setValue={setValue} />
+            )}
           </form>
         </DialogContent>
         <DialogActions className="!p-6 !pt-0">
