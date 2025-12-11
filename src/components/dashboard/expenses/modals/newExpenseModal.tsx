@@ -34,7 +34,9 @@ export const NewExpenseModal = () => {
     event.preventDefault();
 
     if (!currentBucketInstanceId) {
-      console.error("Attempted to create a new expense entry with no bucket instance ID!");
+      console.error(
+        "Attempted to create a new expense entry with no bucket instance ID!"
+      );
       return;
     }
 
@@ -81,7 +83,6 @@ export const NewExpenseModal = () => {
             />
             <TextField
               autoFocus
-              required
               margin="dense"
               id="description"
               name="description"
@@ -97,7 +98,9 @@ export const NewExpenseModal = () => {
                 label="Challenge"
                 defaultValue=""
               >
-                <MenuItem value="" className="text-gray-500">(No Challenge)</MenuItem>
+                <MenuItem value="" className="text-gray-500">
+                  (No Challenge)
+                </MenuItem>
                 {activeChallengeData?.map((challenge) => (
                   <MenuItem key={challenge.id} value={challenge.id}>
                     {challenge.name}

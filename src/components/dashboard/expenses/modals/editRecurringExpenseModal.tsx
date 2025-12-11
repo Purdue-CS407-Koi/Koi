@@ -77,7 +77,6 @@ export const EditRecurringExpenseModal = ({
             />
             <TextField
               autoFocus
-              required
               margin="dense"
               id="description"
               name="description"

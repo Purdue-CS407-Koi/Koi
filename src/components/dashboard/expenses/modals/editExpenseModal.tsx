@@ -93,7 +93,6 @@ export const EditExpenseModal = ({
             />
             <TextField
               autoFocus
-              required
               margin="dense"
               id="description"
               name="description"
