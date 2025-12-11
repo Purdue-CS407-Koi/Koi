@@ -54,8 +54,7 @@ export const EditBucketModal = ({
     const editedBucketData: TablesUpdate<"BucketMetadata"> = {
       name: bucketName,
       recurrence_period_type: recurrencePeriod as RecurrencePeriodType,
-      // Spending limit gets stored as int in DB
-      spending_limit: spendingLimit! * 100,
+      spending_limit: spendingLimit!,
     };
 
     editBucketMetadata(bucketMetadataId, editedBucketData);
@@ -69,7 +68,7 @@ export const EditBucketModal = ({
       setBucketName(metadata.name);
       setRecurrencePeriod(metadata.recurrence_period_type);
       if (metadata.spending_limit) {
-        setRawSpendingLimit((metadata.spending_limit / 100).toString());
+        setRawSpendingLimit((metadata.spending_limit).toString());
       } else {
         setRawSpendingLimit("");
       }

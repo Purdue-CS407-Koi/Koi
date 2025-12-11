@@ -51,8 +51,7 @@ const NewBucketModal = ({
     const newBucket: TablesInsert<"BucketMetadata"> = {
       name: bucketName,
       recurrence_period_type: recurrencePeriod as RecurrencePeriodType,
-      // Spending limit gets stored as int in DB
-      spending_limit: spendingLimit! * 100,
+      spending_limit: spendingLimit!,
     };
 
     try {
